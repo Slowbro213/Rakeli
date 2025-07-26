@@ -1,4 +1,4 @@
-name: Deploy Bun Static Site to GitHub Pages
+name: Build Page
 
 on:
   push:
