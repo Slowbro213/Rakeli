@@ -1,10 +1,13 @@
 import type { Command } from "@rakeli/commands/types";
+import { stdout } from "@rakeli/stdout";
 
 
 export const help: Command = {
   name: "help",
   exec: (argv: string[]) => {
-    console.log("Helped" , argv[1]);
+    const coms = ["help","ls","cd ( doesnt work yet )","slowking","echo","clear"]
+    console.log(coms);
+    stdout(coms);
     return 0;
   }
 }

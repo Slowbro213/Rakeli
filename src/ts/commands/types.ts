@@ -25,6 +25,11 @@ export type SignalNumber =
 
 export type CommandName = 
   | "help"
+  | "echo"
+  | "ls"
+  | "cd"
+  | "slowking"
+  | "clear"
 ;
 
 export type Command = {

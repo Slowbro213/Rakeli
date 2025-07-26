@@ -1,5 +1,6 @@
+import { terminalBody } from "@rakeli/terminal";
 
-export const stdout = (terminalBody: HTMLElement, output: string | string[]) => {
+export const stdout = (output: string | string[]) => {
   const lines = Array.isArray(output) ? output : [output];
   for (const line of lines) {
     const p = document.createElement("p");

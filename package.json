@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "bun build src/ts/index.ts --outdir=public/assets/js --minify --target=browser && bunx tailwindcss -i src/css/styles.css -o public/assets/css/styles.css --minify"
+    "build": "bun run scripts/build/*.{ts,js} && bash scripts/build/*.sh && bun build src/ts/index.ts --outdir=public/assets/js --minify --target=browser && bunx tailwindcss -i src/css/styles.css -o public/assets/css/styles.css --minify "
   },
   "devDependencies": {
     "@types/bun": "latest"

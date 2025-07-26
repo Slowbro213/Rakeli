@@ -1,28 +1,53 @@
+import { stdout } from "@rakeli/stdout";
 import { autocompleteCommand, findCommand } from "./hinting";
+import { newPrompt } from "./prompt";
+import { terminalInput, autocomplete } from "./terminal";
+import { clear } from "./commands/clear";
 
 // Get the input element (cast as HTMLInputElement for type safety)
-const terminalInput = document.getElementById("terminal-input") as HTMLInputElement;
-const autocomplete = document.getElementById("autocomplete") as HTMLElement;
 
 // Add a keydown event listener
 terminalInput.addEventListener("keydown", (event: KeyboardEvent) => {
+
+  if (event.ctrlKey && event.key.toLowerCase() === "l") {
+    event.preventDefault();
+    clear.exec([""]);
+    return;
+  }
+
   switch (event.key) {
     case "Enter": {
 
       const input = terminalInput.value;
       const args = input.split(" ");
-      if(!input || !args || !args[0]) {
-        console.log(args[0]);
+      if (!input || !args || !args[0]) {
+        stdout("No detectable input ;-;");
+        newPrompt();
+        terminalInput.value = "";
         break;
       }
       const com = findCommand(args[0]);
 
-      if(!com)
+      if (!com) {
+        stdout("Command doesn't exist (yet) :(");
+        newPrompt();
+        terminalInput.value = "";
         break;
+      }
 
       com.exec(args);
 
+      newPrompt();
+
       terminalInput.value = "";
+      break;
+    }
+    case "ArrowRight": {
+      const suggestion = autocomplete.textContent?.trim();
+      if (suggestion && suggestion.startsWith(terminalInput.value)) {
+        terminalInput.value = suggestion;
+        autocomplete.innerHTML = "";
+      }
       break;
     }
     default: {
