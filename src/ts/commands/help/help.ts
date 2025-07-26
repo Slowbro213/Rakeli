@@ -5,7 +5,7 @@ import { stdout } from "@rakeli/stdout";
 export const help: Command = {
   name: "help",
   exec: (argv: string[]) => {
-    const coms = ["help","ls","cd ( doesnt work yet )","slowking","echo","clear","deployment test"]
+    const coms = ["help","ls","cd ( doesnt work yet )","slowking","echo","clear"]
     console.log(coms);
     stdout(coms);
     return 0;
