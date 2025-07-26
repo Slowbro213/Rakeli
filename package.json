@@ -3,17 +3,37 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "prepare": "bunx lefthook install",
   "scripts": {
-    "build": "bun run scripts/build/*.{ts,js} && bash scripts/build/*.sh && bun build src/ts/index.ts --outdir=public/assets/js --minify --target=browser && bunx tailwindcss -i src/css/styles.css -o public/assets/css/styles.css --minify "
+    "build": "bun run scripts/build/*.{ts,js} && bash scripts/build/*.sh && bun build src/ts/index.ts --outdir=public/assets/js --minify --target=browser && bunx tailwindcss -i src/css/styles.css -o public/assets/css/styles.css --minify ",
+    "lint": "bun audit && bunx eslint 'src/**/*.ts' --max-warnings=0 && bunx stylelint 'src/css/**/*.css' && bunx htmlhint 'public/**/*.html' && bunx prettier --check './**/*.{ts,css,html,json}'",
+    "prettify": "bunx prettier --write .",
+    "pre-commit": "bunx lefthook run pre-commit",
+    "pre-push": "bunx lefthook run pre-push"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@eslint/js": "^9.32.0",
+    "@tailwindcss/cli": "^4.1.11",
+    "@types/bun": "^1.2.19",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.32.0",
+    "globals": "^16.3.0",
+    "htmlhint": "^1.6.3",
+    "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
+    "stylelint": "^16.22.0",
+    "stylelint-config-standard": "^38.0.0",
+    "stylelint-config-tailwindcss": "^1.0.0",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0",
+    "@eslint/css": "^0.10.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1"
   },
   "peerDependencies": {
     "typescript": "^5"
-  },
-  "dependencies": {
-    "@tailwindcss/cli": "^4.1.11",
-    "tailwindcss": "^4.1.11"
   }
 }

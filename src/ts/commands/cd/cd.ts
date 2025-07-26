@@ -1,10 +1,8 @@
-import type { Command } from "../types";
-
+import type { Command } from '../types';
 
 export const cd: Command = {
-  name: "cd",
-  exec: (argv: string[] | undefined) => {
+  name: 'cd',
+  exec: () => {
     return 0;
-  }
-
-}
+  },
+};

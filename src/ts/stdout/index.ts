@@ -1,1 +1,1 @@
-export * from "./stdout";
+export * from './stdout';

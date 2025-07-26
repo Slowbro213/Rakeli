@@ -1,1 +1,1 @@
-export * from "./slowking";
+export * from './slowking';

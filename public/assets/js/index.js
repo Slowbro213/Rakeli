@@ -1,1 +1,202 @@
-var t=document.getElementById("terminal-input"),C=document.getElementById("terminal-input-row"),l=document.getElementById("autocomplete"),p=document.getElementById("terminal-body"),N=document.getElementById("terminal-line-template");var s=(r)=>{let o=Array.isArray(r)?r:[r];for(let m of o){let e=document.createElement("p");e.className="terminal-line",e.textContent=`${m}`,p.appendChild(e)}};var E={name:"help",exec:()=>{return s(["help","ls","cd ( doesnt work yet )","slowking","echo","clear","history"]),0}};var h={name:"echo",exec:(r)=>{if(!r||r.length<2)return 1;let o=r.slice(1).join(" ");return s(o),0}};var B={name:"ls",exec:()=>{return s(["Pages on this Website:","About_Me","Writeups","Projects","Home"]),0}};var w={name:"cd",exec:(r)=>{return 0}};var A={name:"slowking",exec:()=>{return s("Thats Me!"),0}};var y={name:"clear",exec:(r)=>{if(!p||!r)return 0;let o=2,m=o+1+(r[0]==="clear"?1:0);while(p.children.length>m){let e=p.children[o];if(!e)break;p?.removeChild(e)}return 0}};var n=[],f=0,L=(r)=>{if(n[n.length-1]===r)return;n.push(r),f=n.length},M=()=>{if(f--,f<0)f=0;return n[f]},T=()=>{if(f++,f>n.length){f--;return}return n[f]},k=()=>{return n};var H={name:"history",exec:()=>{return s(k()),0}};var b=[E,h,B,w,A,y,H];var j=(r)=>{console.log("Building Commands...");let o={children:new Map};for(let m of r){let e=o;for(let i of m.name){if(!e.children.has(i))e.children.set(i,{children:new Map});e=e.children.get(i)}e.command=m}return o},D=(r)=>{if(!r||c===null)return[];let o=c;for(let i of r){let x=o.children.get(i);if(!x)return[];o=x}function m(i){if(i.command&&i.command.name.startsWith(r))return i.command;for(let x of i.children.values()){let g=m(x);if(g)return g}return}let e=m(o);return e?[e]:[]},O=(r)=>{if(!r||c===null)return;let o=c;for(let m of r){let e=o.children.get(m);if(!e)return;o=e}return o.command?.name===r?o.command:void 0},c=j(b);var d=()=>{p.removeChild(C),p.appendChild(C),t.focus()};t.addEventListener("keydown",(r)=>{if(r.ctrlKey&&r.key.toLowerCase()==="l"){r.preventDefault(),y.exec(["shortcut"]);return}switch(r.key){case"Enter":{let o=t.value,m=o.split(" ");if(!o||!m||!m[0]){s("No detectable input ;-;"),d(),t.value="";break}let e=O(m[0]);if(s("> "+o),L(o),!e){s("Command doesn't exist (yet) :("),d(),t.value="";break}e.exec(m),d(),t.value="";break}case"ArrowRight":{let o=l.textContent?.trim();if(o&&o.startsWith(t.value))t.value=o,l.innerHTML="";break}case"ArrowUp":{r.preventDefault();let o=M();if(l.innerHTML="",!o)break;t.value=o,t.setSelectionRange(o.length,o.length);break}case"ArrowDown":{let o=T();if(l.innerHTML="",!o){t.value="";break}t.value=o,t.setSelectionRange(o.length,o.length);break}default:{let o=t.value,m=D(o);if(m.length===0||!m[0]||!m[0].name){l.innerHTML="";break}let e=m[0].name;l.innerHTML=e;break}}});
+var t = document.getElementById('terminal-input'),
+  C = document.getElementById('terminal-input-row'),
+  n = document.getElementById('autocomplete'),
+  i = document.getElementById('terminal-body'),
+  N = document.getElementById('terminal-line-template');
+var s = (r) => {
+  let o = Array.isArray(r) ? r : [r];
+  for (let m of o) {
+    let e = document.createElement('p');
+    ((e.className = 'terminal-line'),
+      (e.textContent = `${m}`),
+      i.appendChild(e));
+  }
+};
+var g = {
+  name: 'help',
+  exec: () => {
+    return (
+      s([
+        'help',
+        'ls',
+        'cd ( doesnt work yet )',
+        'slowking',
+        'echo',
+        'clear',
+        'history',
+      ]),
+      0
+    );
+  },
+};
+var h = {
+  name: 'echo',
+  exec: (r) => {
+    if (!r || r.length < 2) return 1;
+    let o = r.slice(1).join(' ');
+    return (s(o), 0);
+  },
+};
+var B = {
+  name: 'ls',
+  exec: () => {
+    return (
+      s(['Pages on this Website:', 'About_Me', 'Writeups', 'Projects', 'Home']),
+      0
+    );
+  },
+};
+var w = {
+  name: 'cd',
+  exec: () => {
+    return 0;
+  },
+};
+var A = {
+  name: 'slowking',
+  exec: () => {
+    return (s('Thats Me!'), 0);
+  },
+};
+var y = {
+  name: 'clear',
+  exec: (r) => {
+    if (!i || !r) return 0;
+    let o = 2,
+      m = o + 1 + (r[0] === 'clear' ? 1 : 0);
+    while (i.children.length > m) {
+      let e = i.children[o];
+      if (!e) break;
+      i?.removeChild(e);
+    }
+    return 0;
+  },
+};
+var l = [],
+  f = 0,
+  L = (r) => {
+    if (l[l.length - 1] === r) return;
+    (l.push(r), (f = l.length));
+  },
+  M = () => {
+    if ((f--, f < 0)) f = 0;
+    return l[f];
+  },
+  T = () => {
+    if ((f++, f > l.length)) {
+      f--;
+      return;
+    }
+    return l[f];
+  },
+  k = () => {
+    return l;
+  };
+var H = {
+  name: 'history',
+  exec: () => {
+    return (s(k()), 0);
+  },
+};
+var b = [g, h, B, w, A, y, H];
+var j = (r) => {
+    console.log('Building Commands...');
+    let o = { children: new Map() };
+    for (let m of r) {
+      let e = o;
+      for (let p of m.name) {
+        if (!e.children.has(p)) e.children.set(p, { children: new Map() });
+        e = e.children.get(p);
+      }
+      e.command = m;
+    }
+    return o;
+  },
+  D = (r) => {
+    if (!r || c === null) return [];
+    let o = c;
+    for (let p of r) {
+      let x = o.children.get(p);
+      if (!x) return [];
+      o = x;
+    }
+    function m(p) {
+      if (p.command && p.command.name.startsWith(r)) return p.command;
+      for (let x of p.children.values()) {
+        let E = m(x);
+        if (E) return E;
+      }
+      return;
+    }
+    let e = m(o);
+    return e ? [e] : [];
+  },
+  O = (r) => {
+    if (!r || c === null) return;
+    let o = c;
+    for (let m of r) {
+      let e = o.children.get(m);
+      if (!e) return;
+      o = e;
+    }
+    return o.command?.name === r ? o.command : void 0;
+  },
+  c = j(b);
+var d = () => {
+  (i.removeChild(C), i.appendChild(C), t.focus());
+};
+t.addEventListener('keydown', (r) => {
+  if (r.ctrlKey && r.key.toLowerCase() === 'l') {
+    (r.preventDefault(), y.exec(['shortcut']));
+    return;
+  }
+  switch (r.key) {
+    case 'Enter': {
+      let o = t.value,
+        m = o.split(' ');
+      if (!o || !m || !m[0]) {
+        (s('No detectable input ;-;'), d(), (t.value = ''));
+        break;
+      }
+      let e = O(m[0]);
+      if ((s('> ' + o), L(o), !e)) {
+        (s("Command doesn't exist (yet) :("), d(), (t.value = ''));
+        break;
+      }
+      (e.exec(m), d(), (t.value = ''));
+      break;
+    }
+    case 'ArrowRight': {
+      let o = n.textContent?.trim();
+      if (o && o.startsWith(t.value)) ((t.value = o), (n.innerHTML = ''));
+      break;
+    }
+    case 'ArrowUp': {
+      r.preventDefault();
+      let o = M();
+      if (((n.innerHTML = ''), !o)) break;
+      ((t.value = o), t.setSelectionRange(o.length, o.length));
+      break;
+    }
+    case 'ArrowDown': {
+      let o = T();
+      if (((n.innerHTML = ''), !o)) {
+        t.value = '';
+        break;
+      }
+      ((t.value = o), t.setSelectionRange(o.length, o.length));
+      break;
+    }
+    default: {
+      let o = t.value,
+        m = D(o);
+      if (m.length === 0 || !m[0] || !m[0].name) {
+        n.innerHTML = '';
+        break;
+      }
+      let e = m[0].name;
+      n.innerHTML = e;
+      break;
+    }
+  }
+});

@@ -1,0 +1,37 @@
+name: Lint & Audit Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Run Bun Linting Suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run Bun Audit
+        run: bun audit
+
+      - name: Run ESLint
+        run: bunx eslint "src/**/*.ts" --max-warnings=0
+
+      - name: Run Stylelint
+        run: bunx stylelint "src/css/**/*.css"
+
+      - name: Run HTMLHint
+        run: bunx htmlhint "public/**/*.html"
+
+      - name: Run Prettier
+        run: bunx prettier --check "./**/*.{ts,css,html,json}"

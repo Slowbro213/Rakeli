@@ -1,6 +1,5 @@
-import { commands } from "@rakeli/commands";
-import type { Command } from "@rakeli/commands/types";
-
+import { commands } from '@rakeli/commands';
+import type { Command } from '@rakeli/commands/types';
 
 type TrieNode = {
   children: Map<string, TrieNode>;
@@ -9,7 +8,7 @@ type TrieNode = {
 
 // Create the root of the trie
 export const buildCommandTrie = (commands: Command[]): TrieNode => {
-  console.log("Building Commands...");
+  console.log('Building Commands...');
   const root: TrieNode = { children: new Map() };
 
   for (const command of commands) {
@@ -27,8 +26,7 @@ export const buildCommandTrie = (commands: Command[]): TrieNode => {
   }
 
   return root;
-}
-
+};
 
 export const autocompleteCommand = (prefix: string): Command[] => {
   if (!prefix || root === null) return [];
@@ -75,6 +73,4 @@ export const findCommand = (name: string): Command | undefined => {
   return node.command?.name === name ? node.command : undefined;
 };
 
-
 const root = buildCommandTrie(commands);
-

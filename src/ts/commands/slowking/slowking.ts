@@ -1,11 +1,10 @@
-import { stdout } from "@rakeli/stdout";
-import type { Command } from "../types";
-
+import { stdout } from '@rakeli/stdout';
+import type { Command } from '../types';
 
 export const slowking: Command = {
-  name: "slowking",
+  name: 'slowking',
   exec: () => {
-    stdout("Thats Me!");
+    stdout('Thats Me!');
     return 0;
-  }
-}
+  },
+};

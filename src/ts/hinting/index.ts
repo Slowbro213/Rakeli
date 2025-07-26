@@ -1,2 +1,1 @@
-export * from "./hinting";
-
+export * from './hinting';

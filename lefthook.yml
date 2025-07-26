@@ -1,0 +1,42 @@
+pre-commit:
+  parallel: true
+  commands:
+    frontend-secure:
+      run: bun audit
+
+    frontend-eslint:
+      run: bunx eslint "src/**/*.ts" --max-warnings=0
+
+    frontend-stylelint:
+      run: bunx stylelint "src/css/**/*.css"
+
+    frontend-htmlhint:
+      run: bunx htmlhint "public/**/*.html"
+
+    frontend-prettier:
+      run: bunx prettier --check "./**/*.{ts,css,html,json}"
+
+pre-push:
+  parallel: false
+  commands:
+    frontend-eslint:
+      run: bunx eslint "src/**/*.ts" --max-warnings=0
+
+    frontend-stylelint:
+      run: bunx stylelint "src/styles/**/*.css"
+
+    frontend-htmlhint:
+      run: bunx htmlhint "public/**/*.html"
+
+    frontend-prettier:
+      run: bunx prettier --check "./**/*.{ts,css,html,json}"
+
+    check-todos:
+      run: grep -iR "TODO" ./ | grep -v node_modules || true
+      skip:
+        - all: false
+
+commit-msg:
+  commands:
+    lint-message:
+      run: bunx commitlint --edit {1}

@@ -1,8 +1,8 @@
-import { readdir, writeFile, stat } from "fs/promises";
-import { join, resolve } from "path";
+import { readdir, writeFile, stat } from 'fs/promises';
+import { join, resolve } from 'path';
 
-const COMMANDS_DIR = resolve("src/ts/commands");
-const REGISTRY_FILE = join(COMMANDS_DIR, "registry.ts");
+const COMMANDS_DIR = resolve('src/ts/commands');
+const REGISTRY_FILE = join(COMMANDS_DIR, 'registry.ts');
 
 async function findCommands(): Promise<{ name: string; path: string }[]> {
   const entries = await readdir(COMMANDS_DIR, { withFileTypes: true });
@@ -35,11 +35,11 @@ async function generateRegistry() {
 
   const imports = commands
     .map(({ name, path }) => `import { ${name} } from "${path}";`)
-    .join("\n");
+    .join('\n');
 
   const commandList = `export const commands: Command[] = [${commands
     .map((c) => c.name)
-    .join(", ")}];`;
+    .join(', ')}];`;
 
   const content = `// AUTO-GENERATED FILE — DO NOT EDIT MANUALLY
 
@@ -49,10 +49,10 @@ ${imports}
 ${commandList}
 `;
 
-  await writeFile(REGISTRY_FILE, content, "utf-8");
+  await writeFile(REGISTRY_FILE, content, 'utf-8');
   console.log(`✅ Wrote ${commands.length} commands to registry.ts`);
 }
 
 generateRegistry().catch((err) => {
-  console.error("❌ Failed to generate registry:", err);
+  console.error('❌ Failed to generate registry:', err);
 });
