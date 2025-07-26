@@ -4,7 +4,7 @@ import type { Command } from "../types";
 
 export const ls: Command = {
   name: "ls",
-  exec: (argv: string[]) => {
+  exec: () => {
 
     const pages: string[] = [
       "Pages on this Website:",

@@ -11,7 +11,7 @@ terminalInput.addEventListener("keydown", (event: KeyboardEvent) => {
 
   if (event.ctrlKey && event.key.toLowerCase() === "l") {
     event.preventDefault();
-    clear.exec([""]);
+    clear.exec(["shortcut"]);
     return;
   }
 
@@ -28,14 +28,14 @@ terminalInput.addEventListener("keydown", (event: KeyboardEvent) => {
       }
       const com = findCommand(args[0]);
 
+      stdout("> " + input);
+
       if (!com) {
         stdout("Command doesn't exist (yet) :(");
         newPrompt();
         terminalInput.value = "";
         break;
       }
-
-      stdout("> " + input);
 
       com.exec(args);
 

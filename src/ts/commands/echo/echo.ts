@@ -4,7 +4,7 @@ import { stdout } from "@rakeli/stdout";
 
 export const echo: Command = {
   name: "echo",
-  exec: (argv: string[]) => {
+  exec: (argv: string[] | undefined) => {
 
     if (!argv || argv.length < 2) return 1;
 

@@ -4,7 +4,7 @@ import type { Command } from "../types";
 
 export const slowking: Command = {
   name: "slowking",
-  exec: (argv: string[]) => {
+  exec: () => {
     stdout("Thats Me!");
     return 0;
   }

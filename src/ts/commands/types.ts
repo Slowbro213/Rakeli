@@ -30,9 +30,11 @@ export type CommandName =
   | "cd"
   | "slowking"
   | "clear"
+  | "whoami"
+  | "pwd"
 ;
 
 export type Command = {
   name: CommandName;
-  exec: (argv: string[]) => ReturnCode
+  exec: (argv: string[] | undefined) => ReturnCode
 }
