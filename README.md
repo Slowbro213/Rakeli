@@ -1,15 +1,66 @@
-# rakeli
+# 💻 Rakeli — Cyberpunk Web Terminal Portfolio
 
-To install dependencies:
+**Rakeli** is a personal website project built as a **cyberpunk-themed terminal interface** for a cybersecurity professional. It mimics a Unix shell, allowing visitors to explore content using commands like `help`, `cd`, `ls`, and more.
+
+> ⚠️ This project is currently in active development.
+
+## 🚀 Features
+
+- 🖥️ Terminal-style UI built with **Tailwind CSS**
+- ⚡ Fast static site powered by **Bun**
+- 🔍 Command autocompletion using a prefix trie
+- ⌨️ Shell-like commands:
+  - `help` — Show available commands
+  - `cd` — Navigate to sections/pages
+  - `ls` — List pages
+  - `echo` — Echo back input
+  - `clear` — Clear the terminal
+  - `whoami`, `pwd`, `slowking` — fun easter egg commands
+- ⏳ Command history using arrow keys
+- 🧠 Static site deployed via **GitHub Pages**
+
+## 📁 Project Structure
+
+```
+├── public/
+│   ├── assets/         # Static assets: CSS, JS, fonts
+│   ├── index.html      # Main entry HTML
+│   └── *.html          # Additional pages (about, services, etc.)
+├── src/
+│   ├── ts/             # TypeScript source
+│   ├── css/            # Tailwind input CSS
+├── scripts/            # Utility scripts (e.g. build/compress)
+├── tsconfig.json       # TypeScript config
+├── bun.lock            # Bun lockfile
+```
+
+## 🛠️ Getting Started
+
+Make sure you have **[Bun](https://bun.sh)** installed.
 
 ```bash
 bun install
+bun run build
+bun run start  # or serve /public however you prefer
 ```
 
-To run:
+## 🧪 Linting & Security
+
+We use `lefthook` and `bun lint` to enforce formatting, linting, and auditing:
 
 ```bash
-bun run index.ts
+bun lint
 ```
 
-This project was created using `bun init` in bun v1.2.18. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+## 🐙 GitHub Pages Deployment
+
+Build and push to `gh-pages` branch:
+
+```bash
+bun run build
+# GitHub Actions deploys from /public to GitHub Pages
+```
+
+## 📜 License
+
+MIT © 2025 — built with ☕ by [Slowbro213](https://github.com/Slowbro213)
