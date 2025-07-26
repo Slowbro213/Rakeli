@@ -23,7 +23,7 @@ pre-push:
       run: bunx eslint "src/**/*.ts" --max-warnings=0
 
     frontend-stylelint:
-      run: bunx stylelint "src/styles/**/*.css"
+      run: bunx stylelint "src/css/**/*.css"
 
     frontend-htmlhint:
       run: bunx htmlhint "public/**/*.html"
