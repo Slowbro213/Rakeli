@@ -5,7 +5,7 @@ export const stdout = (output: string | string[]) => {
   for (const line of lines) {
     const p = document.createElement("p");
     p.className = "terminal-line";
-    p.textContent = `> ${line}`;
+    p.textContent = `${line}`;
     terminalBody.appendChild(p);
   }
 }

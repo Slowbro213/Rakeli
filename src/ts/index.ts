@@ -35,6 +35,8 @@ terminalInput.addEventListener("keydown", (event: KeyboardEvent) => {
         break;
       }
 
+      stdout("> " + input);
+
       com.exec(args);
 
       newPrompt();
