@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYBERPUNK // PEN-TESTER PORTFOLIO</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body class="bg-black text-neongreen font-mono overflow-x-hidden">
+  <!-- Grid Background -->
+  <div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+  <!-- Scanlines -->
+  <div class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"></div>
+
+  <main class="relative z-10">
+    <!-- Skills Terminal Section -->
+    <section id="skills" class="px-4">
+      <div class="container h-full mx-auto">
+        <h2 class="section-title glitch" data-text="//NAV_TERMINAL">//NAV_TERMINAL</h2>
+
+        <div class="terminal-window h-150 mt-12">
+          <div class="terminal-header">
+            <div class="terminal-buttons">
+              <span class="terminal-btn terminal-btn-close"></span>
+              <span class="terminal-btn terminal-btn-min"></span>
+              <span class="terminal-btn terminal-btn-max"></span>
+            </div>
+            <span class="terminal-title">guest@rakeli.com:~</span>
+          </div>
+          <div id="terminal-body" class="terminal-body h-full">
+            <p class="terminal-line">> Welcome to the navigation terminal</p>
+            <p class="terminal-line">> Type 'help' for available commands</p>
+            <p class="flex items-center font-mono text-lg terminal-line terminal-prompt" id="terminal-input-row">
+              <span class="text-neongreen mr-2">$</span>
+              <!-- Autocomplete + Input Container (now inline-flex) -->
+              <span class="relative inline-flex items-center w-full">
+                <!-- Actual Input (must come FIRST for z-index) -->
+                <input id="terminal-input"
+                  class="bg-transparent w-full outline-none text-white caret-neongreen relative z-10"
+                  autocomplete="off" />
+                <!-- Ghost Hint (positioned absolutely) -->
+                <span id="autocomplete"
+                  class="absolute left-0 text-gray-400 pointer-events-none select-none whitespace-pre"></span>
+              </span>
+            </p>
+          </div>
+        </div>
+    </section>
+  </main>
+
+  <!-- Prompt Template (hidden) -->
+  <template id="terminal-line-template">
+    <p class="flex items-center font-mono text-lg terminal-line terminal-prompt">
+      <span class="text-neongreen mr-2">$</span>
+      <span class="relative inline-flex items-center w-full">
+        <input class="bg-transparent w-full outline-none text-white caret-neongreen relative z-10" autocomplete="off" />
+        <span class="absolute left-0 text-gray-400 pointer-events-none select-none whitespace-pre"></span>
+      </span>
+    </p>
+  </template>
+
+
+  <script type="module" src="assets/js/index.js"></script>
+
+</body>
+
+</html>
