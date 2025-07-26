@@ -7,5 +7,6 @@ import { ls } from "./ls";
 import { cd } from "./cd";
 import { slowking } from "./slowking";
 import { clear } from "./clear";
+import { history } from "./history";
 
-export const commands: Command[] = [help, echo, ls, cd, slowking, clear];
+export const commands: Command[] = [help, echo, ls, cd, slowking, clear, history];

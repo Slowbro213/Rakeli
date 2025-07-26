@@ -3,6 +3,7 @@ import { autocompleteCommand, findCommand } from "./hinting";
 import { newPrompt } from "./prompt";
 import { terminalInput, autocomplete } from "./terminal";
 import { clear } from "./commands/clear";
+import { historyGetNext, historyGetPrev, historyLog } from "./history";
 
 // Get the input element (cast as HTMLInputElement for type safety)
 
@@ -29,6 +30,7 @@ terminalInput.addEventListener("keydown", (event: KeyboardEvent) => {
       const com = findCommand(args[0]);
 
       stdout("> " + input);
+      historyLog(input);
 
       if (!com) {
         stdout("Command doesn't exist (yet) :(");
@@ -50,6 +52,31 @@ terminalInput.addEventListener("keydown", (event: KeyboardEvent) => {
         terminalInput.value = suggestion;
         autocomplete.innerHTML = "";
       }
+      break;
+    }
+    case "ArrowUp": {
+      event.preventDefault();
+      const pastInput = historyGetPrev();
+      autocomplete.innerHTML = "";
+      if (!pastInput)
+        break;
+
+      terminalInput.value = pastInput;
+      terminalInput.setSelectionRange(pastInput.length, pastInput.length);
+
+      break;
+    }
+    case "ArrowDown": {
+      const pastInput = historyGetNext();
+      autocomplete.innerHTML = "";
+      if (!pastInput) {
+        terminalInput.value = "";
+        break;
+      }
+
+      terminalInput.value = pastInput;
+      terminalInput.setSelectionRange(pastInput.length, pastInput.length);
+
       break;
     }
     default: {

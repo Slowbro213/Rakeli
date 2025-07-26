@@ -32,6 +32,7 @@ export type CommandName =
   | "clear"
   | "whoami"
   | "pwd"
+  | "history"
 ;
 
 export type Command = {
