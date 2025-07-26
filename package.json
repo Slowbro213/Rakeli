@@ -1,0 +1,19 @@
+{
+  "name": "rakeli",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "bun build src/ts/index.ts --outdir=public/assets/js --minify --target=browser && bunx tailwindcss -i src/css/styles.css -o public/assets/css/styles.css --minify"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.11",
+    "tailwindcss": "^4.1.11"
+  }
+}
