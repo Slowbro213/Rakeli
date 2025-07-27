@@ -21,6 +21,9 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: Typescript Check
+        run: bun tsc --noEmit
+
       - name: Run Bun Audit
         run: bun audit
 
@@ -35,3 +38,6 @@ jobs:
 
       - name: Run Prettier
         run: bunx prettier --check "./**/*.{ts,css,html,json}"
+
+      - name: Circular Dependencies
+        run: bunx madge --circular --extensions ts ./src/ts

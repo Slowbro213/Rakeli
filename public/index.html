@@ -48,17 +48,17 @@
 								<span class="text-neongreen mr-2">$</span>
 								<!-- Autocomplete + Input Container (now inline-flex) -->
 								<span class="relative inline-flex items-center w-full">
+									<!-- Ghost Hint (positioned absolutely) -->
+									<span
+										id="autocomplete"
+										class="absolute left-0 text-gray-400 pointer-events-none select-none whitespace-pre"
+									></span>
 									<!-- Actual Input (must come FIRST for z-index) -->
 									<input
 										id="terminal-input"
 										class="bg-transparent w-full outline-none text-white caret-neongreen relative z-10"
 										autocomplete="off"
 									/>
-									<!-- Ghost Hint (positioned absolutely) -->
-									<span
-										id="autocomplete"
-										class="absolute left-0 text-gray-400 pointer-events-none select-none whitespace-pre"
-									></span>
 								</span>
 							</p>
 						</div>

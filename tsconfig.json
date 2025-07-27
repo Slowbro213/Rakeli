@@ -25,14 +25,15 @@
 
 		// Best practices
 		"strict": true,
-		"skipLibCheck": true,
+		"skipLibCheck": false,
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedIndexedAccess": true,
+		"noImplicitAny": true,
 		"noImplicitOverride": true,
 
 		// Some stricter flags (disabled by default)
-		"noUnusedLocals": false,
-		"noUnusedParameters": false,
-		"noPropertyAccessFromIndexSignature": false
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noPropertyAccessFromIndexSignature": true
 	}
 }

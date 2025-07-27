@@ -4,6 +4,9 @@ pre-commit:
     secure:
       run: bun audit
 
+    typescript-check:
+      run: bun tsc --noEmit
+
     eslint:
       run: bunx eslint "src/**/*.ts" --max-warnings=0
 
@@ -15,13 +18,19 @@ pre-commit:
 
     prettier:
       run: bunx prettier --check "./**/*.{ts,css,html,json}"
+
+    deps:
+      run: bunx madge --circular --extensions ts ./src/ts
 
     test:
       run: bun test
 
 pre-push:
-  parallel: false
+  parallel: true
   commands:
+    typescript-check:
+      run: bun tsc --noEmit
+
     eslint:
       run: bunx eslint "src/**/*.ts" --max-warnings=0
 
@@ -37,8 +46,11 @@ pre-push:
     test:
       run: bun test
 
+    deps:
+      run: bunx madge --circular --extensions ts ./src/ts
+
     check-todos:
-      run: grep -iR "TODO" ./ | grep -v node_modules || true
+      run: grep -iR "TODO" ./ | grep -v node_modules .git || true
       skip:
         - all: false
 

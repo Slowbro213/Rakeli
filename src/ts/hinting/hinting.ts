@@ -3,6 +3,7 @@ import type { Command } from '@rakeli/commands/types';
 
 type TrieNode = {
 	children: Map<string, TrieNode>;
+	line?: string;
 	command?: Command;
 };
 
@@ -28,7 +29,7 @@ export const buildCommandTrie = (commands: Command[]): TrieNode => {
 	return root;
 };
 
-export const autocompleteCommand = (prefix: string): Command[] => {
+export const autocompleteCommand = (prefix: string): string[] => {
 	if (!prefix || root === null) return [];
 
 	let node = root;
@@ -41,9 +42,13 @@ export const autocompleteCommand = (prefix: string): Command[] => {
 	}
 
 	// Step 2: Find first matching command in subtree
-	function dfs(current: TrieNode): Command | undefined {
-		if (current.command && current.command.name.startsWith(prefix)) {
-			return current.command;
+	function dfs(current: TrieNode): string | undefined {
+		if (current.command?.name.startsWith(prefix)) {
+			return current.command.name;
+		}
+
+		if (current.line?.startsWith(prefix)) {
+			return current.line;
 		}
 
 		for (const child of current.children.values()) {
@@ -71,6 +76,19 @@ export const findCommand = (name: string): Command | undefined => {
 
 	// Match only if this node has a full command with exact name
 	return node.command?.name === name ? node.command : undefined;
+};
+
+export const addSuggestion = (line: string, into: TrieNode = root): void => {
+	let node = into;
+
+	for (const char of line) {
+		if (!node.children.has(char)) {
+			node.children.set(char, { children: new Map() });
+		}
+		node = node.children.get(char)!;
+	}
+
+	node.line = line;
 };
 
 const root = buildCommandTrie(commands);

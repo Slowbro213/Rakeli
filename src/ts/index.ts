@@ -1,5 +1,5 @@
 import { stdout } from '@rakeli/stdout';
-import { autocompleteCommand, findCommand } from './hinting';
+import { addSuggestion, autocompleteCommand, findCommand } from './hinting';
 import { newPrompt } from './prompt';
 import { terminalInput, autocomplete } from './terminal';
 import { clear } from './commands/clear';
@@ -29,6 +29,7 @@ terminalInput.addEventListener('keydown', (event: KeyboardEvent) => {
 
 			stdout('> ' + input);
 			historyLog(input);
+			addSuggestion(input);
 
 			if (!com) {
 				const possibleCommand = closestCommand(args[0]);
@@ -79,16 +80,16 @@ terminalInput.addEventListener('keydown', (event: KeyboardEvent) => {
 			break;
 		}
 		default: {
-			const userInput = terminalInput.value;
+			const userInput = terminalInput.value + event.key;
 
 			const hints = autocompleteCommand(userInput);
 
-			if (hints.length === 0 || !hints[0] || !hints[0].name) {
+			if (hints.length === 0 || !hints[0]) {
 				autocomplete.innerHTML = '';
 				break;
 			}
 
-			const hintName = hints[0].name;
+			const hintName = hints[0];
 
 			autocomplete.innerHTML = hintName;
 
