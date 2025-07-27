@@ -73,10 +73,25 @@ body {
 	animation: pulse 2s infinite;
 }
 
-/* Typing Animation */
-.terminal-typing {
+/* Typing Animation for Terminal Text */
+.terminal-line.typing {
+	display: inline-block;
+	overflow: hidden;
+	white-space: nowrap;
 	border-right: 0.15em solid var(--neongreen);
-	animation: blink-caret 0.75s step-end infinite;
+	animation:
+		typing 2s steps(40, end) forwards,
+		blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+	from {
+		width: 0;
+	}
+
+	to {
+		width: 100%;
+	}
 }
 
 @keyframes blink-caret {
@@ -87,6 +102,62 @@ body {
 
 	50% {
 		border-color: var(--neongreen);
+	}
+}
+
+/* Glitch Effect for Terminal Prompt */
+.terminal-prompt.glitch {
+	position: relative;
+}
+
+.terminal-prompt.glitch::before,
+.terminal-prompt.glitch::after {
+	content: attr(data-text);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.terminal-prompt.glitch::before {
+	left: 2px;
+	text-shadow: -2px 0 var(--neonpink);
+	clip: rect(24px, 550px, 36px, 0);
+	animation: glitch-anim 3s infinite linear alternate-reverse;
+}
+
+.terminal-prompt.glitch::after {
+	left: -2px;
+	text-shadow: 2px 0 var(--neonblue);
+	clip: rect(24px, 550px, 36px, 0);
+	animation: glitch-anim2 4s infinite linear alternate-reverse;
+}
+
+/* Pulsing Cursor Effect */
+.terminal-cursor {
+	display: inline-block;
+	width: 0.15em;
+	height: 1.2em;
+	background: var(--neongreen);
+	vertical-align: middle;
+	animation: pulse-cursor 1.5s infinite;
+}
+
+@keyframes pulse-cursor {
+	0% {
+		opacity: 1;
+		box-shadow: 0 0 5px var(--neongreen);
+	}
+
+	50% {
+		opacity: 0.5;
+		box-shadow: 0 0 15px var(--neongreen);
+	}
+
+	100% {
+		opacity: 1;
+		box-shadow: 0 0 5px var(--neongreen);
 	}
 }
 
@@ -283,11 +354,12 @@ body {
 
 /* Terminal Window */
 .terminal-window {
-	background: rgb(10 10 10 / 90%);
+	background: rgb(10 10 10 / 10%);
+	backdrop-filter: blur(5px);
 	border: 1px solid var(--neongreen);
 	box-shadow: 0 0 20px var(--neongreen);
 	border-radius: 5px;
-	overflow: hidden;
+	position: absolute;
 }
 
 .terminal-header {
@@ -330,9 +402,25 @@ body {
 
 .terminal-body {
 	padding: 1.5rem;
-	min-height: 300px;
-	max-height: 500px;
-	overflow-y: auto;
+	height: 400px;
+	overflow: hidden auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--neongreen) #1a1a1a;
+	resize: both;
+}
+
+.terminal-body::-webkit-scrollbar {
+	width: 8px;
+}
+
+.terminal-body::-webkit-scrollbar-track {
+	background: #1a1a1a;
+}
+
+.terminal-body::-webkit-scrollbar-thumb {
+	background: linear-gradient(#00ffea, #f0c);
+	border-radius: 4px;
+	box-shadow: 0 0 6px #00ffea;
 }
 
 .terminal-line {

@@ -25,7 +25,7 @@
 						//NAV_TERMINAL
 					</h1>
 
-					<div class="terminal-window h-150 mt-12">
+					<div id="terminal-window" class="terminal-window">
 						<div class="terminal-header">
 							<div class="terminal-buttons">
 								<span class="terminal-btn terminal-btn-close"></span>
@@ -34,7 +34,7 @@
 							</div>
 							<span class="terminal-title">guest@rakeli.com:~</span>
 						</div>
-						<div id="terminal-body" class="terminal-body h-full">
+						<div id="terminal-body" class="terminal-body glitch">
 							<p class="terminal-line">
 								&gt; Welcome to the navigation terminal
 							</p>
@@ -42,23 +42,22 @@
 								&gt; Type 'help' for available commands
 							</p>
 							<p
-								class="flex items-center font-mono text-lg terminal-line terminal-prompt"
+								class="flex items-center font-mono text-lg terminal-line"
 								id="terminal-input-row"
 							>
 								<span class="text-neongreen mr-2">$</span>
 								<!-- Autocomplete + Input Container (now inline-flex) -->
 								<span class="relative inline-flex items-center w-full">
-									<!-- Ghost Hint (positioned absolutely) -->
-									<span
-										id="autocomplete"
-										class="absolute left-0 text-gray-400 pointer-events-none select-none whitespace-pre"
-									></span>
-									<!-- Actual Input (must come FIRST for z-index) -->
 									<input
 										id="terminal-input"
 										class="bg-transparent w-full outline-none text-white caret-neongreen relative z-10"
 										autocomplete="off"
 									/>
+									<!-- Ghost Hint (positioned absolutely) -->
+									<span
+										id="autocomplete"
+										class="absolute left-0 text-gray-400 pointer-events-none select-none outline-none whitespace-pre"
+									></span>
 								</span>
 							</p>
 						</div>
@@ -66,6 +65,6 @@
 				</div>
 			</section>
 		</main>
-		<script type="module" src="assets/js/index.js"></script>
+		<script type="module" src="assets/js/index.js" defer></script>
 	</body>
 </html>
