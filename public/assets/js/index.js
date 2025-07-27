@@ -1,86 +1,102 @@
-var m = document.getElementById('terminal-input'),
+var a = document.getElementById('terminal-input'),
 	S = document.getElementById('terminal-input-row'),
 	x = document.getElementById('autocomplete'),
-	d = document.getElementById('terminal-body'),
-	a = document.getElementById('terminal-window');
+	f = document.getElementById('terminal-body'),
+	m = document.getElementById('terminal-window'),
+	N = document.getElementById('terminal-btn-close'),
+	Y = document.getElementById('terminal-trigger');
 var v = !1,
-	C = !1,
-	H = 0,
+	E = !1,
+	I = 0,
 	D = 0,
-	J = (t) => {
-		if ('touches' in t)
-			return { clientX: t.touches[0]?.clientX, clientY: t.touches[0]?.clientY };
-		else return { clientX: t.clientX, clientY: t.clientY };
+	B = 0,
+	R = 0,
+	ne = (e) => {
+		if ('touches' in e)
+			return { clientX: e.touches[0]?.pageX, clientY: e.touches[0]?.pageY };
+		else return { clientX: e.pageX, clientY: e.pageY };
 	};
-a.addEventListener('mousedown', (t) => {
-	m.focus();
-	let e = a.getBoundingClientRect(),
+m.addEventListener('mousedown', (e) => {
+	if (document.activeElement !== a) a.focus({ preventScroll: !0 });
+	let t = m.getBoundingClientRect(),
 		o = 20;
-	if (t.clientX > e.right - o && t.clientY > e.bottom - o) C = !0;
+	if (e.pageX > t.right - o && e.pageY > t.bottom - o) E = !0;
 });
-a.onmousedown = (t) => {
-	if (C) return;
-	I(t);
+m.onmousedown = (e) => {
+	if (E) return;
+	K(e);
 };
-a.ontouchstart = (t) => {
-	if ((t.preventDefault(), C)) return;
-	I(t);
+m.ontouchstart = (e) => {
+	if ((e.preventDefault(), E)) return;
+	K(e);
 };
-function I(t) {
-	let { clientX: e, clientY: o } = J(t);
-	if (!e || !o) return;
-	v = !0;
-	let r = a.getBoundingClientRect();
-	((H = e - r.left),
-		(D = o - r.top),
-		(a.style.cursor = 'grabbing'),
-		(a.style.userSelect = 'none'),
+function K(e) {
+	let { clientX: t, clientY: o } = ne(e);
+	if (!t || !o) return;
+	((v = !0),
+		(I = t),
+		(D = o),
+		(B = parseInt(m.style.left || '0', 10)),
+		(R = parseInt(m.style.top || '0', 10)),
+		(m.style.cursor = 'grabbing'),
+		(m.style.userSelect = 'none'),
 		(document.body.style.userSelect = 'none'));
 }
-document.addEventListener('mousemove', (t) => {
-	if (C) return;
-	if (!v) return;
-	let e = t.clientX - H,
-		o = t.clientY - D;
-	((a.style.left = `${e}px`), (a.style.top = `${o}px`));
+document.addEventListener('mousemove', (e) => {
+	if (E || !v) return;
+	let t = B + (e.pageX - I),
+		o = R + (e.pageY - D);
+	((m.style.left = `${t}px`), (m.style.top = `${o}px`));
 });
 document.addEventListener(
 	'touchmove',
-	(t) => {
-		if ((t.preventDefault(), C)) return;
-		if (!v) return;
-		let e = t.touches[0];
-		if (!e) return;
-		let o = e.clientX - H,
-			r = e.clientY - D;
-		((a.style.left = `${o}px`), (a.style.top = `${r}px`));
+	(e) => {
+		if ((e.preventDefault(), E || !v)) return;
+		let t = e.touches[0];
+		if (!t) return;
+		let o = B + (t.pageX - I),
+			r = R + (t.pageY - D);
+		((m.style.left = `${o}px`), (m.style.top = `${r}px`));
 	},
 	{ passive: !1 },
 );
 document.addEventListener('mouseup', () => {
 	((v = !1),
-		(C = !1),
-		(a.style.cursor = ''),
-		(a.style.userSelect = ''),
+		(E = !1),
+		(m.style.cursor = ''),
+		(m.style.userSelect = ''),
 		(document.body.style.userSelect = ''));
 });
 document.addEventListener('touchend', () => {
 	((v = !1),
-		(C = !1),
-		(a.style.cursor = ''),
-		(a.style.userSelect = ''),
+		(E = !1),
+		(m.style.cursor = ''),
+		(m.style.userSelect = ''),
 		(document.body.style.userSelect = ''));
 });
-var l = (t) => {
-	let e = Array.isArray(t) ? t : [t];
-	for (let o of e) {
+var O = () => {
+	(m.classList.remove('open'), m.classList.add('close'));
+};
+N.onclick = O;
+var X = () => {
+		(m.classList.remove('hidden'),
+			m.classList.remove('close'),
+			m.classList.add('open'));
+	},
+	H = !1;
+Y.onclick = () => {
+	(H ? O() : X(), (H = !H));
+};
+var l = (e) => {
+	let t = Array.isArray(e) ? e : [e];
+	for (let o of t) {
 		let r = document.createElement('p');
 		((r.className = 'terminal-line'),
 			(r.textContent = `${o}`),
-			d.appendChild(r));
+			f.appendChild(r));
 	}
 };
-var R = {
+var W = {
 	name: 'help',
 	exec: () => {
 		return (
@@ -97,35 +113,35 @@ var R = {
 		);
 	},
 };
-var w = new Map([
+var T = new Map([
 	['PATH', '/aswsome/binaries'],
 	['HOME', '/Rakeli/Home'],
 	['WORKING_DIR', '/Rakeli/Home'],
 	['EXIT_CODE', 0],
 ]);
-var X = {
+var _ = {
 	name: 'echo',
-	exec: (t) => {
-		if (!t || t.length < 2) return 1;
-		let e = t.slice(1).join(' '),
-			o = t[1];
+	exec: (e) => {
+		if (!e || e.length < 2) return 1;
+		let t = e.slice(1).join(' '),
+			o = e[1];
 		switch (o) {
 			case '$?': {
-				let r = w.get('EXIT_CODE');
+				let r = T.get('EXIT_CODE');
 				return (l(String(r)), 0);
 			}
 			default:
 				if (o?.startsWith('$')) {
 					let r = o.slice(1),
-						n = w.get(r);
+						n = T.get(r);
 					if (n !== void 0) return (l(String(n)), 0);
 					else return (l(`No such variable: ${r}`), 1);
 				}
 		}
-		return (l(e), 0);
+		return (l(t), 0);
 	},
 };
-var N = {
+var $ = {
 	name: 'ls',
 	exec: () => {
 		return (
@@ -134,120 +150,120 @@ var N = {
 		);
 	},
 };
-var B = {
+var P = {
 	name: 'cd',
 	exec: () => {
 		return 0;
 	},
 };
-var Y = {
+var z = {
 	name: 'slowking',
 	exec: () => {
 		return (l('Thats Me!'), 0);
 	},
 };
-var k = {
+var w = {
 	name: 'clear',
-	exec: (t) => {
-		if (!d || !t) return 0;
-		let e = 2,
-			o = e + 1 + (t[0] === 'clear' ? 1 : 0);
-		while (d.children.length > o) {
-			let r = d.children[e];
+	exec: (e) => {
+		if (!f || !e) return 0;
+		let t = 2,
+			o = t + 1 + (e[0] === 'clear' ? 1 : 0);
+		while (f.children.length > o) {
+			let r = f.children[t];
 			if (!r) break;
-			d?.removeChild(r);
+			f?.removeChild(r);
 		}
 		return 0;
 	},
 };
 var y = [],
 	g = 0,
-	Z = 100,
-	O = (t) => {
-		if (y[y.length - 1] === t) return;
-		if (y.length === Z) y.shift();
-		(y.push(t), (g = y.length));
+	se = 100,
+	V = (e) => {
+		if (y[y.length - 1] === e) return;
+		if (y.length === se) y.shift();
+		(y.push(e), (g = y.length));
 	},
-	W = () => {
+	j = () => {
 		if ((g--, g < 0)) g = 0;
 		return y[g];
 	},
-	_ = () => {
+	G = () => {
 		if ((g++, g > y.length)) {
 			g--;
 			return;
 		}
 		return y[g];
 	},
-	$ = () => {
+	U = () => {
 		return y;
 	};
-var P = {
+var q = {
 	name: 'history',
 	exec: () => {
-		return (l($()), 0);
+		return (l(U()), 0);
 	},
 };
-var A = [R, X, N, B, Y, k, P];
-var Q = (t) => {
+var k = [W, _, $, P, z, w, q];
+var me = (e) => {
 		console.log('Building Commands...');
-		let e = { children: new Map() };
-		for (let o of t) {
-			let r = e;
+		let t = { children: new Map() };
+		for (let o of e) {
+			let r = t;
 			for (let n of o.name) {
 				if (!r.children.has(n)) r.children.set(n, { children: new Map() });
 				r = r.children.get(n);
 			}
 			r.command = o;
 		}
-		return e;
+		return t;
 	},
-	z = (t) => {
-		if (!t || L === null) return [];
-		let e = L;
-		for (let n of t) {
-			let i = e.children.get(n);
+	F = (e) => {
+		if (!e || b === null) return [];
+		let t = b;
+		for (let n of e) {
+			let i = t.children.get(n);
 			if (!i) return [];
-			e = i;
+			t = i;
 		}
 		function o(n) {
-			if (n.command?.name.startsWith(t)) return n.command.name;
-			if (n.line?.startsWith(t)) return n.line;
+			if (n.command?.name.startsWith(e)) return n.command.name;
+			if (n.line?.startsWith(e)) return n.line;
 			for (let i of n.children.values()) {
 				let p = o(i);
 				if (p) return p;
 			}
 			return;
 		}
-		let r = o(e);
+		let r = o(t);
 		return r ? [r] : [];
 	},
-	K = (t) => {
-		if (!t || L === null) return;
-		let e = L;
-		for (let o of t) {
-			let r = e.children.get(o);
+	J = (e) => {
+		if (!e || b === null) return;
+		let t = b;
+		for (let o of e) {
+			let r = t.children.get(o);
 			if (!r) return;
-			e = r;
+			t = r;
 		}
-		return e.command?.name === t ? e.command : void 0;
+		return t.command?.name === e ? t.command : void 0;
 	},
-	V = (t, e = L) => {
-		let o = e;
-		for (let r of t) {
+	Z = (e, t = b) => {
+		let o = t;
+		for (let r of e) {
 			if (!o.children.has(r)) o.children.set(r, { children: new Map() });
 			o = o.children.get(r);
 		}
-		o.line = t;
+		o.line = e;
 	},
-	L = Q(A);
-var T = () => {
-	(d.removeChild(S), d.appendChild(S), m.focus());
+	b = me(k);
+var A = () => {
+	(f.removeChild(S), f.appendChild(S), a.focus());
 };
-var j = (t, e) => {
-	if (t === e) return 0;
-	let o = t.length,
-		r = e.length;
+var Q = (e, t) => {
+	if (e === t) return 0;
+	let o = e.length,
+		r = t.length;
 	if (o === 0 || r === 0) return o + r;
 	let n = 0,
 		i,
@@ -255,103 +271,103 @@ var j = (t, e) => {
 		u,
 		c,
 		s,
-		f,
+		d,
 		h,
-		E,
-		b = new Array(o);
-	for (i = 0; i < o; ) b[i] = ++i;
+		C,
+		L = new Array(o);
+	for (i = 0; i < o; ) L[i] = ++i;
 	for (; n + 3 < r; n += 4) {
-		let M = e.charCodeAt(n),
-			U = e.charCodeAt(n + 1),
-			q = e.charCodeAt(n + 2),
-			F = e.charCodeAt(n + 3);
-		((c = n), (u = n + 1), (s = n + 2), (f = n + 3), (h = n + 4));
+		let M = t.charCodeAt(n),
+			te = t.charCodeAt(n + 1),
+			oe = t.charCodeAt(n + 2),
+			re = t.charCodeAt(n + 3);
+		((c = n), (u = n + 1), (s = n + 2), (d = n + 3), (h = n + 4));
 		for (i = 0; i < o; i++) {
-			if (((E = t.charCodeAt(i)), (p = b[i]), p < c || u < c))
+			if (((C = e.charCodeAt(i)), (p = L[i]), p < c || u < c))
 				c = p > u ? u + 1 : p + 1;
-			else if (M !== E) c++;
+			else if (M !== C) c++;
 			if (c < u || s < u) u = c > s ? s + 1 : c + 1;
-			else if (U !== E) u++;
-			if (u < s || f < s) s = u > f ? f + 1 : u + 1;
-			else if (q !== E) s++;
-			if (s < f || h < f) f = s > h ? h + 1 : s + 1;
-			else if (F !== E) f++;
-			((b[i] = h = f), (f = s), (s = u), (u = c), (c = p));
+			else if (te !== C) u++;
+			if (u < s || d < s) s = u > d ? d + 1 : u + 1;
+			else if (oe !== C) s++;
+			if (s < d || h < d) d = s > h ? h + 1 : s + 1;
+			else if (re !== C) d++;
+			((L[i] = h = d), (d = s), (s = u), (u = c), (c = p));
 		}
 	}
 	for (; n < r; ) {
-		let M = e.charCodeAt(n);
+		let M = t.charCodeAt(n);
 		((c = n), (s = ++n));
 		for (i = 0; i < o; i++) {
-			if (((p = b[i]), p < c || s < c)) s = p > s ? s + 1 : p + 1;
-			else if (M !== t.charCodeAt(i)) s = c + 1;
+			if (((p = L[i]), p < c || s < c)) s = p > s ? s + 1 : p + 1;
+			else if (M !== e.charCodeAt(i)) s = c + 1;
 			else s = c;
-			((b[i] = s), (c = p));
+			((L[i] = s), (c = p));
 		}
 		h = s;
 	}
 	return h;
 };
-var G = (t) => {
-	let e = {};
+var ee = (e) => {
+	let t = {};
 	return (
-		A.forEach((o) => {
-			let r = j(t, o.name);
-			if (!e.name || !e.distance || e.distance > r)
-				((e.name = o.name), (e.distance = r));
+		k.forEach((o) => {
+			let r = Q(e, o.name);
+			if (!t.name || !t.distance || t.distance > r)
+				((t.name = o.name), (t.distance = r));
 			return;
 		}),
-		e.name
+		t.name
 	);
 };
-m.addEventListener('keydown', (t) => {
-	if (t.ctrlKey && t.key.toLowerCase() === 'l') {
-		(t.preventDefault(), k.exec(['shortcut']));
+a.addEventListener('keydown', (e) => {
+	if (e.ctrlKey && e.key.toLowerCase() === 'l') {
+		(e.preventDefault(), w.exec(['shortcut']));
 		return;
 	}
-	switch (t.key) {
+	switch (e.key) {
 		case 'Enter': {
-			let e = m.value,
-				o = e.split(' ');
-			if (!e || !o || !o[0]) {
-				(l('No detectable input ;-;'), T(), (m.value = ''));
+			let t = a.value,
+				o = t.split(' ');
+			if (!t || !o || !o[0]) {
+				(l('No detectable input ;-;'), A(), (a.value = ''));
 				break;
 			}
-			let r = K(o[0]);
-			if ((l('> ' + e), O(e), V(e), !r)) {
-				let n = G(o[0]);
+			let r = J(o[0]);
+			if ((l('> ' + t), V(t), Z(t), !r)) {
+				let n = ee(o[0]);
 				if (!n) l("Command doesn't exist :(");
 				else l(["Command doesn't exist, did you mean:", n]);
-				(T(), (m.value = ''));
+				(A(), (a.value = ''));
 				break;
 			}
-			(w.set('EXIT_CODE', r.exec(o)), T(), (m.value = ''));
+			(T.set('EXIT_CODE', r.exec(o)), A(), (a.value = ''));
 			break;
 		}
 		case 'ArrowRight': {
-			let e = x.textContent?.trim();
-			if (e && e.startsWith(m.value)) ((m.value = e), (x.innerHTML = ''));
+			let t = x.textContent?.trim();
+			if (t && t.startsWith(a.value)) ((a.value = t), (x.innerHTML = ''));
 			break;
 		}
 		case 'ArrowUp': {
-			t.preventDefault();
-			let e = W();
-			if (((x.innerHTML = ''), !e)) break;
-			((m.value = e), m.setSelectionRange(e.length, e.length));
+			e.preventDefault();
+			let t = j();
+			if (((x.innerHTML = ''), !t)) break;
+			((a.value = t), a.setSelectionRange(t.length, t.length));
 			break;
 		}
 		case 'ArrowDown': {
-			let e = _();
-			if (((x.innerHTML = ''), !e)) {
-				m.value = '';
+			let t = G();
+			if (((x.innerHTML = ''), !t)) {
+				a.value = '';
 				break;
 			}
-			((m.value = e), m.setSelectionRange(e.length, e.length));
+			((a.value = t), a.setSelectionRange(t.length, t.length));
 			break;
 		}
 		default: {
-			let e = m.value + t.key,
-				o = z(e);
+			let t = a.value + e.key,
+				o = F(t);
 			if (o.length === 0 || !o[0]) {
 				x.innerHTML = '';
 				break;
@@ -361,4 +377,8 @@ m.addEventListener('keydown', (t) => {
 			break;
 		}
 	}
+});
+document.addEventListener('keydown', (e) => {
+	if (e.ctrlKey && e.key && e.key.toLowerCase() === 'n')
+		(e.preventDefault(), X());
 });

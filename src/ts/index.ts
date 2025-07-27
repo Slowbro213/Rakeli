@@ -1,7 +1,7 @@
 import { stdout } from '@rakeli/stdout';
 import { addSuggestion, autocompleteCommand, findCommand } from './hinting';
 import { newPrompt } from './prompt';
-import { terminalInput, autocomplete } from './terminal';
+import { terminalInput, autocomplete, openTerminal } from './terminal';
 import { clear } from './commands/clear';
 import { historyGetNext, historyGetPrev, historyLog } from './history';
 import { closestCommand } from './hinting/closest';
@@ -95,5 +95,12 @@ terminalInput.addEventListener('keydown', (event: KeyboardEvent) => {
 
 			break;
 		}
+	}
+});
+
+document.addEventListener('keydown', (event: KeyboardEvent) => {
+	if (event.ctrlKey && event.key && event.key.toLowerCase() === 'n') {
+		event.preventDefault();
+		openTerminal();
 	}
 });

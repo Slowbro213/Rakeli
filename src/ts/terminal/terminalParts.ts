@@ -17,3 +17,11 @@ export const terminalBody = document.getElementById(
 export const terminalWindow = document.getElementById(
 	'terminal-window',
 ) as HTMLElement;
+
+export const terminalBtnClose = document.getElementById(
+	'terminal-btn-close',
+) as HTMLElement;
+
+export const terminalTrigger = document.getElementById(
+	'terminal-trigger',
+) as HTMLElement;

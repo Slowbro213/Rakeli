@@ -1,31 +1,41 @@
-import { terminalInput, terminalWindow } from './terminalParts';
+import {
+	terminalBtnClose,
+	terminalInput,
+	terminalTrigger,
+	terminalWindow,
+} from './terminalParts';
 
 let isDragging = false;
 let isResizing = false;
-let offsetX = 0;
-let offsetY = 0;
+let startX = 0;
+let startY = 0;
+let startLeft = 0;
+let startTop = 0;
 
 const getClientPosition = (event: MouseEvent | TouchEvent) => {
 	if ('touches' in event) {
 		return {
-			clientX: event.touches[0]?.clientX,
-			clientY: event.touches[0]?.clientY,
+			clientX: event.touches[0]?.pageX,
+			clientY: event.touches[0]?.pageY,
 		};
 	} else {
 		return {
-			clientX: (event as MouseEvent).clientX,
-			clientY: (event as MouseEvent).clientY,
+			clientX: (event as MouseEvent).pageX,
+			clientY: (event as MouseEvent).pageY,
 		};
 	}
 };
 
 terminalWindow.addEventListener('mousedown', (e) => {
-	terminalInput.focus();
+	if (document.activeElement !== terminalInput) {
+		terminalInput.focus({ preventScroll: true });
+	}
+
 	const rect = terminalWindow.getBoundingClientRect();
 	const resizeAreaSize = 20;
 	const inResizeArea =
-		e.clientX > rect.right - resizeAreaSize &&
-		e.clientY > rect.bottom - resizeAreaSize;
+		e.pageX > rect.right - resizeAreaSize &&
+		e.pageY > rect.bottom - resizeAreaSize;
 
 	if (inResizeArea) {
 		isResizing = true;
@@ -48,10 +58,10 @@ function startDrag(event: MouseEvent | TouchEvent) {
 	if (!clientX || !clientY) return;
 
 	isDragging = true;
-	const rect = terminalWindow.getBoundingClientRect();
-
-	offsetX = clientX - rect.left;
-	offsetY = clientY - rect.top;
+	startX = clientX; // pageX
+	startY = clientY; // pageY
+	startLeft = parseInt(terminalWindow.style.left || '0', 10);
+	startTop = parseInt(terminalWindow.style.top || '0', 10);
 
 	terminalWindow.style.cursor = 'grabbing';
 	terminalWindow.style.userSelect = 'none';
@@ -59,11 +69,10 @@ function startDrag(event: MouseEvent | TouchEvent) {
 }
 
 document.addEventListener('mousemove', (event: MouseEvent) => {
-	if (isResizing) return;
-	if (!isDragging) return;
+	if (isResizing || !isDragging) return;
 
-	const x = event.clientX - offsetX;
-	const y = event.clientY - offsetY;
+	const x = startLeft + (event.pageX - startX);
+	const y = startTop + (event.pageY - startY);
 
 	terminalWindow.style.left = `${x}px`;
 	terminalWindow.style.top = `${y}px`;
@@ -73,14 +82,13 @@ document.addEventListener(
 	'touchmove',
 	(event: TouchEvent) => {
 		event.preventDefault();
-		if (isResizing) return;
-		if (!isDragging) return;
+		if (isResizing || !isDragging) return;
 
 		const touch = event.touches[0];
 		if (!touch) return;
 
-		const x = touch.clientX - offsetX;
-		const y = touch.clientY - offsetY;
+		const x = startLeft + (touch.pageX - startX);
+		const y = startTop + (touch.pageY - startY);
 
 		terminalWindow.style.left = `${x}px`;
 		terminalWindow.style.top = `${y}px`;
@@ -103,3 +111,23 @@ document.addEventListener('touchend', () => {
 	terminalWindow.style.userSelect = '';
 	document.body.style.userSelect = '';
 });
+
+export const closeTerminal = () => {
+	terminalWindow.classList.remove('open');
+	terminalWindow.classList.add('close');
+};
+
+terminalBtnClose.onclick = closeTerminal;
+
+export const openTerminal = () => {
+	terminalWindow.classList.remove('hidden');
+	terminalWindow.classList.remove('close');
+	terminalWindow.classList.add('open');
+};
+
+let open = false;
+terminalTrigger.onclick = () => {
+	if (open) closeTerminal();
+	else openTerminal();
+	open = !open;
+};

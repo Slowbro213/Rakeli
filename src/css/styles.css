@@ -73,24 +73,52 @@ body {
 	animation: pulse 2s infinite;
 }
 
-/* Typing Animation for Terminal Text */
-.terminal-line.typing {
-	display: inline-block;
-	overflow: hidden;
-	white-space: nowrap;
-	border-right: 0.15em solid var(--neongreen);
-	animation:
-		typing 2s steps(40, end) forwards,
-		blink-caret 0.75s step-end infinite;
+.terminal-window.open {
+	animation: terminal-open 0.8s ease-out forwards;
 }
 
-@keyframes typing {
-	from {
-		width: 0;
+@keyframes terminal-open {
+	0% {
+		transform: scale(0.1);
+		opacity: 0;
+		box-shadow: 0 0 0 var(--neongreen);
 	}
 
-	to {
-		width: 100%;
+	50% {
+		transform: scale(1.1);
+		opacity: 0.7;
+		box-shadow: 0 0 30px var(--neongreen);
+	}
+
+	100% {
+		transform: scale(1);
+		opacity: 1;
+		box-shadow: 0 0 20px var(--neongreen);
+	}
+}
+
+/* Terminal Close Animation */
+.terminal-window.close {
+	animation: terminal-close 0.6s ease-in forwards;
+}
+
+@keyframes terminal-close {
+	0% {
+		transform: scale(1);
+		opacity: 1;
+		box-shadow: 0 0 20px var(--neongreen);
+	}
+
+	50% {
+		transform: scale(1.1);
+		opacity: 0.7;
+		box-shadow: 0 0 30px var(--neongreen);
+	}
+
+	100% {
+		transform: scale(0.1);
+		opacity: 0;
+		box-shadow: 0 0 0 var(--neongreen);
 	}
 }
 
@@ -354,12 +382,14 @@ body {
 
 /* Terminal Window */
 .terminal-window {
-	background: rgb(10 10 10 / 10%);
+	background-color: rgb(0 0 0 / 50%);
 	backdrop-filter: blur(5px);
 	border: 1px solid var(--neongreen);
 	box-shadow: 0 0 20px var(--neongreen);
 	border-radius: 5px;
 	position: absolute;
+	top: 0;
+	z-index: 100;
 }
 
 .terminal-header {
@@ -385,6 +415,7 @@ body {
 
 .terminal-btn-close {
 	background: #ff5f56;
+	cursor: pointer;
 }
 
 .terminal-btn-min {
@@ -622,4 +653,129 @@ body {
 	background: rgb(10 10 10 / 80%);
 	border-radius: 5px;
 	overflow: hidden;
+}
+
+.glitch-effect {
+	position: relative;
+}
+
+.glitch-effect::before,
+.glitch-effect::after {
+	content: attr(data-text);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.glitch-effect::before {
+	color: #f0f;
+	z-index: -1;
+	animation: glitch-1 2s infinite alternate;
+}
+
+.glitch-effect::after {
+	color: #00f0ff;
+	z-index: -2;
+	animation: glitch-2 2s infinite alternate-reverse;
+}
+
+@keyframes glitch-1 {
+	0% {
+		transform: translate(0);
+	}
+
+	20% {
+		transform: translate(-3px, 3px);
+	}
+
+	40% {
+		transform: translate(-3px, -3px);
+	}
+
+	60% {
+		transform: translate(3px, 3px);
+	}
+
+	80% {
+		transform: translate(3px, -3px);
+	}
+
+	100% {
+		transform: translate(0);
+	}
+}
+
+@keyframes glitch-2 {
+	0% {
+		transform: translate(0);
+	}
+
+	20% {
+		transform: translate(3px, -3px);
+	}
+
+	40% {
+		transform: translate(3px, 3px);
+	}
+
+	60% {
+		transform: translate(-3px, -3px);
+	}
+
+	80% {
+		transform: translate(-3px, 3px);
+	}
+
+	100% {
+		transform: translate(0);
+	}
+}
+
+@keyframes scanline {
+	0% {
+		transform: translateY(-100%);
+	}
+
+	100% {
+		transform: translateY(100%);
+	}
+}
+
+.card {
+	transition: all 0.3s ease;
+	border: 1px solid rgb(57 255 20 / 20%);
+}
+
+.card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 10px 20px rgb(57 255 20 / 30%);
+	border-color: rgb(57 255 20 / 80%);
+}
+
+.btn {
+	position: relative;
+	overflow: hidden;
+	border: 1px solid #39ff14;
+}
+
+.btn::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(
+		90deg,
+		transparent,
+		rgb(57 255 20 / 40%),
+		transparent
+	);
+	transition: 0.5s;
+}
+
+.btn:hover::before {
+	left: 100%;
 }
