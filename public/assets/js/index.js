@@ -1,16 +1,16 @@
 var a = document.getElementById('terminal-input'),
 	S = document.getElementById('terminal-input-row'),
 	x = document.getElementById('autocomplete'),
-	f = document.getElementById('terminal-body'),
+	d = document.getElementById('terminal-body'),
 	m = document.getElementById('terminal-window'),
 	N = document.getElementById('terminal-btn-close'),
 	Y = document.getElementById('terminal-trigger');
 var v = !1,
 	E = !1,
+	H = 0,
 	I = 0,
 	D = 0,
 	B = 0,
-	R = 0,
 	ne = (e) => {
 		if ('touches' in e)
 			return { clientX: e.touches[0]?.pageX, clientY: e.touches[0]?.pageY };
@@ -34,18 +34,18 @@ function K(e) {
 	let { clientX: t, clientY: o } = ne(e);
 	if (!t || !o) return;
 	((v = !0),
-		(I = t),
-		(D = o),
-		(B = parseInt(m.style.left || '0', 10)),
-		(R = parseInt(m.style.top || '0', 10)),
+		(H = t),
+		(I = o),
+		(D = parseInt(m.style.left || '0', 10)),
+		(B = parseInt(m.style.top || '0', 10)),
 		(m.style.cursor = 'grabbing'),
 		(m.style.userSelect = 'none'),
 		(document.body.style.userSelect = 'none'));
 }
 document.addEventListener('mousemove', (e) => {
 	if (E || !v) return;
-	let t = B + (e.pageX - I),
-		o = R + (e.pageY - D);
+	let t = D + (e.pageX - H),
+		o = B + (e.pageY - I);
 	((m.style.left = `${t}px`), (m.style.top = `${o}px`));
 });
 document.addEventListener(
@@ -54,8 +54,8 @@ document.addEventListener(
 		if ((e.preventDefault(), E || !v)) return;
 		let t = e.touches[0];
 		if (!t) return;
-		let o = B + (t.pageX - I),
-			r = R + (t.pageY - D);
+		let o = D + (t.pageX - H),
+			r = B + (t.pageY - I);
 		((m.style.left = `${o}px`), (m.style.top = `${r}px`));
 	},
 	{ passive: !1 },
@@ -75,17 +75,19 @@ document.addEventListener('touchend', () => {
 		(document.body.style.userSelect = ''));
 });
 var O = () => {
-	(m.classList.remove('open'), m.classList.add('close'));
+	(m.classList.remove('open'), m.classList.add('close'), (X = !1));
 };
 N.onclick = O;
-var X = () => {
+var R = () => {
 		(m.classList.remove('hidden'),
 			m.classList.remove('close'),
-			m.classList.add('open'));
+			m.classList.add('open'),
+			(X = !0));
 	},
-	H = !1;
+	X = !1;
 Y.onclick = () => {
-	(H ? O() : X(), (H = !H));
+	if (X) O();
+	else R();
 };
 var l = (e) => {
 	let t = Array.isArray(e) ? e : [e];
@@ -93,7 +95,7 @@ var l = (e) => {
 		let r = document.createElement('p');
 		((r.className = 'terminal-line'),
 			(r.textContent = `${o}`),
-			f.appendChild(r));
+			d.appendChild(r));
 	}
 };
 var W = {
@@ -165,13 +167,13 @@ var z = {
 var w = {
 	name: 'clear',
 	exec: (e) => {
-		if (!f || !e) return 0;
+		if (!d || !e) return 0;
 		let t = 2,
 			o = t + 1 + (e[0] === 'clear' ? 1 : 0);
-		while (f.children.length > o) {
-			let r = f.children[t];
+		while (d.children.length > o) {
+			let r = d.children[t];
 			if (!r) break;
-			f?.removeChild(r);
+			d?.removeChild(r);
 		}
 		return 0;
 	},
@@ -258,7 +260,7 @@ var me = (e) => {
 	},
 	b = me(k);
 var A = () => {
-	(f.removeChild(S), f.appendChild(S), a.focus());
+	(d.removeChild(S), d.appendChild(S), a.focus());
 };
 var Q = (e, t) => {
 	if (e === t) return 0;
@@ -271,7 +273,7 @@ var Q = (e, t) => {
 		u,
 		c,
 		s,
-		d,
+		f,
 		h,
 		C,
 		L = new Array(o);
@@ -281,18 +283,18 @@ var Q = (e, t) => {
 			te = t.charCodeAt(n + 1),
 			oe = t.charCodeAt(n + 2),
 			re = t.charCodeAt(n + 3);
-		((c = n), (u = n + 1), (s = n + 2), (d = n + 3), (h = n + 4));
+		((c = n), (u = n + 1), (s = n + 2), (f = n + 3), (h = n + 4));
 		for (i = 0; i < o; i++) {
 			if (((C = e.charCodeAt(i)), (p = L[i]), p < c || u < c))
 				c = p > u ? u + 1 : p + 1;
 			else if (M !== C) c++;
 			if (c < u || s < u) u = c > s ? s + 1 : c + 1;
 			else if (te !== C) u++;
-			if (u < s || d < s) s = u > d ? d + 1 : u + 1;
+			if (u < s || f < s) s = u > f ? f + 1 : u + 1;
 			else if (oe !== C) s++;
-			if (s < d || h < d) d = s > h ? h + 1 : s + 1;
-			else if (re !== C) d++;
-			((L[i] = h = d), (d = s), (s = u), (u = c), (c = p));
+			if (s < f || h < f) f = s > h ? h + 1 : s + 1;
+			else if (re !== C) f++;
+			((L[i] = h = f), (f = s), (s = u), (u = c), (c = p));
 		}
 	}
 	for (; n < r; ) {
@@ -380,5 +382,5 @@ a.addEventListener('keydown', (e) => {
 });
 document.addEventListener('keydown', (e) => {
 	if (e.ctrlKey && e.key && e.key.toLowerCase() === 'n')
-		(e.preventDefault(), X());
+		(e.preventDefault(), R());
 });

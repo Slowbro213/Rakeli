@@ -115,6 +115,7 @@ document.addEventListener('touchend', () => {
 export const closeTerminal = () => {
 	terminalWindow.classList.remove('open');
 	terminalWindow.classList.add('close');
+	open = false;
 };
 
 terminalBtnClose.onclick = closeTerminal;
@@ -123,11 +124,11 @@ export const openTerminal = () => {
 	terminalWindow.classList.remove('hidden');
 	terminalWindow.classList.remove('close');
 	terminalWindow.classList.add('open');
+	open = true;
 };
 
 let open = false;
 terminalTrigger.onclick = () => {
 	if (open) closeTerminal();
 	else openTerminal();
-	open = !open;
 };
