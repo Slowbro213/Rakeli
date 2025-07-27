@@ -3,9 +3,9 @@ import { historyGet } from '@rakeli/history';
 import type { Command } from '../types';
 
 export const history: Command = {
-  name: 'history',
-  exec: () => {
-    stdout(historyGet());
-    return 0;
-  },
+	name: 'history',
+	exec: () => {
+		stdout(historyGet());
+		return 0;
+	},
 };

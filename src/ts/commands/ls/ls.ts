@@ -2,17 +2,17 @@ import { stdout } from '@rakeli/stdout';
 import type { Command } from '../types';
 
 export const ls: Command = {
-  name: 'ls',
-  exec: () => {
-    const pages: string[] = [
-      'Pages on this Website:',
-      'About_Me',
-      'Writeups',
-      'Projects',
-      'Home',
-    ];
+	name: 'ls',
+	exec: () => {
+		const pages: string[] = [
+			'Pages on this Website:',
+			'About_Me',
+			'Writeups',
+			'Projects',
+			'Home',
+		];
 
-    stdout(pages);
-    return 0;
-  },
+		stdout(pages);
+		return 0;
+	},
 };

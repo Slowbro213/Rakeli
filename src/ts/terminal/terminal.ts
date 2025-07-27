@@ -1,19 +1,19 @@
 export const terminalInput = document.getElementById(
-  'terminal-input'
+	'terminal-input'
 ) as HTMLInputElement;
 
 export const terminalInputRow = document.getElementById(
-  'terminal-input-row'
+	'terminal-input-row'
 ) as HTMLInputElement;
 
 export const autocomplete = document.getElementById(
-  'autocomplete'
+	'autocomplete'
 ) as HTMLElement;
 
 export const terminalBody = document.getElementById(
-  'terminal-body'
+	'terminal-body'
 ) as HTMLElement;
 
 export const template = document.getElementById(
-  'terminal-line-template'
+	'terminal-line-template'
 ) as HTMLTemplateElement;

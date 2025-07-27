@@ -1,11 +1,11 @@
 import {
-  terminalBody,
-  terminalInputRow,
-  terminalInput,
+	terminalBody,
+	terminalInputRow,
+	terminalInput,
 } from '@rakeli/terminal';
 
 export const newPrompt = () => {
-  terminalBody.removeChild(terminalInputRow);
-  terminalBody.appendChild(terminalInputRow);
-  terminalInput.focus();
+	terminalBody.removeChild(terminalInputRow);
+	terminalBody.appendChild(terminalInputRow);
+	terminalInput.focus();
 };
