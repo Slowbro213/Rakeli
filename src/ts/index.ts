@@ -4,8 +4,8 @@ import { newPrompt } from './prompt';
 import { terminalInput, autocomplete } from './terminal';
 import { clear } from './commands/clear';
 import { historyGetNext, historyGetPrev, historyLog } from './history';
-
-// Get the input element (cast as HTMLInputElement for type safety)
+import { closestCommand } from './hinting/closest';
+import { SHELL_STATE } from './environment';
 
 // Add a keydown event listener
 terminalInput.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -31,13 +31,15 @@ terminalInput.addEventListener('keydown', (event: KeyboardEvent) => {
       historyLog(input);
 
       if (!com) {
-        stdout("Command doesn't exist (yet) :(");
+        const possibleCommand = closestCommand(args[0]);
+        if (!possibleCommand) stdout("Command doesn't exist :(");
+        else stdout(["Command doesn't exist, did you mean:", possibleCommand]);
         newPrompt();
         terminalInput.value = '';
         break;
       }
 
-      com.exec(args);
+      SHELL_STATE.set('EXIT_CODE', com.exec(args));
 
       newPrompt();
 

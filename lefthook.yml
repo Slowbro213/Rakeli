@@ -1,35 +1,41 @@
 pre-commit:
   parallel: true
   commands:
-    frontend-secure:
+    secure:
       run: bun audit
 
-    frontend-eslint:
+    eslint:
       run: bunx eslint "src/**/*.ts" --max-warnings=0
 
-    frontend-stylelint:
+    stylelint:
       run: bunx stylelint "src/css/**/*.css"
 
-    frontend-htmlhint:
+    htmlhint:
       run: bunx htmlhint "public/**/*.html"
 
-    frontend-prettier:
+    prettier:
       run: bunx prettier --check "./**/*.{ts,css,html,json}"
+
+    test:
+      run: bun test
 
 pre-push:
   parallel: false
   commands:
-    frontend-eslint:
+    eslint:
       run: bunx eslint "src/**/*.ts" --max-warnings=0
 
-    frontend-stylelint:
+    stylelint:
       run: bunx stylelint "src/css/**/*.css"
 
-    frontend-htmlhint:
+    htmlhint:
       run: bunx htmlhint "public/**/*.html"
 
-    frontend-prettier:
+    prettier:
       run: bunx prettier --check "./**/*.{ts,css,html,json}"
+
+    test:
+      run: bun test
 
     check-todos:
       run: grep -iR "TODO" ./ | grep -v node_modules || true

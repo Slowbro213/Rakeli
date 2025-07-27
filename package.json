@@ -7,7 +7,7 @@
   "scripts": {
     "build": "bun run scripts/build/*.{ts,js} && bash scripts/build/*.sh && bun build src/ts/index.ts --outdir=public/assets/js --minify --target=browser && bunx tailwindcss -i src/css/styles.css -o public/assets/css/styles.css --minify ",
     "lint": "bun audit && bunx eslint 'src/**/*.ts' --max-warnings=0 && bunx stylelint 'src/css/**/*.css' && bunx htmlhint 'public/**/*.html' && bunx prettier --check './**/*.{ts,css,html,json}'",
-    "prettify": "bunx prettier --write .",
+    "prettify": "bunx prettier --write . && bunx stylelint src/css/ --fix",
     "pre-commit": "bunx lefthook run pre-commit",
     "pre-push": "bunx lefthook run pre-push"
   },

@@ -7,6 +7,7 @@ dist
 *.tgz
 public/assets/css/styles.css
 public/assets/css/index.js
+src/ts/commands/registry.ts
 
 # code coverage
 coverage
