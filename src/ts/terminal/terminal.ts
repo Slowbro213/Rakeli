@@ -27,10 +27,6 @@ const getClientPosition = (event: MouseEvent | TouchEvent) => {
 };
 
 terminalWindow.addEventListener('mousedown', (e) => {
-	if (document.activeElement !== terminalInput) {
-		terminalInput.focus({ preventScroll: true });
-	}
-
 	const rect = terminalWindow.getBoundingClientRect();
 	const resizeAreaSize = 20;
 	const inResizeArea =
@@ -81,7 +77,6 @@ document.addEventListener('mousemove', (event: MouseEvent) => {
 document.addEventListener(
 	'touchmove',
 	(event: TouchEvent) => {
-		event.preventDefault();
 		if (isResizing || !isDragging) return;
 
 		const touch = event.touches[0];
@@ -124,6 +119,7 @@ export const openTerminal = () => {
 	terminalWindow.classList.remove('hidden');
 	terminalWindow.classList.remove('close');
 	terminalWindow.classList.add('open');
+	terminalInput.focus();
 	open = true;
 };
 
