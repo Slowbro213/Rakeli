@@ -104,3 +104,5 @@ document.addEventListener('keydown', (event: KeyboardEvent) => {
 		openTerminal();
 	}
 });
+
+export * from './musicplayer';
