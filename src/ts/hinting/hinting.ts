@@ -9,7 +9,6 @@ type TrieNode = {
 
 // Create the root of the trie
 export const buildCommandTrie = (commands: Command[]): TrieNode => {
-	console.log('Building Commands...');
 	const root: TrieNode = { children: new Map() };
 
 	for (const command of commands) {
