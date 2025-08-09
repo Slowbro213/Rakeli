@@ -1,113 +1,123 @@
+import { makeDraggable } from '@rakeli/drag';
 import {
 	terminalBtnClose,
 	terminalInput,
 	terminalTrigger,
 	terminalWindow,
+	autocomplete,
 } from './terminalParts';
 
-let isDragging = false;
-let isResizing = false;
-let startX = 0;
-let startY = 0;
-let startLeft = 0;
-let startTop = 0;
+import { stdout } from '@rakeli/stdout';
+import {
+	addSuggestion,
+	autocompleteCommand,
+	findCommand,
+} from '@rakeli/hinting';
+import { newPrompt } from '@rakeli/prompt';
+import { clear } from '@rakeli/commands/clear';
+import { historyGetNext, historyGetPrev, historyLog } from '@rakeli/history';
+import { closestCommand } from '@rakeli/hinting/closest';
+import { SHELL_STATE } from '@rakeli/environment';
 
-const getClientPosition = (event: MouseEvent | TouchEvent) => {
-	if ('touches' in event) {
-		return {
-			clientX: event.touches[0]?.pageX,
-			clientY: event.touches[0]?.pageY,
-		};
-	} else {
-		return {
-			clientX: (event as MouseEvent).pageX,
-			clientY: (event as MouseEvent).pageY,
-		};
+// Add a keydown event listener
+terminalInput.addEventListener('keydown', (event: KeyboardEvent) => {
+	if (event.ctrlKey && event.key.toLowerCase() === 'l') {
+		event.preventDefault();
+		clear.exec(['shortcut']);
+		return;
 	}
-};
 
-terminalWindow.addEventListener('mousedown', (e) => {
-	const rect = terminalWindow.getBoundingClientRect();
-	const resizeAreaSize = 20;
-	const inResizeArea =
-		e.pageX > rect.right - resizeAreaSize &&
-		e.pageY > rect.bottom - resizeAreaSize;
+	switch (event.key) {
+		case 'Enter': {
+			const input = terminalInput.value;
+			const args = input.split(' ');
+			if (!input || !args || !args[0]) {
+				stdout('No detectable input ;-;');
+				newPrompt();
+				terminalInput.value = '';
+				break;
+			}
+			const com = findCommand(args[0]);
 
-	if (inResizeArea) {
-		isResizing = true;
+			stdout('> ' + input);
+			historyLog(input);
+			addSuggestion(input);
+
+			if (!com) {
+				const possibleCommand = closestCommand(args[0]);
+				if (!possibleCommand) stdout("Command doesn't exist :(");
+				else stdout(["Command doesn't exist, did you mean:", possibleCommand]);
+				newPrompt();
+				terminalInput.value = '';
+				break;
+			}
+
+			SHELL_STATE.set('EXIT_CODE', com.exec(args));
+
+			newPrompt();
+
+			terminalInput.value = '';
+			break;
+		}
+		case 'ArrowRight': {
+			const suggestion = autocomplete.textContent?.trim();
+			if (suggestion && suggestion.startsWith(terminalInput.value)) {
+				terminalInput.value = suggestion;
+				autocomplete.innerHTML = '';
+			}
+			break;
+		}
+		case 'ArrowUp': {
+			event.preventDefault();
+			const pastInput = historyGetPrev();
+			autocomplete.innerHTML = '';
+			if (!pastInput) break;
+
+			terminalInput.value = pastInput;
+			terminalInput.setSelectionRange(pastInput.length, pastInput.length);
+
+			break;
+		}
+		case 'ArrowDown': {
+			const pastInput = historyGetNext();
+			autocomplete.innerHTML = '';
+			if (!pastInput) {
+				terminalInput.value = '';
+				break;
+			}
+
+			terminalInput.value = pastInput;
+			terminalInput.setSelectionRange(pastInput.length, pastInput.length);
+
+			break;
+		}
+		default: {
+			const userInput = terminalInput.value + event.key;
+
+			const hints = autocompleteCommand(userInput);
+
+			if (hints.length === 0 || !hints[0]) {
+				autocomplete.innerHTML = '';
+				break;
+			}
+
+			const hintName = hints[0];
+
+			autocomplete.innerHTML = hintName;
+
+			break;
+		}
 	}
 });
 
-terminalWindow.onmousedown = (event: MouseEvent) => {
-	if (isResizing) return;
-	startDrag(event);
-};
-
-terminalWindow.ontouchstart = (event: TouchEvent) => {
-	event.preventDefault();
-	if (isResizing) return;
-	startDrag(event);
-};
-
-function startDrag(event: MouseEvent | TouchEvent) {
-	const { clientX, clientY } = getClientPosition(event);
-	if (!clientX || !clientY) return;
-
-	isDragging = true;
-	startX = clientX; // pageX
-	startY = clientY; // pageY
-	startLeft = parseInt(terminalWindow.style.left || '0', 10);
-	startTop = parseInt(terminalWindow.style.top || '0', 10);
-
-	terminalWindow.style.cursor = 'grabbing';
-	terminalWindow.style.userSelect = 'none';
-	document.body.style.userSelect = 'none';
-}
-
-document.addEventListener('mousemove', (event: MouseEvent) => {
-	if (isResizing || !isDragging) return;
-
-	const x = startLeft + (event.pageX - startX);
-	const y = startTop + (event.pageY - startY);
-
-	terminalWindow.style.left = `${x}px`;
-	terminalWindow.style.top = `${y}px`;
+document.addEventListener('keydown', (event: KeyboardEvent) => {
+	if (event.ctrlKey && event.key && event.key.toLowerCase() === 'n') {
+		event.preventDefault();
+		openTerminal();
+	}
 });
 
-document.addEventListener(
-	'touchmove',
-	(event: TouchEvent) => {
-		if (isResizing || !isDragging) return;
-
-		const touch = event.touches[0];
-		if (!touch) return;
-
-		const x = startLeft + (touch.pageX - startX);
-		const y = startTop + (touch.pageY - startY);
-
-		terminalWindow.style.left = `${x}px`;
-		terminalWindow.style.top = `${y}px`;
-	},
-	{ passive: false },
-);
-
-document.addEventListener('mouseup', () => {
-	isDragging = false;
-	isResizing = false;
-	terminalWindow.style.cursor = '';
-	terminalWindow.style.userSelect = '';
-	document.body.style.userSelect = '';
-});
-
-document.addEventListener('touchend', () => {
-	isDragging = false;
-	isResizing = false;
-	terminalWindow.style.cursor = '';
-	terminalWindow.style.userSelect = '';
-	document.body.style.userSelect = '';
-});
-
-export const closeTerminal = () => {
+const closeTerminal = () => {
 	terminalWindow.classList.remove('open');
 	terminalWindow.classList.add('close');
 	open = false;
@@ -115,11 +125,10 @@ export const closeTerminal = () => {
 
 terminalBtnClose.onclick = closeTerminal;
 
-export const openTerminal = () => {
+const openTerminal = () => {
 	terminalWindow.classList.remove('hidden');
 	terminalWindow.classList.remove('close');
 	terminalWindow.classList.add('open');
-	terminalInput.focus();
 	open = true;
 };
 
@@ -128,3 +137,5 @@ terminalTrigger.onclick = () => {
 	if (open) closeTerminal();
 	else openTerminal();
 };
+
+makeDraggable(terminalWindow);

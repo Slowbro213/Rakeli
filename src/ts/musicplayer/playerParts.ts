@@ -22,3 +22,9 @@ export const winampShuffle = document.getElementById(
 export const winampRepeat = document.getElementById(
 	'winamp-repeat',
 ) as HTMLElement;
+export const winampBar = document.getElementById(
+	'winamp-progress',
+) as HTMLElement;
+export const winampTrigger = document.getElementById(
+	'winamp-trigger',
+) as HTMLElement;
