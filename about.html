@@ -3,128 +3,388 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta
-			name="description"
-			content="About me - Professional penetration tester with expertise in exploit development and security research"
-		/>
+		<meta name="description" content="HEX3N - About Me - Professional penetration tester with expertise in exploit development and security research" />
+		<title>HEX3N // ABOUT_ME - Security Specialist</title>
 		<link rel="stylesheet" href="assets/css/styles.css" />
-		<title>About Me - Security Specialist</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400;700&family=Oxanium:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 	</head>
-	<body>
-		<main>
-			<h1>About Me</h1>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+		
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"></div>
+
+		<!-- Floating terminal trigger -->
+		<div class="fixed bottom-4 right-4 z-200">
+			<button
+				type="button"
+				id="terminal-trigger"
+				class="cyber-btn terminal-trigger bg-black border-2 border-neongreen text-neongreen px-4 py-2 rounded-md hover:bg-neongreen hover:text-black transition-all duration-300 flex items-center"
+			>
+				<span class="animate-pulse">[&gt;_</span>
+				<span class="ml-1 animate-pulse">]</span>
+			</button>
+		</div>
+
+		<!-- Floating musicplayer trigger -->
+		<div class="fixed bottom-4 left-4 z-200">
+			<button
+				type="button"
+				id="winamp-trigger"
+				class="cyber-btn winamp-trigger bg-black border-2 border-cyan-500 text-cyan-500 px-4 py-2 rounded-md hover:text-black transition-all duration-300 flex items-center"
+			>
+				<span class="animate-pulse">🎵</span>
+			</button>
+		</div>
+
+		<!-- Navigation -->
+		<nav class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen">
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span class="text-neongreen font-bold text-xl glitch-effect" data-text="HEX3N">HEX3N</span>
+						<span class="text-neonpink text-sm ml-2">// SECURITY_SPECIALIST</span>
+					</div>
+					<div class="hidden md:flex space-x-6">
+						<a href="index.html" class="nav-link">HOME</a>
+						<a href="/about.html" class="nav-link">ABOUT</a>
+						<a href="index.html#skills" class="nav-link">SKILLS</a>
+						<a href="index.html#testimonials" class="nav-link">FEEDBACK</a>
+						<a href="index.html#contact" class="nav-link">CONTACT</a>
+					</div>
+					<div class="md:hidden">
+						<button class="mobile-menu-btn text-neongreen">
+							<span class="block w-6 h-0.5 bg-neongreen mb-1"></span>
+							<span class="block w-6 h-0.5 bg-neongreen mb-1"></span>
+							<span class="block w-6 h-0.5 bg-neongreen"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<!-- Hero Section -->
+			<section class="hero-section relative py-20 overflow-hidden">
+				<div class="absolute inset-0 bg-black opacity-75"></div>
+				<div class="absolute inset-0 flex items-center justify-center">
+					<div class="h-64 w-64 bg-neonpink rounded-full opacity-5 blur-3xl animate-pulse md:h-64 md:w-64 h-32 w-32"></div>
+					<div class="h-96 w-96 bg-neonblue rounded-full opacity-5 blur-3xl absolute animate-pulse-slow md:h-96 md:w-96 h-48 w-48"></div>
+					<div class="h-48 w-48 bg-neonpurple rounded-full opacity-5 blur-3xl absolute top-1/4 left-1/4 animate-pulse-fast md:h-48 md:w-48 h-24 w-24"></div>
+					<div class="h-72 w-72 bg-neongreen rounded-full opacity-5 blur-3xl absolute bottom-1/4 right-1/4 animate-pulse-slow md:h-72 md:w-72 h-36 w-36"></div>
+				</div>
+				
+				<div class="relative z-10 text-center px-4 animate-fade-in">
+					<div class="cyber-title-container mb-8">
+						<h1 class="cyber-main-title text-4xl md:text-6xl font-bold glitch-effect mb-4 text-transparent bg-clip-text bg-gradient-to-r from-neongreen via-neonpink to-neonblue" data-text="ABOUT_ME">
+							ABOUT_ME
+						</h1>
+						<div class="cyber-subtitle-container">
+							<h2 class="cyber-subtitle text-2xl md:text-4xl font-bold mb-6">
+								<span class="text-neonpink cyber-text-glow">DIGITAL</span>
+								<span class="text-neonblue cyber-text-glow">SHADOW</span>
+							</h2>
+						</div>
+					</div>
+					
+					<div class="cyber-description mb-8">
+						<p class="text-lg md:text-xl mb-4 max-w-3xl mx-auto cyber-text">
+							<span class="text-neongreen">&gt;&gt;</span> A shadow in the digital realm, a penetration tester with a decade of experience uncovering vulnerabilities and fortifying defenses against the most sophisticated threats.
+						</p>
+					</div>
+				</div>
+			</section>
 
 			<!-- About Section -->
-			<section id="about" class="py-20 relative px-4">
+			<section id="about" class="about-section py-20 relative px-4">
 				<div class="container mx-auto">
-					<h2 class="section-title glitch" data-text="// ABOUT_ME">
-						// ABOUT_ME
-					</h2>
+					<div class="section-header mb-12">
+						<h2 class="section-title text-4xl font-bold text-center">
+							<span class="text-neonpink">//</span>
+							<span class="glitch-effect cyber-text-glow" data-text="DETAILED_PROFILE">DETAILED_PROFILE</span>
+							<span class="text-neonblue">//</span>
+						</h2>
+						<div class="section-divider"></div>
+					</div>
 
-					<div
-						class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-12"
-					>
-						<div class="hacker-card neon-border p-8 relative overflow-hidden">
-							<div
-								class="absolute top-0 left-0 w-full h-1 bg-neongreen animate-scanline"
-							></div>
-							<h3
-								class="text-2xl md:text-3xl font-bold mb-4 glitch"
-								data-text="BIOGRAPHY"
-							>
+					<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-12">
+						<div class="cyber-bio-card hacker-card neon-border p-8 relative overflow-hidden">
+							<div class="absolute top-0 left-0 w-full h-1 bg-neongreen animate-scanline"></div>
+							<h3 class="text-2xl md:text-3xl font-bold mb-4 glitch cyber-text-glow" data-text="BIOGRAPHY">
 								BIOGRAPHY
 							</h3>
-							<p class="mb-4">
-								I'm a shadow in the digital realm, a penetration tester with a
-								decade of experience uncovering vulnerabilities and fortifying
-								defenses against the most sophisticated threats.
-							</p>
-							<p class="mb-4">
-								My journey began in the underground hacker scene, where I
-								learned the art of exploitation before transitioning to ethical
-								security research.
-							</p>
-							<p>
-								Now I use my skills to help organizations strengthen their
-								security posture against real-world threats.
-							</p>
+							<div class="cyber-text-content">
+								<p class="mb-4 cyber-text">
+									I'm a shadow in the digital realm, a penetration tester with a decade of experience uncovering vulnerabilities and fortifying defenses against the most sophisticated threats.
+								</p>
+								<p class="mb-4 cyber-text">
+									My journey began in the underground hacker scene, where I learned the art of exploitation before transitioning to ethical security research. Every system has a weakness - I find it before the bad guys do.
+								</p>
+								<p class="mb-4 cyber-text">
+									Now I use my skills to help organizations strengthen their security posture against real-world threats. Specializing in red team operations, malware analysis, and threat intelligence.
+								</p>
+								<p class="cyber-text">
+									<span class="text-neonpink">"In Night City, the best hackers are the ones you never see coming."</span> - That's my philosophy in the digital world.
+								</p>
+							</div>
 
 							<div class="mt-8 grid grid-cols-2 gap-4">
 								<div class="stat-box">
-									<div class="stat-number" data-count="150">0</div>
+									<div class="stat-number text-neongreen" data-count="150">0</div>
 									<div class="stat-label">PROJECTS</div>
 								</div>
 								<div class="stat-box">
-									<div class="stat-number" data-count="27">0</div>
+									<div class="stat-number text-neonpink" data-count="27">0</div>
 									<div class="stat-label">CVEs</div>
 								</div>
 								<div class="stat-box">
-									<div class="stat-number" data-count="89">0</div>
+									<div class="stat-number text-neonblue" data-count="89">0</div>
 									<div class="stat-label">CLIENTS</div>
 								</div>
 								<div class="stat-box">
-									<div class="stat-number" data-count="12">0</div>
+									<div class="stat-number text-neonpurple" data-count="12">0</div>
 									<div class="stat-label">AWARDS</div>
 								</div>
 							</div>
 						</div>
 
-						<div class="hacker-card neon-border p-8 relative overflow-hidden">
-							<div
-								class="absolute top-0 left-0 w-full h-1 bg-neongreen animate-scanline"
-								style="animation-delay: 0.5s"
-							></div>
-							<h3
-								class="text-2xl md:text-3xl font-bold mb-4 glitch"
-								data-text="MY_SKILLS"
-							>
+						<div class="cyber-skills-card hacker-card neon-border p-8 relative overflow-hidden">
+							<div class="absolute top-0 left-0 w-full h-1 bg-neongreen animate-scanline" style="animation-delay: 0.5s"></div>
+							<h3 class="text-2xl md:text-3xl font-bold mb-4 glitch cyber-text-glow" data-text="MY_SKILLS">
 								MY_SKILLS
 							</h3>
 
-							<div class="skill-bar mb-4">
-								<div class="skill-info flex justify-between mb-2">
-									<span>PENETRATION_TESTING</span>
-									<span>98%</span>
+							<div class="cyber-skill-bars">
+								<div class="skill-bar mb-6">
+									<div class="skill-info flex justify-between mb-2">
+										<span class="text-neongreen">PENETRATION_TESTING</span>
+										<span class="text-neonpink">98%</span>
+									</div>
+									<div class="skill-progress">
+										<div class="skill-level" style="width: 98%"></div>
+									</div>
 								</div>
-								<div class="skill-progress">
-									<div class="skill-level" style="width: 98%"></div>
-								</div>
-							</div>
 
-							<div class="skill-bar mb-4">
-								<div class="skill-info flex justify-between mb-2">
-									<span>EXPLOIT_DEVELOPMENT</span>
-									<span>95%</span>
+								<div class="skill-bar mb-6">
+									<div class="skill-info flex justify-between mb-2">
+										<span class="text-neonblue">EXPLOIT_DEVELOPMENT</span>
+										<span class="text-neonpink">95%</span>
+									</div>
+									<div class="skill-progress">
+										<div class="skill-level" style="width: 95%"></div>
+									</div>
 								</div>
-								<div class="skill-progress">
-									<div class="skill-level" style="width: 95%"></div>
-								</div>
-							</div>
 
-							<div class="skill-bar mb-4">
-								<div class="skill-info flex justify-between mb-2">
-									<span>MALWARE_ANALYSIS</span>
-									<span>90%</span>
+								<div class="skill-bar mb-6">
+									<div class="skill-info flex justify-between mb-2">
+										<span class="text-neonpurple">MALWARE_ANALYSIS</span>
+										<span class="text-neonpink">90%</span>
+									</div>
+									<div class="skill-progress">
+										<div class="skill-level" style="width: 90%"></div>
+									</div>
 								</div>
-								<div class="skill-progress">
-									<div class="skill-level" style="width: 90%"></div>
-								</div>
-							</div>
 
-							<div class="skill-bar mb-4">
-								<div class="skill-info flex justify-between mb-2">
-									<span>SOCIAL_ENGINEERING</span>
-									<span>92%</span>
+								<div class="skill-bar mb-6">
+									<div class="skill-info flex justify-between mb-2">
+										<span class="text-neongreen">SOCIAL_ENGINEERING</span>
+										<span class="text-neonpink">92%</span>
+									</div>
+									<div class="skill-progress">
+										<div class="skill-level" style="width: 92%"></div>
+									</div>
 								</div>
-								<div class="skill-progress">
-									<div class="skill-level" style="width: 92%"></div>
+
+								<div class="skill-bar mb-6">
+									<div class="skill-info flex justify-between mb-2">
+										<span class="text-neonblue">NETWORK_SECURITY</span>
+										<span class="text-neonpink">88%</span>
+									</div>
+									<div class="skill-progress">
+										<div class="skill-level" style="width: 88%"></div>
+									</div>
+								</div>
+
+								<div class="skill-bar mb-6">
+									<div class="skill-info flex justify-between mb-2">
+										<span class="text-neonpurple">THREAT_INTELLIGENCE</span>
+										<span class="text-neonpink">85%</span>
+									</div>
+									<div class="skill-progress">
+										<div class="skill-level" style="width: 85%"></div>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>
+
+			<!-- Experience Timeline -->
+			<section class="experience-section py-20 relative">
+				<div class="container mx-auto px-4">
+					<div class="section-header mb-12">
+						<h2 class="section-title text-4xl font-bold text-center">
+							<span class="text-neonblue">//</span>
+							<span class="glitch-effect cyber-text-glow" data-text="EXPERIENCE">EXPERIENCE</span>
+							<span class="text-neonpink">//</span>
+						</h2>
+						<div class="section-divider"></div>
+					</div>
+
+					<div class="cyber-timeline max-w-4xl mx-auto">
+						<div class="timeline-item">
+							<div class="timeline-marker"></div>
+							<div class="timeline-content">
+								<h3 class="text-xl font-bold text-neongreen mb-2">SENIOR PENETRATION TESTER</h3>
+								<p class="text-neonpink mb-1">CyberSec Solutions • 2022-Present</p>
+								<p class="cyber-text">Leading red team operations and advanced persistent threat simulations for Fortune 500 clients.</p>
+							</div>
+						</div>
+
+						<div class="timeline-item">
+							<div class="timeline-marker"></div>
+							<div class="timeline-content">
+								<h3 class="text-xl font-bold text-neonblue mb-2">SECURITY RESEARCHER</h3>
+								<p class="text-neonpink mb-1">Bug Bounty Programs • 2020-2022</p>
+								<p class="cyber-text">Discovered 27 CVEs and earned recognition in multiple bug bounty programs.</p>
+							</div>
+						</div>
+
+						<div class="timeline-item">
+							<div class="timeline-marker"></div>
+							<div class="timeline-content">
+								<h3 class="text-xl font-bold text-neonpurple mb-2">MALWARE ANALYST</h3>
+								<p class="text-neonpink mb-1">Threat Intelligence Lab • 2018-2020</p>
+								<p class="cyber-text">Reverse engineering and analysis of sophisticated malware families.</p>
+							</div>
+						</div>
+
+						<div class="timeline-item">
+							<div class="timeline-marker"></div>
+							<div class="timeline-content">
+								<h3 class="text-xl font-bold text-neongreen mb-2">JUNIOR SECURITY ANALYST</h3>
+								<p class="text-neonpink mb-1">Cyber Defense Center • 2016-2018</p>
+								<p class="cyber-text">Started my journey in cybersecurity, learning the fundamentals of threat detection and response.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Certifications -->
+			<section class="certifications-section py-20 relative">
+				<div class="container mx-auto px-4">
+					<div class="section-header mb-12">
+						<h2 class="section-title text-4xl font-bold text-center">
+							<span class="text-neonpink">//</span>
+							<span class="glitch-effect cyber-text-glow" data-text="CERTIFICATIONS">CERTIFICATIONS</span>
+							<span class="text-neonblue">//</span>
+						</h2>
+						<div class="section-divider"></div>
+					</div>
+
+					<div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+						<div class="cyber-cert-card card p-6 bg-black bg-opacity-50 text-center">
+							<div class="cert-icon text-4xl mb-4">🔒</div>
+							<h3 class="text-xl font-bold mb-2 text-neongreen">OSCP</h3>
+							<p class="text-sm cyber-text">Offensive Security Certified Professional</p>
+							<div class="cert-date text-neonpink text-xs mt-2">2021</div>
+						</div>
+						<div class="cyber-cert-card card p-6 bg-black bg-opacity-50 text-center">
+							<div class="cert-icon text-4xl mb-4">🛡️</div>
+							<h3 class="text-xl font-bold mb-2 text-neonblue">CEH</h3>
+							<p class="text-sm cyber-text">Certified Ethical Hacker</p>
+							<div class="cert-date text-neonpink text-xs mt-2">2020</div>
+						</div>
+						<div class="cyber-cert-card card p-6 bg-black bg-opacity-50 text-center">
+							<div class="cert-icon text-4xl mb-4">💻</div>
+							<h3 class="text-xl font-bold mb-2 text-neonpurple">CISSP</h3>
+							<p class="text-sm cyber-text">Certified Information Systems Security Professional</p>
+							<div class="cert-date text-neonpink text-xs mt-2">2019</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- Back to Home -->
+			<section class="back-home-section py-20 relative">
+				<div class="container mx-auto px-4 text-center">
+					<div class="cyber-actions">
+						<a href="index.html" class="cyber-btn primary-btn px-8 py-3 text-lg font-bold hover:bg-neongreen hover:text-black transition-all duration-300 transform hover:scale-105">
+							[ RETURN_TO_HOME ]
+						</a>
+					</div>
+				</div>
+			</section>
 		</main>
-		<script type="module" src="assets/js/index.js"></script>
+
+		<!-- Terminal Window -->
+		<div id="terminal-window" class="terminal-window hidden min-h-screen md:min-h-auto">
+			<div class="terminal-header">
+				<div class="terminal-buttons">
+					<span id="terminal-btn-close" class="terminal-btn terminal-btn-close"></span>
+					<span class="terminal-btn terminal-btn-min"></span>
+					<span class="terminal-btn terminal-btn-max"></span>
+				</div>
+				<span class="terminal-title">guest@cybersec.com:~</span>
+			</div>
+			<div id="terminal-body" class="terminal-body glitch">
+				<p class="terminal-line">&gt; Welcome to the navigation terminal</p>
+				<p class="terminal-line">&gt; Type 'help' for available commands</p>
+				<p class="flex items-center font-mono text-lg terminal-line" id="terminal-input-row">
+					<span class="text-neongreen mr-2">$</span>
+					<span class="relative inline-flex items-center w-full overflow-hidden">
+						<input id="terminal-input" class="bg-transparent w-full outline-none text-white caret-neongreen relative" autocomplete="off" autofocus />
+						<span id="autocomplete" class="absolute left-0 text-gray-400 pointer-events-none select-none outline-none whitespace-pre"></span>
+					</span>
+				</p>
+			</div>
+		</div>
+
+		<!-- Winamp Player -->
+		<div id="winamp" class="fixed top-5 left-5 w-[320px] bg-gradient-to-b from-gray-600 to-gray-800 border-2 border-gray-500 rounded-md shadow-lg z-10 hidden">
+			<div class="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 px-3 py-1 text-xs font-semibold border-b border-gray-600 flex items-center justify-between rounded-t-md">
+				<span class="tracking-wide">Winamp 5.666 Build 3516</span>
+			</div>
+			<div class="bg-black px-3 py-2 text-sm border-b border-gray-600 rounded-lg">
+				<div id="winamp-time" class="mb-1 text-lg font-mono tabular-nums tracking-tight">
+					<span id="current-time">00:00</span> / <span id="total-time">00:00</span>
+				</div>
+				<div id="winamp-track-name" class="font-bold mb-1"></div>
+				<audio id="winamp-audio"></audio>
+				<div id="winamp-graph" class="flex space-x-1 mt-2 h-5 items-end">
+					<div class="bar w-1.5 bg-[#e1ff00] animate-pulse"></div>
+					<div class="bar w-1.5 bg-[#e1ff00] animate-pulse"></div>
+					<div class="bar w-1.5 bg-[#e1ff00] animate-pulse"></div>
+					<div class="bar w-1.5 bg-[#e1ff00] animate-pulse"></div>
+					<div class="bar w-1.5 bg-[#e1ff00] animate-pulse"></div>
+				</div>
+				<div class="w-full bg-gray-700 h-2 rounded overflow-hidden mt-2">
+					<div id="winamp-progress" class="bg-[#e1ff00] h-full w-0 transition-all duration-100"></div>
+				</div>
+			</div>
+			<div class="flex justify-between items-center px-3 py-2 bg-gradient-to-r from-gray-800 via-gray-500 to-gray-800 text-xs">
+				<div class="flex space-x-1">
+					<button type="button" id="winamp-prev" class="px-1.5 py-0.5 bg-gray-700 border border-gray-900 rounded shadow-md shadow-gray-400 hover:bg-gray-600">◀◀</button>
+					<button type="button" id="winamp-resume" class="px-1.5 py-0.5 bg-gray-700 border border-gray-900 rounded shadow-md shadow-gray-400 hover:bg-gray-600">▶</button>
+					<button type="button" id="winamp-pause" class="px-1.5 py-0.5 bg-gray-700 border border-gray-900 rounded shadow-md shadow-gray-400 hover:bg-gray-600">■</button>
+					<button type="button" id="winamp-next" class="px-1.5 py-0.5 bg-gray-700 border border-gray-900 rounded shadow-md shadow-gray-400 hover:bg-gray-600">▶▶</button>
+				</div>
+				<div class="flex space-x-1">
+					<button type="button" id="winamp-shuffle" class="px-1.5 py-0.5 bg-gray-700 border border-gray-900 rounded shadow-md shadow-gray-400 hover:bg-gray-600">🔀</button>
+					<button type="button" id="winamp-repeat" class="px-1.5 py-0.5 bg-gray-700 border border-gray-900 rounded shadow-md shadow-gray-400 hover:bg-gray-600">🔁</button>
+				</div>
+			</div>
+		</div>
+
+		<script type="module" src="assets/js/index.js" defer></script>
 	</body>
 </html>
