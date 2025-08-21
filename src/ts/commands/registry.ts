@@ -1,12 +1,12 @@
 // AUTO-GENERATED FILE — DO NOT EDIT MANUALLY
 
 import type { Command } from "./types";
-import { cd } from "./cd";
-import { clear } from "./clear";
-import { echo } from "./echo";
 import { help } from "./help";
-import { history } from "./history";
+import { echo } from "./echo";
 import { ls } from "./ls";
+import { cd } from "./cd";
 import { slowking } from "./slowking";
+import { clear } from "./clear";
+import { history } from "./history";
 
-export const commands: Command[] = [cd, clear, echo, help, history, ls, slowking];
+export const commands: Command[] = [help, echo, ls, cd, slowking, clear, history];
