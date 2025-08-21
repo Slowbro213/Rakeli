@@ -1,0 +1,176 @@
+@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono:wght@400;700&family=Oxanium:wght@300;400;600;700;800&display=swap');
+
+:root {
+	--neongreen: #e1ff00;
+	--neonpink: #ff0080;
+	--neonblue: #00d4ff;
+	--neonpurple: #8a2be2;
+	--darkbg: #0a0a0a;
+	--cyberblue: #012;
+	--matrix-green: #00ff41;
+	--night-city-blue: #1a1a2e;
+	--corpo-gray: #1f1f1f;
+	--street-orange: #ff6b35;
+	--hacker-red: #ff0040;
+}
+
+/* Base Styles */
+
+.cyberpunk-body {
+	font-family: 'Share Tech Mono', monospace;
+	color: var(--neongreen);
+	background-color: var(--darkbg);
+	overflow-x: hidden;
+	position: relative;
+}
+
+/* Enhanced Neon Glow Effects */
+
+.cyber-text-glow {
+	text-shadow:
+		0 0 5px currentcolor,
+		0 0 15px currentcolor,
+		0 0 30px currentcolor;
+}
+
+/* Navigation */
+
+.cyber-nav {
+	backdrop-filter: blur(10px);
+	border-bottom: 2px solid var(--neongreen);
+	box-shadow: 0 0 20px rgb(225 255 0 / 20%);
+	background: rgb(0 0 0 / 90%);
+}
+
+.cyber-logo {
+	position: relative;
+}
+
+.cyber-logo::after {
+	content: '';
+	position: absolute;
+	bottom: -5px;
+	left: 0;
+	width: 100%;
+	height: 2px;
+	background: linear-gradient(
+		90deg,
+		var(--neongreen),
+		var(--neonpink),
+		var(--neonblue)
+	);
+	animation: logo-glow 3s ease-in-out infinite;
+}
+
+@keyframes logo-glow {
+	0%,
+	100% {
+		opacity: 0.3;
+	}
+
+	50% {
+		opacity: 0.8;
+	}
+}
+
+.nav-link {
+	display: inline-block;
+	padding: 0.5rem 1rem;
+	font-size: 1.1rem;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	transition: all 0.3s ease;
+	position: relative;
+	color: var(--neongreen);
+}
+
+.nav-link:hover {
+	color: var(--neongreen);
+	text-shadow: 0 0 10px var(--neongreen);
+	transform: translateY(-2px);
+}
+
+.nav-link::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 0;
+	height: 2px;
+	background: var(--neongreen);
+	transition: width 0.3s ease;
+	box-shadow: 0 0 10px var(--neongreen);
+}
+
+.nav-link:hover::after {
+	width: 100%;
+}
+
+/* Footer */
+
+.cyber-footer {
+	position: relative;
+	border-top: 2px solid var(--neongreen);
+	background: var(--corpo-gray);
+}
+
+.cyber-footer::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 1px;
+	background: linear-gradient(
+		90deg,
+		transparent,
+		var(--neongreen),
+		transparent
+	);
+}
+
+/* Contact Section (for cyber-link) */
+
+.cyber-link {
+	position: relative;
+	text-decoration: none;
+	transition: all 0.3s ease;
+}
+
+.cyber-link::after {
+	content: '';
+	position: absolute;
+	bottom: -2px;
+	left: 0;
+	width: 0;
+	height: 1px;
+	background: currentcolor;
+	transition: width 0.3s ease;
+	box-shadow: 0 0 5px currentcolor;
+}
+
+.cyber-link:hover::after {
+	width: 100%;
+}
+
+/* Custom color classes for icons */
+
+.text-neonblue {
+	color: var(--neonblue);
+}
+
+.text-neonpurple {
+	color: var(--neonpurple);
+}
+
+.text-neongreen {
+	color: var(--neongreen);
+}
+
+@media (width <= 768px) {
+	.cyberpunk-body {
+		overflow-x: hidden;
+		width: 100%;
+	}
+}
