@@ -5,6 +5,9 @@ node_modules
 out
 dist
 *.tgz
+public/assets/css/*.css
+public/assets/js/*.js
+public/writeups
 src/ts/commands/registry.ts
 
 # code coverage
