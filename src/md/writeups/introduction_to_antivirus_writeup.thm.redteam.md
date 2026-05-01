@@ -15,9 +15,9 @@ Yara rules extend static detection with more flexibility. Instead of relying on 
 
 **EXERCISES**
 **What is the sigtool tool output to generate an MD5 of the AV-Check.exe binary?**
-
+![](../../assets/storage/images/writeups/introduction_to_antivirus/img001_image149.png)
 **Use the strings tool to list all human-readable strings of the AV-Check binary. What is the flag?**
-
+![](../../assets/storage/images/writeups/introduction_to_antivirus/img002_image150.png)
 I found the flag by simply typing “strings AV-Check.exe”
 **AV Testing and Fingerprinting**
 Testing Environments

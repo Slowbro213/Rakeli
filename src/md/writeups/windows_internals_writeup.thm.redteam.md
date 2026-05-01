@@ -29,6 +29,8 @@ Attackers can target processes to evade detection or disguise malicious activity
 **Observing processes in Windows**
 Task Manager provides key process details:
 
+![](../../assets/storage/images/writeups/windows_internals/img001_image107.png)
+
 **Threads**
 A **thread** is an *executable unit* within a process, scheduled for execution based on factors such as **CPU and memory specifications**, **priority**, and other **logical considerations**. In simpler terms, a thread is responsible for **controlling the execution of a process**. Because threads directly manage execution, they are often **targeted during attacks**. **Thread abuse** can be performed on its own to achieve **code execution** or, more commonly, **chained with other API calls** as part of more complex **exploitation techniques**.
 Threads share the same resources as their **parent process**, including **code**, **global variables**, and other **allocated resources**. However, they also possess their own **unique attributes**: the **stack** holds all data specific to the thread (such as **exceptions** and **procedure calls**); **Thread Local Storage** contains pointers for allocating storage to a **unique data environment**; each thread has a **stack argument** (a unique value assigned to it); and the **context structure** stores **CPU register values** maintained by the **kernel**.
@@ -43,7 +45,7 @@ On a **32-bit x86 system**, the **theoretical maximum virtual address space** is
 Administrators can modify this split using **increaseUserVA** or **AWE** (*Address Windowing Extensions*) for applications needing a larger process address space.
 On a **64-bit modern system**, the **theoretical maximum** expands to **256 TB**, maintaining the same process/OS split ratio. With this significantly larger limit, most issues requiring **increaseUserVA** or **AWE** are effectively eliminated.
 While **virtual memory** may seem like a background technical detail, understanding it is **crucial** for leveraging and potentially **abusing Windows internals**, especially in scenarios involving **memory manipulation** or **low-level exploitation**.
-
+![](../../assets/storage/images/writeups/windows_internals/img002_image108.png)
 **Dynamic Link Libraries**
 The Microsoft documentation defines a **DLL** (*Dynamic-Link Library*) as *“a library that contains code and data that can be used by more than one program at the same time.”* DLLs are a **core part of application execution** in Windows, enabling **modularization**, **code reuse**, **efficient memory usage**, and **reduced disk space**. This allows both the **operating system** and applications to **load faster**, **run faster**, and **take up less disk space**.
 When a DLL is loaded as a **function dependency** in a program, the program becomes reliant on it. This creates an **attack surface**, since targeting a DLL can allow an attacker to **influence execution or modify functionality** without directly altering the application itself. Common malicious techniques include:
@@ -51,6 +53,7 @@ When a DLL is loaded as a **function dependency** in a program, the program beco
 - **DLL Side-Loading** (T1574.002)
 - **DLL Injection** (T1055.001)
 DLLs are created similarly to standard programs, but require **slight syntax modifications** to function as libraries. For example, the following is a simple DLL from a **Visual C++ Win32 Dynamic-Link Library project**:
+![](../../assets/storage/images/writeups/windows_internals/img003_image109.png)
 
 The **header file** defines the functions that are **imported** and **exported**:
 cpp
@@ -66,8 +69,10 @@ extern __declspec(dllimport) void HelloWorld();
 
 DLLs can be integrated into applications using two main methods:
 **1. Load-time dynamic linking** The DLL is linked at program startup, with explicit function calls in the application. This requires a **header (.h)** and an **import library (.lib)** file. Example:
+![](../../assets/storage/images/writeups/windows_internals/img004_image110.png)
 
 **2. Run-time dynamic linking** The DLL is loaded during execution using **LoadLibrary** or **LoadLibraryEx**, and **GetProcAddress** is used to locate the exported function before calling it:
+![](../../assets/storage/images/writeups/windows_internals/img005_image111.png)
 
 **Portable Executable Format**
 **Executables** and **applications** form a large part of how **Windows internals** operate at a higher level. The **Portable Executable (PE)** format defines the **information** about an executable and its stored data, as well as the **structure** for how that data is organized. The PE format applies to both **executable files** and **object files**, and is built on two main file types:
@@ -76,19 +81,23 @@ DLLs can be integrated into applications using two main methods:
 PE data is often seen in the **hex dump** of an executable. Using calc.exe as an example, the PE structure can be broken into **seven components**.
 
 **DOS Format**Defines the type of file. The MZ DOS header indicates the file is an **.exe**.
+![](../../assets/storage/images/writeups/windows_internals/img006_image112.png)
 Here is an example of a hex dump:
 
 **Dos Stub**
 A DOS stub is a small program that runs by default at the beginning of a file, and displays a compatibility message: **“This program cannot be run in DOS mode”**
+![](../../assets/storage/images/writeups/windows_internals/img007_image113.png)
 
 **PE File Header**
 Contains the **PE signature**,** image file header**, and additional metadata about the file. This is less human-readable but can be identified by the **PE** marker:
+![](../../assets/storage/images/writeups/windows_internals/img008_image114.png)
 
 **Image Optional Header**
 Despite its name, this section is critical. It contains important fields, including the **Data Dictionaries**, which point to the image data directory structure.
 
 **Section Table**
 Defines available sections and their details. Each section contains specific parts of the program:
+![](../../assets/storage/images/writeups/windows_internals/img009_image115.png)
 
 **Common Section Purposes**
 
@@ -105,9 +114,13 @@ To demonstrate interacting with memory, we can write a simple message box payloa
 1. **Allocate local process memory** for the message box.
 1. **Write/copy** the message box payload into the allocated memory.
 1. **Execute** the message box from local process memory.
+![](../../assets/storage/images/writeups/windows_internals/img010_image116.png)
 Firstly we open the target process using OpenProcess:
 
+![](../../assets/storage/images/writeups/windows_internals/img011_image117.png)
 Then we allocate memory in the target process using **VirtualAllocEx:**
 
+![](../../assets/storage/images/writeups/windows_internals/img012_image118.png)
 Then we write the payload into allocated memory using WriteProcessMemory:
+![](../../assets/storage/images/writeups/windows_internals/img013_image119.png)
 Lastly, we create a remote thread to execute the payload using **CreateRemoteThread:**

@@ -178,6 +178,8 @@ As a result, a custom wordlist that contains various numbers of words based on y
 
 **python3 cupp.py -l**
 
+![](../../assets/storage/images/writeups/password_attacks/img001_image63.png)
+
 Based on your interest, you can choose the wordlist from the list above to aid in generating wordlists for brute-forcing.
 Finally, CUPP could also provide default usernames and passwords **from the Alecto database **by using the** -a** option.
 
@@ -210,6 +212,7 @@ For instance, hashcat has charset options that could be used to generate your ow
 **hashcat --help**
 
 The following example shows how we can use **hashcat** with the brute-force attack mode with a combination of our choice.
+![](../../assets/storage/images/writeups/password_attacks/img002_image64.png)
 
 **-a 3**sets the attacking mode as a brute force attack
 **?d?d?d**the “?d” tells hashcat to use a digit. In our case, **?d?d?d?d** for four digits starting
@@ -218,10 +221,12 @@ with 0000 and ending at 9999
 
 Now let’s apply the same concept to crack the following MD5 hash: **05A5CF06982BA7892ED2A6D38FE832D6,  a four-digit PIN number.**
 
+![](../../assets/storage/images/writeups/password_attacks/img003_image65.png)
+
 **Offline Attacks **(Rule-Based)
 Rule-Based attacks are also known as **hybrid attacks**. Rule-Based attacks assume the attacker knows something about the password policy. Rules are applied to create passwords within the guidelines of the given password policy and should, in theory, only generate valid passwords. Using pre-existing wordlists may be useful when generating passwords that fit a policy — for example, manipulating or 'mangling' a password such as 'password': **p@ssword**, **Pa$$word**, **Passw0rd**, and so on.
 For this attack, we can expand our wordlist using either **hashcat** or **John the ripper**. However, for this attack, let's see how John the ripper works. Usually, John the ripper has a **config file** that contains **rule sets**, which is located at **/etc/john/john.conf** or **/opt/john/john.conf** depending on your distro or how john was installed. You can read /etc/john/john.conf and **look for ****List.Rules** to see all the available rules:
-
+![](../../assets/storage/images/writeups/password_attacks/img004_image66.png)
 We can see that we have many rules that are available for us to use. We will create a wordlist with only one password containing the string **tryhackme**, to see how we can expand the wordlist. Let's choose one of the rules, the **best64** rule, which contains the best 64 built-in John rules, and see what it can do.
 
 **john --wordlist=/tmp/single-password-list.txt --rules=best64 --stdout | wc -l**
@@ -235,6 +240,7 @@ By running the previous command, we expand our password list from 1 to 76 passwo
 KoreLogic uses various built-in and custom rules to generate complex password lists. For more information, please visit this website here. Now let's use this rule and check whether the **Tryh@ckm3** is available in our list!
 
 **john --wordlist=single-password-list.txt --rules=KoreLogic --stdout |grep "Tryh@ckm3"**
+![](../../assets/storage/images/writeups/password_attacks/img005_image67.png)
 
 The output from the previous command shows that our list has the complex version of **tryhackme**, which is **Tryh@ckm3**. Finally, we recommend checking out all the rules and finding one that works the best for you. Many rules apply combinations to an existing wordlist and expand the wordlist to increase the chance of finding a valid password!
 
@@ -263,6 +269,7 @@ Now let’s create a file containing a single word **password** to see how we ca
 We include the name of the rule we created in the John command using the **--rules** option. We also need to show the result in the terminal. We can do this by using **--stdout** as follows:
 
 **john --wordlist=/tmp/single.lst --rules=THM-Password-Attacks --stdout**
+![](../../assets/storage/images/writeups/password_attacks/img006_image68.png)
 
 For example, to create a rule which produces the following:**“S[Word]NN   where N is a Number and S is a symbol of !@**
 
@@ -317,12 +324,13 @@ Finally, it is worth it to check other online password attacks tools to expand y
 **For the questions in this task:Q1: **
 **Can you guess the ****FTP**** credentials without brute-forcing? What is the flag?**
 
+![](../../assets/storage/images/writeups/password_attacks/img007_image69.png)
 I simply logged into FTP with the anonymous credentials which require no password. From there I navigated to the only directory available, “files”, and downloaded the flag txt file.
 
 **Q2:**
 **In this question, you need to generate a ****rule-based**** dictionary from the wordlist ****clinic.lst**** in the previous task. email: ****pittman@clinic.thmredteam.com**** against ****10.10.64.176:465**** (SMTPS).**
 **What is the password? Note that the password format is as follows: ****[symbol][dictionary word][0-9][0-9]****.**
-
+![](../../assets/storage/images/writeups/password_attacks/img008_image70.png)
 To find the password for the pittman@clinic.thmredteam.com account over SMTPS on port 465 of the target 10.10.64.176, I began by generating a custom wordlist from the target website using** cewl https://clinic.thmredteam.com/ -m 8 -w clinic.lst**
 Since the challenge specifies a password format of [symbol][dictionary word][two digits] (where [symbol] is either ! or @), I created a custom John the Ripper rule to apply these transformations to every word in clinic.lst. The rule, defined in a local configuration file custom_john.conf, prepended ! or @ and appended two digits (00–99) to each word. Using this rule, I generated the candidate password list with
 ** john --wordlist=clinic.lst --rules=DirectSymbolDigits --config=custom_john.conf --stdout --max-length=30 > dict.lst**
@@ -334,7 +342,8 @@ Perform a brute-forcing attack against the** phillips** account for the login pa
 I simply used this command and then logged into the site’s login portal at /login-get with the credentials i got:**hydra -l phillips -P clinic_wordlist.txt 10.10.108.198 http-get-form "/login-get/index.php:username=^USER^&password=^PASS^:S=logout.php" -f**
 
 **Q4:**Perform a rule-based password attack to gain access to the **burgess** account. Find the flag at the following website: **http://10.10.64.176/login-post/**. What is the flag?
-
+![](../../assets/storage/images/writeups/password_attacks/img009_image71.png)
+![](../../assets/storage/images/writeups/password_attacks/img010_image72.png)
 To access the burgess account at **http://10.10.64.176/login-post/**, I performed a rule-based password attack using an expanded version of the **clinic.lst** wordlist. First, I generated clinic.lst by crawling the target website with **cewl https://clinic.thmredteam.com/ -m 8 -w clinic.lst**, collecting words with a minimum length of 8 characters to ensure relevance and complexity.
 
 Next, I applied John the Ripper’s built-in **Single-Extra** rule to the wordlist to generate a set of likely password variations, such as capitalized words, digit suffixes, or other common mutations. This was done using the command **john --wordlist=clinic.lst --rules=Single-Extra --stdout > dict2.lst**.
@@ -347,7 +356,7 @@ Using this information, I ran Hydra with the following command:
 Password Spraying is an effective technique used to identify valid credentials. Nowadays, password spraying is considered one of the common password attacks for discovering weak passwords.
 
 This technique can be used against various online services and authentication systems, such as SSH, SMB, RDP, SMTP, Outlook Web Application, etc. A brute-force attack targets a specific username to try many weak and predictable passwords. While a password spraying attack targets many usernames using one common weak password, which could help avoid an account lockout policy. The following figure explains the concept of password spraying attacks where the attacker utilizes one common password against multiple users.
-
+![](../../assets/storage/images/writeups/password_attacks/img011_image73.png)
 Common and weak passwords often follow a pattern and format. Some commonly used passwords and their overall format can be found below.
 - The current season followed by the current year (SeasonYear). For example, **Fall2020**, **Spring2021**, etc.
 - The current month followed by the current year (MonthYear). For example, **November2020**, **March2021**, etc.
