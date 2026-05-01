@@ -21,8 +21,8 @@ Here, the repeating sequences (E9, 6A, 68, etc.) are likely part of the machine 
 This manual approach is useful for **learning** and for very small cases, but it quickly becomes **time-consuming** if done repeatedly. That’s why, as you noted, analysts typically turn to **FOSS automation tools** that scan binaries and help pinpoint signature regions more efficiently, removing the guesswork from constant splitting and testing.
 **TASK CHALLENGE**
 First, I move the “shell.exe” file to somewhere without an Exclusion, like the desktop. Then, I check for available tools on this machine. I see “amsitrigger” and “ThreatCheck”. I open both.
-![](../../assets/storage/images/writeups/signature_evasion/img001_image183.png)
-![](../../assets/storage/images/writeups/signature_evasion/img002_image184.png)
+![](../assets/storage/images/writeups/signature_evasion/img001_image183.png)
+![](../assets/storage/images/writeups/signature_evasion/img002_image184.png)
 
 **Automating Signature Identification**
 To speed up the process of locating signatures inside binaries, we can automate the splitting and scanning process instead of manually cutting a file and testing each chunk. On the Windows lab machine, a PowerShell script called **Find-AVSignature** is provided. This script recursively splits a binary over a given interval and saves the resulting files so they can be scanned by the antivirus engine. To use it, the script must first be dot-sourced into the PowerShell session and then executed.
@@ -35,7 +35,7 @@ or, to leverage the AMSI scanning engine:
 The output provides the total file size, the location of the detected bytes, and a hex dump showing the exact region in which the suspicious code appears. This makes it much easier to identify the signature range compared to splitting manually or with Find-AVSignature.
 For PowerShell scripts specifically, another tool called **AMSITrigger** is available. It works by sending portions of a script to AMSI and reporting the exact lines or sections that trigger alerts. It can be used with the following syntax:
 
-![](../../assets/storage/images/writeups/signature_evasion/img003_image185.png)
+![](../assets/storage/images/writeups/signature_evasion/img003_image185.png)
 **For Task 3’s challenge,** if we change the value of -e from Defender to AMSI, we can eventually see the beginning of the bad bytes if we wait some time:
 
 Eventually…

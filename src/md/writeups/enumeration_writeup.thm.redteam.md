@@ -81,7 +81,7 @@ Sudo Privileges
 **Sensitive files**:** /etc/shadow**, **/var/mail/root**, running services.
 **Network details**: Can be mapped with **ip**, **netstat**, and** lsof**.
 **Processes**: **ps** shows real-time system activity, useful for identifying what users are doing.
-**Security Insight**: Internal enumeration reveals much more detail than external scans (e.g., **nmap**).
+**Security Insight**: Internal enumeration reveals much more detail than external scans (e.g., `nmap`).
 
 **Windows Enumeration**
 **System Information**
@@ -103,23 +103,23 @@ Sudo Privileges
 **net accounts /domain** for domain policies.
 
 **Network Configuration**
-**ipconfig** or** ****ipconfig /all** Displays IP address, subnet mask, gateway, and DNS configuration.
-**netstat -abno** Shows all listening and established connections, associated processes, and PIDs. Options:
-- -a: **all connections**
-- -b: **show executable**
-- -n: **numeric IPs/ports**
-- -o: **process ID**
-**arp -a** Lists recent LAN IP-to-MAC address mappings.
+`ipconfig` or** **`ipconfig /all` Displays IP address, subnet mask, gateway, and DNS configuration.
+`netstat -abno` Shows all listening and established connections, associated processes, and PIDs. Options:
+- `-a`: **all connections**
+- `-b`: **show executable**
+- `-n`: **numeric IPs/ports**
+- `-o`: **process ID**
+`arp -a` Lists recent LAN IP-to-MAC address mappings.
 
 **DNS,SMB and SMTP**
 **DNS Enumeration**
 - Purpose: Discover subdomains and internal hosts by querying DNS records.
-- Records: Common types include **A****, ****AAAA****, ****CNAME****, ****TXT**.
+- Records: Common types include `A`**, **`AAAA`**, **`CNAME`**, **`TXT`.
 - Zone Transfer:
   - A misconfigured DNS server may allow full zone transfers, revealing all records.
-Use the dig command:**dig -t AXFR DOMAIN_NAME @DNS_SERVER**
-    - **-t AXFR**: Zone transfer query type
-    - **@DNS_SERVER**: Target DNS server
+Use the `dig` command:`dig -t AXFR DOMAIN_NAME @DNS_SERVER`
+    - `-t AXFR`: Zone transfer query type
+    - `@DNS_SERVER`: Target DNS server
 **SMB Enumeration**
 Purpose: Identify shared folders, files, printers, and users on Windows systems.
 Command:**net share**

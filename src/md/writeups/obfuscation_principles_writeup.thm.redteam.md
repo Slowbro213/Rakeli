@@ -128,17 +128,17 @@ Several other properties should be considered before actively using a tool, such
 
 **Using the knowledge you have accrued throughout this task, remove any meaningful identifiers or debug information from the C++ source code below using the AttackBox or your own virtual machine. Once adequately obfuscated and stripped compile the source code using MingW32-G++ and submit it to the webserver. Note: the file name must be challenge-8.exe to receive the flag.**
 ** What flag is found after uploading a properly obfuscated snippet? Hint : To build the source, use x86_64-w64-mingw32-g++ challenge-8.cpp -o challenge-8.exe.**
-![](../../assets/storage/images/writeups/obfuscation_principles/img001_image179.png)
+![](../assets/storage/images/writeups/obfuscation_principles/img001_image179.png)
 First, I create the challenge-8.c file:
 First, we will change the names for these variables, and also any occurrences of them:
 **processHandle  ->  mzkbzk**
 **remoteThread    ->  asdasd**
 **remoteBuffer      -> spfspf**
 Then, we remove the leaked string, as well as any “cout”-s.
-![](../../assets/storage/images/writeups/obfuscation_principles/img002_image180.png)
+![](../assets/storage/images/writeups/obfuscation_principles/img002_image180.png)
 This is the result of the uncompiled code:
 
 So now we compile it.
-![](../../assets/storage/images/writeups/obfuscation_principles/img003_image181.png)
+![](../assets/storage/images/writeups/obfuscation_principles/img003_image181.png)
 Now let’s upload it to THM’s file server for this challenge and see if it fits the criteria.
-![](../../assets/storage/images/writeups/obfuscation_principles/img004_image182.png)
+![](../assets/storage/images/writeups/obfuscation_principles/img004_image182.png)

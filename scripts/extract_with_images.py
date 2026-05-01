@@ -29,7 +29,7 @@ for num in num_root.findall('{%s}num' % W):
     if absRef is not None:
         num_id_map[numId] = abstract_fmt.get(absRef.get('{%s}val' % W), 'bullet')
 
-CODE_FONTS = {'Courier New', 'Courier', 'Consolas', 'Lucida Console', 'Monaco'}
+CODE_FONTS = {'Courier New', 'Courier', 'Consolas', 'Lucida Console', 'Monaco', 'Roboto Mono'}
 
 def run_to_md(run):
     rPr = run.find('{%s}rPr' % W)
@@ -83,7 +83,7 @@ def para_to_md(para, room_slug, img_counter):
                     os.makedirs(dest_dir, exist_ok=True)
                     dest_name = 'img%03d_%s' % (img_counter, src_filename)
                     shutil.copy2(src_path, '%s/%s' % (dest_dir, dest_name))
-                    image_lines.append('![](../../assets/storage/images/writeups/%s/%s)' % (room_slug, dest_name))
+                    image_lines.append('![](../assets/storage/images/writeups/%s/%s)' % (room_slug, dest_name))
                 break
 
     for child in para:

