@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="HEXEN - Penetration Tester & Penetration Tester Portfolio"
+		/>
+		<title>HEXEN // CYBERPUNK PEN-TESTER PORTFOLIO</title>
+		<link rel="stylesheet" href="../assets/css/writeups.css" />
+	</head>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div
+			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+		></div>
+
+		<!-- Navigation -->
+		<nav
+			class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen"
+		>
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span
+							class="text-neongreen font-bold text-xl glitch-effect"
+							data-text="HEXEN"
+							>HEXEN</span
+						>
+						<span class="text-neonpink text-sm ml-2"
+							>// SECURITY_SPECIALIST</span
+						>
+					</div>
+
+					<!-- Desktop Menu -->
+					<div class="hidden md:flex space-x-6">
+						<a href="../" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+
+					<!-- Mobile Menu Button -->
+					<div class="md:hidden mt-4">
+						<button
+							id="mobile-menu-button"
+							type="button"
+							class="text-neongreen focus:outline-none"
+						>
+							<svg
+								class="h-6 w-6 transition-transform duration-300"
+								id="menu-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 6h16M4 12h16M4 18h16"
+								></path>
+							</svg>
+							<svg
+								class="h-6 w-6 transition-transform duration-300 hidden"
+								id="close-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Menu (hidden by default) -->
+				<div
+					id="mobile-menu"
+					class="md:hidden mt-2 border-t border-neongreen border-opacity-30 transform origin-top transition-all duration-300 scale-y-0 opacity-0 max-h-0"
+				>
+					<div class="flex flex-col space-y-4">
+						<a href="../index.html" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<section id="writeup-controls" class="px-6 pt-6 pb-2 text-center">
+  
+
+  <div id='tags-container'>
+    
+  </div>
+</section>
+
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Initial Access</span>
+    <span class="series-part">Part 5 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot active-module" title="Initial Access (4 parts)"></span><span class="series-dot" title="Post Compromise (3 parts)"></span><span class="series-dot" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <a href="intro_to_c2_writeup.html" class="series-nav-btn cyber-link">← [Red Team Fundamentals] intro to c2</a>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <a href="weaponization_writeup.html" class="series-nav-btn cyber-link">weaponization →</a>
+  </div>
+</div>
+<!-- Writeup content -->
+<article class="markdown-body"><h1>Red Team Recon</h1>
+<p>**The tasks of this room cover the following topics:**Types of reconnaissance activities
+WHOIS and DNS-based reconnaissance
+Advanced searching
+Searching by image
+Google Hacking
+Specialized search engines
+Recon-ng
+Maltego</p>
+<p>**Objectives include:**Discovering subdomains related to our target company
+Gathering publicly available information about a host and IP addressed
+Finding email addresses related to the target
+Discovering login credentials and leaked passwords
+Locating leaked documents and spreadsheets</p>
+<p><strong>Taxonomy of Reconnaissance</strong>
+Reconnaissance can be classified into two parts:1. **Passive Recon: **Carried out by passively observing
+2. **Active Recon: **Requires interacting with the target in order to provoke it and observe its’ response</p>
+<p>Passive recon only relies on publicly available information collected and maintained by a 3rd party.
+OSINT is used to collect information about the target and can be as simple as viewing a target’s publicly available social media profile.
+Some example information we may need include:
+Domain names, IP address blocks, email addresses, employee names, and job posts.</p>
+<p>Active recon requires interacting with the target by sending requests and packets and observing if and how it responds. The responses collected, or lack thereof, enable us to expand on the picture we started developing about the target with passive recon.An example of active recon is using <strong>Nmap</strong> to scan target subnets and live hosts.</p>
+<p>Active recon can be classified as:**External Recon: **Conducted outside the target’s network. This method focuses on the externally facing assets assessable from the internet. One example is <strong>running Nikto from outside the company network</strong></p>
+<p>**Internal Recon: **Conducted from within the target company’s network. In other words, the pentester or red teamer might be physically located inside the company building. In this scenario, they might be using an exploited host on the target network. An example would be <strong>using Nessus to scan the internal network using one of the target’s computers.</strong></p>
+<p><strong>Built-In Tools</strong>
+This task focuses on:<strong>Whois</strong>
+<strong>Dig, nslookup, host</strong>
+<strong>traceroute/tracert</strong></p>
+<p>Before we start using the **whois **tool, lets look at WHOIS.
+WHOIS is a **request and response protocol **that follows the RFC 3912 specification.
+A WHOIS server listens on TCP port 43 for incoming requests.
+The domain registrar is responsible for maintaining the WHOIS records for the domain names it is leasing.
+<strong>whois</strong> will query the WHOIS server to provide all saved records. In the following example, we can see that <strong>whois</strong> provides us with:</p>
+<ul>
+<li>Registrar WHOIS server</li>
+<li>Registrar URL</li>
+<li>Record creation date</li>
+<li>Record upload date</li>
+<li>Registrant contact info and address (unless withheld for privacy)</li>
+<li>Admin contact info and address (unless withheld for privacy)</li>
+<li>Tech contact info and address (unless withheld for privacy)</li>
+</ul>
+<p>An example:</p>
+<p>There is quite a lot of valuable information to gain with only a domain name.
+After a whois lookup, we might get lucky and find names, email addresses, postal addresses, and even phone numbers.
+At the end of the whois query, we find the authoritative name servers for the domain in question.</p>
+<p><strong>DNS Queries</strong> can be executed with many different tools found on our systems, especially Unix-like systems. One common tool found on Unix-like systems, Windows, and macOS is <strong>nslookup</strong>.
+In the following query, we can see how nslookup uses the default DNS server to get the A and AAAA records related to our domain.</p>
+<p>Another tool commonly found on Unix-lik esystems is <strong>dig</strong>, short for Domain Information Groper.</p>
+<p><strong>Dig</strong> provides a lot of query options and even allows for specifying a different DNS server to use. For example, we can use Cloudflare’s DNS server: **dig @1.1.1.1 **<strong>tryhackme.com</strong></p>
+<p>**Host **is another useful alternative for <strong>querying DNS servers for DNS reconds.</strong>
+Consider the following example:</p>
+<p>The final tool that ships with Unix-like Systems is <strong>traceroute</strong>. Or on MS Windows systems, called <strong>tracert</strong>.
+As the name indicates, it traces the route taken by the packets from our system to the target host.
+The console output below shows that <strong>traceroute</strong> provided us with the routers (hops) connecting us to the target system.
+Some routers don’t respond to the packets sent by traceroute though. We don’t see their IP addresses, and <strong>a “*” is used to indicate such cases.</strong></p>
+<p>So, in summary, we can always rely on:</p>
+<ul>
+<li>**whois **to query the WHOIS database</li>
+<li>**nslookup **, <strong>dig</strong>, or <strong>host</strong> to query DNS server</li>
+</ul>
+<p>WHOIS databases and DNS servers hold publicly available information, and querying either does not generate any suspicious traffic.</p>
+<p>Moreover, we can rely on traceroute/tracert to discover the hops between our system and the target host.</p>
+<p><strong>Advanced Searching</strong>
+Being able to use a search engine efficiently is a crucial skill. The following table shows some popular search modifiers that work with many popular search engines:</p>
+<p><strong>Note:</strong> In addition to <strong>pdf</strong>, other file types to consider are: <strong>doc</strong>, <strong>docx</strong>, <strong>ppt</strong>, <strong>pptx</strong>, <strong>xls</strong>, <strong>xlsx</strong></p>
+<p>Different search engines have different syntax and must be reviewed beforehand.</p>
+<p>Search engines crawl the web basically 24/7 to index new web pages and files. Sometimes this can accidentally lead to indexing confidential information. Such information may include:</p>
+<ul>
+<li>Documents for internal company use</li>
+<li>Confidential spreadsheets with usernames, email addresses, and passwords</li>
+<li>Files containing usernames</li>
+<li>Sensitive directories</li>
+<li>Service version numbers (may be vulnerable or unpatched for example)</li>
+<li>Error messages</li>
+</ul>
+<p>Combining advanced Google searches with specific terms, documents containing sensitive information or vulnerable web servers can be found. Websites such as “Google Hacking database (GHDB)” collect such terms and are publicly available. Let’s take a look at some of the GHDB queries to see if our client has any confidential information exposed via search engines.</p>
+<p><strong>GHDB Contains queries under the following categories:</strong>
+<strong>Footholds</strong>
+Consider <strong>GHDB-ID: 6364</strong>, as it uses the query **intitle: “index of” “nginx.log” **to discover Nginx logs and might reveal server misconfigurations that can be exploited.
+<strong>Files Containing Usernames</strong>
+For example, <strong>GHDB-ID: 7047</strong> uses the search term <strong>intitle:”index of” “contacts.txt”</strong> to discover files that leak juicy information.
+<strong>Sensitive Directories</strong>
+For example, consider <strong>GHDB-ID: 6788</strong>, which uses the search term <strong>inurl:/certs/server.key</strong> to find out if a private RSA key is exposed.
+<strong>Web Server Detection</strong>
+Consider <strong>GHDB-ID: 6876</strong>, which detects GlassFish Server information using the query <strong>intitle: “GlassFish Server - Server Running”</strong></p>
+<p><strong>Vulnerable Files</strong>
+For example, we can try to locate PHP files using the query <strong>intitle: “index of” “*.php”</strong> as provided by <strong>GHDB-ID: 7786</strong>
+<strong>Vulnerable Servers</strong>
+For instance, to discover SolarWinds Orion web consoles, <strong>GHDB-ID:6728</strong> uses the query <strong>intitle:”index of” errors.log</strong> to find log files related to errors.</p>
+<p>To learn more about this process, check out the concept of <strong>Google Dorking</strong>.</p>
+<p>Now, some additional resources that can provide valuable information without target interaction are:- Social Media</p>
+<ul>
+<li>Job ads</li>
+</ul>
+<p><strong>Social Media</strong>Social media websites have become very popular for not only personal use but also for corporate use. Some social media platforms can reveal tons of information about the target. This is especially true as many users tend to overshare details about themselves and their work. To name a few, it&#39;s worthwhile checking the following:</p>
+<p>LinkedIn
+Twitter
+Facebook
+Instagram</p>
+<p>Social media websites make it easy to collect the names of a given company&#39;s employees; moreover, in certain instances, you might learn specific pieces of information that can reveal answers to password recovery questions or gain ideas to include in a targeted wordlist.</p>
+<p>Posts from technical staff might reveal details about a company’s systems and vendors. For example, a network engineer who was recently issued Juniper certifications may allude to Juniper networking infrastructure being used in their employer’s environment.</p>
+<p><strong>Job Ads</strong>
+Job advertisements can also tell you a lot about a company. In addition to revealing names and email addresses, job posts for technical positions could give insight into the target company’s systems and infrastructure. The popular job posts might vary from one country to another. Make sure to check job listing sites in the countries where your client would post their ads. Moreover, it is always worth checking their website for any job opening and seeing if this can leak any interesting information.</p>
+<p>Note that the Wayback Machine can be helpful to retrieve previous versions of a job opening page on your client’s site.</p>
+<p><strong>Specialized Search Engines</strong></p>
+<p><strong>WHOIS and DNS related</strong>
+Apart from what we discussed, there are also third parties that offer paid services for historical WHOIS data. One example is <strong>WHOIS History</strong>, which provides a history of WHOIS dat aand is useful if the domain registrant didn’t use WHOIS privacy when they registered the domain.</p>
+<p>There’s a handful of sites that offer advanced DNS services that are free to use.
+Some of these websites offer rich functionality and could have a complete room dedicated to exploring one domain. For now, we’ll focus on key DNS related aspects. The following sites are to be considered:<strong>ViewDNS.info</strong></p>
+<p><strong>ViewDNS.info</strong></p>
+<p>ViewDNS.info offers <strong>Reverse IP Lookup</strong>. Initially, each web server would use one or more IP addresses, however today it is common to come across <strong>shared hosting servers.</strong></p>
+<p>With shared hosting, one IP address is shared among many different web servers with different domain names.
+With reverse IP lookup however, starting from a domain name or an IP address, you can find the other domain names using specific IP Address(es).</p>
+<p>In the figure below, we used reverse IP lookup to find other servers sharing the same Ip addresses used by <strong>cafe.thmredteam.com</strong><strong>.</strong>
+Therefore, it is important to note that knowing the IP address does not necessarily lead to a single website.</p>
+<p><strong>Threat Intelligence Platform</strong>
+Threat Intelligence Platform requires you to provide a domain name or an IP address, and it will launch a series of tests from malware checks to WHOIS and DNS queries.
+The WHOIS and DNS results are similar to the results we would get using <strong>whois</strong> and <strong>dig</strong>, but Threat Intelligence Platform presents them in a more readable and visually appealing way.</p>
+<p>There is extra information that we get with our report. For instance, after we look up <strong>thmredteam.com</strong>, we see that Name Server (NS) records were resolved to their respective IPv4 and IPv6 addresses, as shown in the figure below.</p>
+<p>On the other hand, searching for <strong>cafe.thmredteam.com</strong> also gets us a list of other domains on the same IP address. The result we see in the figure below is similar to the results obtained by using ViewDNS.info</p>
+<p><strong>Specialized Search Engines</strong></p>
+<p><strong>Censys</strong>
+<strong><a href="https://search.censys.io/">https://search.censys.io/</a></strong></p>
+<p>Censys Search can provide a lot of information about IP addresses and domains. In this example, we look up one of the IP addresses that <strong>cafe.thmredteam.com</strong> resolves to.
+We can easily infer that the IP address we looked up belongs to Cloudflare.</p>
+<p>We see information related to ports 80 and 443, among others.</p>
+<p>It is clear that this IP address is used to server websites other than <strong>cafe.thmredteam.com</strong></p>
+<p>In other words, this IP address belongs to a company other than our client, Organic Cafe.
+It’s critical to make this distinction so that we don’t probe systems outside the scope of our contract.</p>
+<p><strong>Shodan</strong></p>
+<p>Using shodan from the commandline is simple.</p>
+<p>To use Shodan from the commandline properly, we first create an account with Shodan.
+Then, we configure <strong>shodan</strong> to use our API key using the command:<strong>Shodan init API_KEY</strong></p>
+<p>We can use different filters depending on the type of Shodan account.
+To learn more about what to do with <strong>shodan</strong>, it is recommended to look at *<em>Shodan CLI (<strong><strong><a href="https://cli.shodan.io/">https://cli.shodan.io/</a></strong></strong>)</em>*</p>
+<p>Let’s now demonstrate a simple example of looking up information about one of the IP addresses we got from <strong>“nslookup <strong><strong>cafe.thmredteam.com</strong></strong>”</strong>.
+Using “shodan host IP_Address” , we can get the geographical location of the IP address and the open ports, as shown below.</p>
+<p><strong>Recon-ng</strong>
+Recon-ng is a framework that helps automate the OSINT work. It uses modules from various authors and provides a multitude of functionality. Some modules require keys to work;
+The key allows the module to query the related online API.</p>
+<p>In this task, we will demonstrate using Recon-ng in the terminal.</p>
+<p>Recon-ng can be used to find various bits and pieces of info that can aid in an operation or OSINT task.
+All the data collected is automatically saved in the database related to your workspace. For instance, **you might discover host addresses to lart port scan **or <strong>collect contact email addresses for phishing attacks.</strong></p>
+<p>You can start Recon-ng by running the command <strong>recon-ng</strong>.
+Starting recon-ng will give you a prompt like <strong>[recon-ng][default] &gt;</strong>
+At this stage, you need to select the installed module you want to use.</p>
+<p>However, if this is the first time you’re running recon-ng, you will need to install the modules we need.</p>
+<p>In this task, we will follow the following workflow:</p>
+<ol>
+<li><p>Create a workspace for your project</p>
+</li>
+<li><p>Insert the starting information into the database</p>
+</li>
+<li><p>Search the marketplace for a module and learn about it before installing</p>
+</li>
+<li><p>List the installed modules and load one</p>
+</li>
+<li><p>Run the loaded module</p>
+</li>
+<li><p><strong>Creating a workspace</strong>
+Run <strong>workspaces create WORKSPACE_NAME</strong> to create a new workspace for your investigation.
+For example, **workspaces create thmredteam **will create a workspace named <strong>thmredteam.</strong></p>
+</li>
+</ol>
+<p>**recon-ng -w WORKSPACE_NAME **starts recon-ng with the specific workspace.</p>
+<ol>
+<li><strong>Seeding the Database</strong>
+In recon, we start with one piece of information and then transform it into new pieces of information. For instance, we might start the research with a company name and then use that to discover the domain name(s), contacts and profiles. Then we can use that newly obtained information to transform it further and learn more about the target.</li>
+</ol>
+<p>Let’s consider the case where we know the target’s domain name, <strong>thmredteam.com</strong>, and we would like to feed it to the Recon-ng database related to the active workspace. If we want to check the names of the tables in our database, we can run <strong>db schema</strong>.</p>
+<p>We want to insert the domain name “thmredteam.com” into the domains table. We can do this by using the command <strong>db insert domains</strong>.</p>
+<p><strong>Recon-ng Marketplace</strong>
+We have a domain name now, so a logical next step would be to search for a module that transforms domains into other types of information. Assuming we are starting from a fresh installation of Recon-ng, we will search for suitable modules from the marketplace.</p>
+<p>Before we start installing marketplace modules, there are some useful commands related to marketplace usage:**marketplace search KEYWORD **to search for available modules with a keyword.
+<strong>marketplace info MODULE</strong> to provide information about the module in question
+<strong>marketplace install MODULE</strong> to install the specified module into Recon-ng
+**Marketplace remove MODULE **to uninstall the specified module.</p>
+<p>The modules are grouped under multiple categories, such as discovery, import, recon and reporting.
+Moreover, recon is also divided into many subcategories depending on the transform type.</p>
+<p>Run <strong>marketplace search</strong> to get a list of all available modules.
+In the terminal below, we search for modules containing <strong>domains-</strong></p>
+<p>We notice many categories under <strong>recon</strong>, such as **domains-companies, domains-contacts **and <strong>domains-hosts</strong>. This naming tells us what kind of new information we will get from that transformation. For instance, <strong>domains-hosts</strong> means that the module will find hosts related to the provided domain.</p>
+<p>Some modules, like <strong>whoxy_whois</strong> require a key, as we can tell from the ***** under the <strong>K</strong> column.
+This indicates that the module is not usable unless we have a key to use that service.</p>
+<p>Other modules have dependencies, indicated by a ***** under the **D **column. Dependencies show that third-party Python libraries might be necessary to use the related module.</p>
+<p>For example, if we’re interested in <strong>recon/domains-hosts/google_site_web</strong>. To learn more about any particular module, we can use the command <strong>marketplace info MODULE</strong>.</p>
+<p>This is an essential command that explains what the module does.
+For example, <strong>marketplace info google_site_web</strong> provides the following description:
+“Harvests hosts from Google.com by using the ‘site’ search operator. Updates the ‘hosts’ table with the results.”</p>
+<p>In other words, this module will use the Google search engine and the “site” operator.</p>
+<p>We can install the module we want with the command <strong>marketplace install MODULE</strong>, for example, <strong>marketplace install google_site_web.</strong></p>
+<p><strong>Working with installed Modules</strong></p>
+<p>We can work with modules using:
+**modules search **to get a list of all the installed modules
+<strong>modules load MODULE</strong> to load a specific module to memory</p>
+<p>Let’s load the module that we installed earlier from the marketplace, **modules load viewdns_reverse_whois. **
+To <strong>run</strong> it, we need to set the required options:</p>
+<p>**options list **to list the options that we can set for the loaded module
+**options set <option> <value> **to set the value of an option.</p>
+<p>In a previous step, we have installed the module <strong>google_site_web</strong>, so let’s load it using <strong>load google_site_web</strong> and run it with <strong>run</strong>.
+We have already added the domain <strong>thmredteam.com</strong> to the database, so when the module is run, it will read that value from the database, get new kinds of information, and add them to the database in turn. The commands and results are shown in the terminal output below:</p>
+<p>This module has queried Google and found two hosts:<strong>cafe.thmredteam.com</strong>  and  <strong>clinic.thmredteam.com</strong>.</p>
+<p>It is possible that by the time you run these steps, new hosts will also appear.</p>
+<p><strong>Keys</strong>
+Some modules cannot be used without a key for the respective service API.**K **indicates that you need to provide the relevant service key to use the module in question.</p>
+<p>**keys list **- lists the keys
+**keys add KEY_NAME KEY_VALUE **- adds a key
+**keys remove KEY_NAME **- removes a key</p>
+<p>Once we have the set of modules installed, we can proceed to load and run them.</p>
+<p>**modules load MODULE **loads an installed module
+**CTRL + C **unloads the module
+**info **to review the loaded module’s info
+**options list **lists available options for the chosen module
+<strong>options set NAME VALUE</strong>
+**run **to execute the loaded module</p>
+<p><strong>Maltego</strong>
+Maltego is an application that blends mind-mapping with OSINT. In general, you would start with a domain name, company name, email etc.
+Then you can let this piece of information go through various transforms.</p>
+<p>The information collected in Maltego can be used for later stages. For instance, company information, contact names, and email addresses collected can be used to create very legitimate-looking phishing emails.</p>
+<p>Think of each block on a Maltego graph as an entity. An entity can have values to describe it. In Maltego’s terminology, a <strong>transform</strong> is a piece of code that would query an **API **to retrieve information related to a specific entity.
+The logic is shown in the picture below.<strong>Information</strong> related to an entity goes via a <strong>transform</strong> to return zero or more entities.</p>
+<p>It is crucial to mention that some of the transforms available in Maltego might actively connect to the target system.
+Therefore, it is better to know how the transform works before using it if you want to limit yourself to passive reconnaissance.</p>
+<p>Every transform might lead to several new values. For instance, if we start from the “DNS Name” <strong>cafe.thmredteam.com</strong> , we expect to get new kinds of entities based on the transform we use.
+For instance, “To IP Address” is expected to return IP Addresses as shown next.</p>
+<p>One way to achieve this in Maltego is to right-click on the “DNS Name” <strong>cafe.thmredteam.com</strong> and choose:</p>
+<ol>
+<li>Standard Transforms</li>
+<li>Resolve to IP</li>
+<li>To IP Address (DNS)</li>
+</ol>
+<p>After executing this transform, we would get one or more IP addresses, as shown below.</p>
+<p>Then, we can choose to apply another transform for one of the IP addresses. Consider the following transform:</p>
+<ol>
+<li>DNS from IP</li>
+<li>To DNS Name from Passive DNS</li>
+</ol>
+<p>This will populate our graph with new DNS names.</p>
+<p>With a couple more clicks, we can then get the location of the IP Address, and so on.
+The result might be similar to the image below.</p>
+<p>The above two examples should give you an idea of the workflow using Maltego.</p>
+<p>You can observe that all the work is based on transforms, and Maltego will help you keep your graph organised. You would get the same results by querying the different online websites and databases; however, Maltego helps you get all the information you need with a few clicks.</p>
+<p>We experimented with <strong>whois</strong> and <strong>nslookup</strong> in a previous task.
+You get plenty of information, from names, emails, IP addresses etc.</p>
+<p>The results of whois and nslookup <strong>are shown visually</strong> in the following Maltego graph.
+Interestingly, Maltego transforms were able to extract and arrange the information returned from the WHOIS database.</p>
+<p>Although the returned email addresses are not helpful due to privacy protection, it is worth seeing how Maltego can extract such information and how it’s presented.</p>
+<p>Now that we have learned how Maltego’s power stems from its transforms, the only logical thing is to make Maltego more powerful by adding new Transforms. Transforms are usually grouped into different categories based on data type, pricing, and target audience. Although many transforms can be used using Maltego Community Edition and free transforms, other transforms require a paid subscription. A screenshot is shown below to give a clearer idea</p>
+</article>
+${series_nav}
+
+			<!-- Footer -->
+			<footer
+				class="cyber-footer py-12 bg-black border-t border-gray-800 mt-12"
+			>
+				<div class="container mx-auto px-4">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<div class="mb-6 md:mb-0">
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN_SEC</h3>
+							<p class="text-sm text-gray-400 cyber-text">
+								Penetration Testing & Security Consulting
+							</p>
+						</div>
+						<div class="flex space-x-6">
+							<a
+								href="#"
+								class="hover:text-neongreen transition-colors cyber-link"
+								>Imprint</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonpink transition-colors cyber-link"
+								>Privacy</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>Legal</a
+							>
+						</div>
+					</div>
+					<div
+						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+					>
+						<p class="cyber-text">
+							© 2025 HEXEN. All systems operational.
+							<span class="text-neongreen">//</span> Secure by design.
+						</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+		<script type="module" src="../assets/js/menu.js" defer></script>
+	</body>
+</html>

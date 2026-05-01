@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="HEXEN - Penetration Tester & Penetration Tester Portfolio"
+		/>
+		<title>HEXEN // CYBERPUNK PEN-TESTER PORTFOLIO</title>
+		<link rel="stylesheet" href="../assets/css/writeups.css" />
+	</head>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div
+			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+		></div>
+
+		<!-- Navigation -->
+		<nav
+			class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen"
+		>
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span
+							class="text-neongreen font-bold text-xl glitch-effect"
+							data-text="HEXEN"
+							>HEXEN</span
+						>
+						<span class="text-neonpink text-sm ml-2"
+							>// SECURITY_SPECIALIST</span
+						>
+					</div>
+
+					<!-- Desktop Menu -->
+					<div class="hidden md:flex space-x-6">
+						<a href="../" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+
+					<!-- Mobile Menu Button -->
+					<div class="md:hidden mt-4">
+						<button
+							id="mobile-menu-button"
+							type="button"
+							class="text-neongreen focus:outline-none"
+						>
+							<svg
+								class="h-6 w-6 transition-transform duration-300"
+								id="menu-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 6h16M4 12h16M4 18h16"
+								></path>
+							</svg>
+							<svg
+								class="h-6 w-6 transition-transform duration-300 hidden"
+								id="close-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Menu (hidden by default) -->
+				<div
+					id="mobile-menu"
+					class="md:hidden mt-2 border-t border-neongreen border-opacity-30 transform origin-top transition-all duration-300 scale-y-0 opacity-0 max-h-0"
+				>
+					<div class="flex flex-col space-y-4">
+						<a href="../index.html" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<section id="writeup-controls" class="px-6 pt-6 pb-2 text-center">
+  
+
+  <div id='tags-container'>
+    
+  </div>
+</section>
+
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Red Team Fundamentals</span>
+    <span class="series-part">Part 1 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot active-module" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot" title="Initial Access (4 parts)"></span><span class="series-dot" title="Post Compromise (3 parts)"></span><span class="series-dot" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <span class="series-nav-btn disabled">← start</span>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <a href="red_team_threat_intel_writeup.html" class="series-nav-btn cyber-link">red team threat intel →</a>
+  </div>
+</div>
+<!-- Writeup content -->
+<article class="markdown-body"><h1>Red Team Fundamentals</h1>
+<p>A <strong>vulnerability assessment</strong> focuses on scanning hosts for vulnerabilities as individual entities so that security deficiencies can be <strong>Identified</strong> and effective security measures can be deployed to <strong>protect</strong> the network in a prioritized manner.</p>
+<p><strong>Penetration Tests</strong>
+Pentesters can explore the impact of an attacker on the network by doing additional steps like exploiting the vulnerabilities found in systems and conducting post-exploitation tasks on a compromised host to extract helpful information or pivot to other hosts which were previously inaccessible.</p>
+<p><strong>APTs and why Regular Pentesting is not enough</strong></p>
+<p>Limitations to security engagements and how much they can prepare a company against a real attacker may include: Time Constrains, Budget, Limited Scope, Non-disruptiveness and Heavy IT Focus</p>
+<p>Penetration tests differ from real-life attacks. They are much louder since they have no need to stay undetected, they have been contracted for this pentest after all.
+There is also a common tendency to ignore non-technical attack vectors like attacks based on social engineering (phishing etc.) and physical intrusions when performing a test.</p>
+<p>Also, most of the time some security mechanisms are disabled to provide efficiency to the pentesting team, due to the fact they only have a limited time to perform the network check. Therefore they don’t need to find ways to bypass security systems like WAFs etc. but can focus on protecting critical infrastructure directly.</p>
+<p>Real attackers however are unrestricted and the most major groups are known as Advanced Persistent Threats <strong>(APTs)</strong>, who are formed of either skilled groups of people or state actors.</p>
+<p>Red team engagements are advanced security assessments focused on testing an organization&#39;s detection and response capabilities rather than just identifying vulnerabilities. Unlike traditional penetration tests, red teaming simulates real-world threat actors using stealthy Tactics, Techniques, and Procedures (TTPs) to achieve specific goals (e.g., data exfiltration or server compromise) without alerting defenders.</p>
+<p>Red team exercises can include:
+<strong>Technical attacks</strong> (infrastructure exploitation),<strong>Social engineering</strong> (phishing, pretexting),<strong>Physical intrusion</strong> (access control bypass).
+Common formats include:
+<strong>Full Engagement</strong> (from initial compromise to objective),<strong>Assumed Breach</strong> (start with limited access),<strong>Tabletop Exercises</strong> (theoretical scenarios).</p>
+<p>Red teams often use adversary emulation to simulate real-world attackers, applying known TTPs to test how defenders respond. A core framework for structuring these simulations is the <strong>Cyber Kill Chain</strong>, commonly used by both red and blue teams to map attacker behavior.</p>
+</article>
+${series_nav}
+
+			<!-- Footer -->
+			<footer
+				class="cyber-footer py-12 bg-black border-t border-gray-800 mt-12"
+			>
+				<div class="container mx-auto px-4">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<div class="mb-6 md:mb-0">
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN_SEC</h3>
+							<p class="text-sm text-gray-400 cyber-text">
+								Penetration Testing & Security Consulting
+							</p>
+						</div>
+						<div class="flex space-x-6">
+							<a
+								href="#"
+								class="hover:text-neongreen transition-colors cyber-link"
+								>Imprint</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonpink transition-colors cyber-link"
+								>Privacy</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>Legal</a
+							>
+						</div>
+					</div>
+					<div
+						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+					>
+						<p class="cyber-text">
+							© 2025 HEXEN. All systems operational.
+							<span class="text-neongreen">//</span> Secure by design.
+						</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+		<script type="module" src="../assets/js/menu.js" defer></script>
+	</body>
+</html>

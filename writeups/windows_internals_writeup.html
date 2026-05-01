@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="HEXEN - Penetration Tester & Penetration Tester Portfolio"
+		/>
+		<title>HEXEN // CYBERPUNK PEN-TESTER PORTFOLIO</title>
+		<link rel="stylesheet" href="../assets/css/writeups.css" />
+	</head>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div
+			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+		></div>
+
+		<!-- Navigation -->
+		<nav
+			class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen"
+		>
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span
+							class="text-neongreen font-bold text-xl glitch-effect"
+							data-text="HEXEN"
+							>HEXEN</span
+						>
+						<span class="text-neonpink text-sm ml-2"
+							>// SECURITY_SPECIALIST</span
+						>
+					</div>
+
+					<!-- Desktop Menu -->
+					<div class="hidden md:flex space-x-6">
+						<a href="../" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+
+					<!-- Mobile Menu Button -->
+					<div class="md:hidden mt-4">
+						<button
+							id="mobile-menu-button"
+							type="button"
+							class="text-neongreen focus:outline-none"
+						>
+							<svg
+								class="h-6 w-6 transition-transform duration-300"
+								id="menu-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 6h16M4 12h16M4 18h16"
+								></path>
+							</svg>
+							<svg
+								class="h-6 w-6 transition-transform duration-300 hidden"
+								id="close-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Menu (hidden by default) -->
+				<div
+					id="mobile-menu"
+					class="md:hidden mt-2 border-t border-neongreen border-opacity-30 transform origin-top transition-all duration-300 scale-y-0 opacity-0 max-h-0"
+				>
+					<div class="flex flex-col space-y-4">
+						<a href="../index.html" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<section id="writeup-controls" class="px-6 pt-6 pb-2 text-center">
+  
+
+  <div id='tags-container'>
+    
+  </div>
+</section>
+
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Host Evasions</span>
+    <span class="series-part">Part 12 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot" title="Initial Access (4 parts)"></span><span class="series-dot" title="Post Compromise (3 parts)"></span><span class="series-dot active-module" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <a href="windows_privilege_escalation_writeup.html" class="series-nav-btn cyber-link">← [Post Compromise] windows privilege escalation</a>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <a href="introduction_to_windows_api_writeup.html" class="series-nav-btn cyber-link">introduction to windows api →</a>
+  </div>
+</div>
+<!-- Writeup content -->
+<article class="markdown-body"><h1>Windows Internals</h1>
+<p><strong>Windows Processes</strong>
+A process represents the <strong>execution of a program</strong>. While an application can contain multiple processes, each process has the resources needed to run its associated program. According to Microsoft, a process includes:</p>
+<ul>
+<li>Virtual address space</li>
+<li>Executable code</li>
+<li>Open handles to system objects</li>
+<li>Security context (user, privileges, and security groups)</li>
+<li>Unique process identifier (PID)</li>
+<li>Environment variables</li>
+<li>Priority class</li>
+<li>Minimum and maximum working set sizes</li>
+<li>At least one thread of execution
+Every Windows application corresponds to at least one process, and many core system functions are implemented as processes. Examples include:</li>
+<li><strong>MsMpEng</strong> – Microsoft Defender</li>
+<li><strong>wininit</strong> – Core system initialization (keyboard, mouse)</li>
+<li><strong>lsass</strong> – Credential storage and authentication
+Attackers can target processes to evade detection or disguise malicious activity, using techniques such as <strong>Process Injection</strong> , <strong>Process Hollowing <strong>and</strong> Process Masquerading</strong>.
+<strong>High-Level Process Components</strong></li>
+</ul>
+<p><strong>Observing processes in Windows</strong>
+Task Manager provides key process details:</p>
+<p><strong>Threads</strong>
+A <strong>thread</strong> is an <em>executable unit</em> within a process, scheduled for execution based on factors such as <strong>CPU and memory specifications</strong>, <strong>priority</strong>, and other <strong>logical considerations</strong>. In simpler terms, a thread is responsible for <strong>controlling the execution of a process</strong>. Because threads directly manage execution, they are often <strong>targeted during attacks</strong>. <strong>Thread abuse</strong> can be performed on its own to achieve <strong>code execution</strong> or, more commonly, <strong>chained with other API calls</strong> as part of more complex <strong>exploitation techniques</strong>.
+Threads share the same resources as their <strong>parent process</strong>, including <strong>code</strong>, <strong>global variables</strong>, and other <strong>allocated resources</strong>. However, they also possess their own <strong>unique attributes</strong>: the <strong>stack</strong> holds all data specific to the thread (such as <strong>exceptions</strong> and <strong>procedure calls</strong>); <strong>Thread Local Storage</strong> contains pointers for allocating storage to a <strong>unique data environment</strong>; each thread has a <strong>stack argument</strong> (a unique value assigned to it); and the <strong>context structure</strong> stores <strong>CPU register values</strong> maintained by the <strong>kernel</strong>.
+Although threads may appear to be <strong>simple components</strong>, their role in <strong>controlling process execution</strong> makes them a <strong>critical part of Windows internals</strong> and a <strong>valuable target for security exploitation</strong>.</p>
+<p><strong>Virtual Memory</strong>
+<strong>Virtual memory</strong> is a critical component of how <strong>Windows internals</strong> operate and interact. It allows internal components to work with memory <strong>as if it were physical memory</strong>, while preventing <strong>collisions between applications</strong>. Each process is provided with a <strong>private virtual address space</strong>, and a <strong>memory manager</strong> translates these <strong>virtual addresses</strong> into <strong>physical addresses</strong>. By avoiding direct writes to physical memory, processes face a <strong>reduced risk of causing damage</strong> to the system or other applications.
+The memory manager handles memory through <strong>pages</strong> and <strong>transfers</strong>. When an application uses <strong>more virtual memory than its allocated physical memory</strong>, the manager can <strong>page</strong> data to disk to compensate. This mechanism ensures that applications can continue functioning without exhausting system resources.
+On a <strong>32-bit x86 system</strong>, the <strong>theoretical maximum virtual address space</strong> is <strong>4 GB</strong>, divided equally:</p>
+<ul>
+<li><strong>Lower half</strong> (0x00000000 – 0x7FFFFFFF): allocated to processes</li>
+<li><strong>Upper half</strong> (0x80000000 – 0xFFFFFFFF): reserved for <strong>OS memory utilization</strong>
+Administrators can modify this split using <strong>increaseUserVA</strong> or <strong>AWE</strong> (<em>Address Windowing Extensions</em>) for applications needing a larger process address space.
+On a <strong>64-bit modern system</strong>, the <strong>theoretical maximum</strong> expands to <strong>256 TB</strong>, maintaining the same process/OS split ratio. With this significantly larger limit, most issues requiring <strong>increaseUserVA</strong> or <strong>AWE</strong> are effectively eliminated.
+While <strong>virtual memory</strong> may seem like a background technical detail, understanding it is <strong>crucial</strong> for leveraging and potentially <strong>abusing Windows internals</strong>, especially in scenarios involving <strong>memory manipulation</strong> or <strong>low-level exploitation</strong>.</li>
+</ul>
+<p><strong>Dynamic Link Libraries</strong>
+The Microsoft documentation defines a <strong>DLL</strong> (<em>Dynamic-Link Library</em>) as <em>“a library that contains code and data that can be used by more than one program at the same time.”</em> DLLs are a <strong>core part of application execution</strong> in Windows, enabling <strong>modularization</strong>, <strong>code reuse</strong>, <strong>efficient memory usage</strong>, and <strong>reduced disk space</strong>. This allows both the <strong>operating system</strong> and applications to <strong>load faster</strong>, <strong>run faster</strong>, and <strong>take up less disk space</strong>.
+When a DLL is loaded as a <strong>function dependency</strong> in a program, the program becomes reliant on it. This creates an <strong>attack surface</strong>, since targeting a DLL can allow an attacker to <strong>influence execution or modify functionality</strong> without directly altering the application itself. Common malicious techniques include:</p>
+<ul>
+<li><strong>DLL Hijacking</strong> (T1574.001)</li>
+<li><strong>DLL Side-Loading</strong> (T1574.002)</li>
+<li><strong>DLL Injection</strong> (T1055.001)
+DLLs are created similarly to standard programs, but require <strong>slight syntax modifications</strong> to function as libraries. For example, the following is a simple DLL from a <strong>Visual C++ Win32 Dynamic-Link Library project</strong>:</li>
+</ul>
+<p>The <strong>header file</strong> defines the functions that are <strong>imported</strong> and <strong>exported</strong>:
+cpp
+CopyEdit
+#ifndef INDLL_H
+#define INDLL_H
+#ifdef EXPORTING_DLL
+extern __declspec(dllexport) void HelloWorld();
+#else
+extern __declspec(dllimport) void HelloWorld();
+#endif
+#endif</p>
+<p>DLLs can be integrated into applications using two main methods:
+<strong>1. Load-time dynamic linking</strong> The DLL is linked at program startup, with explicit function calls in the application. This requires a <strong>header (.h)</strong> and an <strong>import library (.lib)</strong> file. Example:</p>
+<p><strong>2. Run-time dynamic linking</strong> The DLL is loaded during execution using <strong>LoadLibrary</strong> or <strong>LoadLibraryEx</strong>, and <strong>GetProcAddress</strong> is used to locate the exported function before calling it:</p>
+<p><strong>Portable Executable Format</strong>
+<strong>Executables</strong> and <strong>applications</strong> form a large part of how <strong>Windows internals</strong> operate at a higher level. The <strong>Portable Executable (PE)</strong> format defines the <strong>information</strong> about an executable and its stored data, as well as the <strong>structure</strong> for how that data is organized. The PE format applies to both <strong>executable files</strong> and <strong>object files</strong>, and is built on two main file types:</p>
+<ul>
+<li><strong>PE (Portable Executable) files</strong></li>
+<li><strong>COFF (Common Object File Format) files</strong>
+PE data is often seen in the <strong>hex dump</strong> of an executable. Using calc.exe as an example, the PE structure can be broken into <strong>seven components</strong>.</li>
+</ul>
+<p><strong>DOS Format</strong>Defines the type of file. The MZ DOS header indicates the file is an <strong>.exe</strong>.
+Here is an example of a hex dump:</p>
+<p><strong>Dos Stub</strong>
+A DOS stub is a small program that runs by default at the beginning of a file, and displays a compatibility message: <strong>“This program cannot be run in DOS mode”</strong></p>
+<p><strong>PE File Header</strong>
+Contains the <strong>PE signature</strong>,** image file header**, and additional metadata about the file. This is less human-readable but can be identified by the <strong>PE</strong> marker:</p>
+<p><strong>Image Optional Header</strong>
+Despite its name, this section is critical. It contains important fields, including the <strong>Data Dictionaries</strong>, which point to the image data directory structure.</p>
+<p><strong>Section Table</strong>
+Defines available sections and their details. Each section contains specific parts of the program:</p>
+<p><strong>Common Section Purposes</strong></p>
+<p><strong>Interacting with Windows Internals</strong>
+<strong>Interacting with Windows internals</strong> can seem complex, but one of the most accessible and well-documented methods is through <strong>Windows API calls</strong>. The Windows API provides <strong>native functionality</strong> to interact with the operating system, including the <strong>Win32 API</strong> and, less commonly, the <strong>Win64 API</strong>.
+Most Windows internals components involve <strong>interacting with physical hardware</strong> and <strong>memory</strong>. The <strong>Windows kernel</strong> acts as the controller for all programs and processes, bridging <strong>software</strong> and <strong>hardware</strong> interactions. However, applications cannot directly access the kernel or modify physical hardware by default — this is managed through <strong>processor modes</strong> and <strong>access levels</strong>.
+Windows processors operate in <strong>two modes</strong>:</p>
+<p>Applications in <strong>user mode</strong> remain there until a <strong>system call</strong> or <strong>API call</strong> is made, triggering a mode switch (often referred to as the <strong>Switching Point</strong>). This switch allows the application to access resources that require <strong>kernel mode</strong> permissions.
+When programming languages interface with the <strong>Win32 API</strong>, this process may pass through an <strong>intermediate runtime</strong>. For example, a C# application will first execute through the <strong>CLR (Common Language Runtime)</strong> before calling into the API and making system calls.</p>
+<p><strong>Proof of Concept: Injecting a Message Box into a Local Process</strong>
+To demonstrate interacting with memory, we can write a simple message box payload into a <strong>local process’s memory</strong> and execute it. This involves four steps:</p>
+<ol>
+<li><strong>Allocate local process memory</strong> for the message box.</li>
+<li><strong>Write/copy</strong> the message box payload into the allocated memory.</li>
+<li><strong>Execute</strong> the message box from local process memory.
+Firstly we open the target process using OpenProcess:</li>
+</ol>
+<p>Then we allocate memory in the target process using <strong>VirtualAllocEx:</strong></p>
+<p>Then we write the payload into allocated memory using WriteProcessMemory:
+Lastly, we create a remote thread to execute the payload using <strong>CreateRemoteThread:</strong></p>
+</article>
+${series_nav}
+
+			<!-- Footer -->
+			<footer
+				class="cyber-footer py-12 bg-black border-t border-gray-800 mt-12"
+			>
+				<div class="container mx-auto px-4">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<div class="mb-6 md:mb-0">
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN_SEC</h3>
+							<p class="text-sm text-gray-400 cyber-text">
+								Penetration Testing & Security Consulting
+							</p>
+						</div>
+						<div class="flex space-x-6">
+							<a
+								href="#"
+								class="hover:text-neongreen transition-colors cyber-link"
+								>Imprint</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonpink transition-colors cyber-link"
+								>Privacy</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>Legal</a
+							>
+						</div>
+					</div>
+					<div
+						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+					>
+						<p class="cyber-text">
+							© 2025 HEXEN. All systems operational.
+							<span class="text-neongreen">//</span> Secure by design.
+						</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+		<script type="module" src="../assets/js/menu.js" defer></script>
+	</body>
+</html>

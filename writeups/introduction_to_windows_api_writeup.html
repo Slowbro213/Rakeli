@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="HEXEN - Penetration Tester & Penetration Tester Portfolio"
+		/>
+		<title>HEXEN // CYBERPUNK PEN-TESTER PORTFOLIO</title>
+		<link rel="stylesheet" href="../assets/css/writeups.css" />
+	</head>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div
+			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+		></div>
+
+		<!-- Navigation -->
+		<nav
+			class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen"
+		>
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span
+							class="text-neongreen font-bold text-xl glitch-effect"
+							data-text="HEXEN"
+							>HEXEN</span
+						>
+						<span class="text-neonpink text-sm ml-2"
+							>// SECURITY_SPECIALIST</span
+						>
+					</div>
+
+					<!-- Desktop Menu -->
+					<div class="hidden md:flex space-x-6">
+						<a href="../" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+
+					<!-- Mobile Menu Button -->
+					<div class="md:hidden mt-4">
+						<button
+							id="mobile-menu-button"
+							type="button"
+							class="text-neongreen focus:outline-none"
+						>
+							<svg
+								class="h-6 w-6 transition-transform duration-300"
+								id="menu-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 6h16M4 12h16M4 18h16"
+								></path>
+							</svg>
+							<svg
+								class="h-6 w-6 transition-transform duration-300 hidden"
+								id="close-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Menu (hidden by default) -->
+				<div
+					id="mobile-menu"
+					class="md:hidden mt-2 border-t border-neongreen border-opacity-30 transform origin-top transition-all duration-300 scale-y-0 opacity-0 max-h-0"
+				>
+					<div class="flex flex-col space-y-4">
+						<a href="../index.html" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<section id="writeup-controls" class="px-6 pt-6 pb-2 text-center">
+  
+
+  <div id='tags-container'>
+    
+  </div>
+</section>
+
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Host Evasions</span>
+    <span class="series-part">Part 13 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot" title="Initial Access (4 parts)"></span><span class="series-dot" title="Post Compromise (3 parts)"></span><span class="series-dot active-module" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <a href="windows_internals_writeup.html" class="series-nav-btn cyber-link">← windows internals</a>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <a href="abusing_windows_internals_writeup.html" class="series-nav-btn cyber-link">abusing windows internals →</a>
+  </div>
+</div>
+<!-- Writeup content -->
+<article class="markdown-body"><h1>Introduction to Windows API</h1>
+<p><strong>Subsystem and Hardware Interaction</strong>Many programs need to access or modify Windows subsystems or hardware, but are restricted in order to maintain system stability. To bridge this gap, Microsoft introduced the <strong>Win32 API</strong>, a library that acts as an** interface between user-mode application<strong>s and</strong> the kernel**.</p>
+<p>Windows enforces access control through two distinct <strong>processor modes</strong>:</p>
+<p>Applications normally run in <strong>user mode</strong>, where they cannot directly interact with hardware or kernel functions. To do so, they rely on <strong>API calls</strong> (or <strong>system calls</strong>) that cross the <strong>switching point</strong>, allowing information to be passed into <strong>kernel mode</strong> where it is processed with higher privileges.
+A <strong>diagrammatic view</strong> would show <strong>user mode at the top</strong> and <strong>kernel mode at the bottom</strong>, separated by the <strong>switching point</strong> where system/API calls occur.
+When different programming languages interact with the <strong>Win32 API</strong>, the process may pass through an <strong>intermediate runtime</strong>. For example, a <strong>C# application</strong> goes through the <strong>CLR (Common Language Runtime)</strong> before reaching the API and then making the required <strong>system calls</strong>.
+<strong>Windows Internals</strong> → deeper explanation of <strong>memory managementRuntime Detection Evasion</strong> → details on how runtimes can be leveraged or bypassed</p>
+<p><strong>Components of the Windows API</strong>
+The <strong>Win32 API</strong>, more commonly called the <strong>Windows API</strong>, is structured as a layered system with several dependent components that organize how programs interact with the operating system. By examining it from a <strong>top-down perspective</strong>, we can understand how high-level calls are built from lower-level definitions.</p>
+<ul>
+<li><strong>API</strong> – This is the <strong>top layer</strong>, a general term that refers to any call within the Win32 API structure.</li>
+<li><strong>Header files / Imports</strong> – These define which <strong>libraries</strong> are imported at run-time. Using header files or library imports, the system leverages <strong>pointers</strong> to obtain the function’s address.</li>
+<li><strong>Core DLLs</strong> – At the heart of the API are four main DLLs: <strong>KERNEL32</strong>, <strong>USER32</strong>, <strong>ADVAPI32</strong>, and related system libraries. These define <strong>kernel and user services</strong> not tied to a single subsystem.</li>
+<li><strong>Supplemental DLLs</strong> – Beyond the core, there are ~36 other DLLs, including <strong>NTDLL</strong>, <strong>COM</strong>, and <strong>FVEAPI</strong>, which control different subsystems of Windows.</li>
+<li><strong>Call Structures</strong> – These describe the <strong>API call itself</strong> and the parameters it requires.</li>
+<li><strong>API Calls</strong> – The actual function calls made within a program, whose addresses are resolved via pointers.</li>
+<li><strong>In/Out Parameters</strong> – The bottom layer, representing the <strong>values passed into or returned from API calls</strong>, defining how data flows during execution.</li>
+</ul>
+<p><strong>OS Libraries</strong>
+Each Win32 API call exists in memory and requires a pointer to its location. Because of <strong>Address Space Layout Randomization (ASLR)</strong>, these locations change at runtime, and different approaches are used to resolve them. In unmanaged code such as C or C++, Microsoft provides the <strong>windows.h</strong> header file, also known as the Windows loader, which automatically handles this process by creating a thunk table that maps function addresses at runtime.
+This means developers can simply include the header file and call Win32 functions directly. In managed environments such as C#, the process is handled through P/Invoke (Platform Invoke). P/Invoke allows managed code to call unmanaged Win32 functions by first importing the relevant DLL with the <strong>DllImport</strong> attribute and then defining an external method with the <strong>extern</strong> keyword.
+Once this mapping is complete, the unmanaged function can be invoked as if it were part of the managed program. In essence, <strong>windows.h</strong> simplifies direct unmanaged calls, while P/Invoke bridges managed and unmanaged environments, both providing reliable ways to overcome ASLR and access Win32 API functionality.</p>
+<p><strong>API Call Structure</strong>
+<strong>API calls</strong> are the second main component of the <strong>Win32 library</strong> and provide the extensibility and flexibility that make the API useful for a wide range of purposes. Most of these calls are well documented in both the <strong>Windows API documentation</strong> and community resources such as <strong>pinvoke.net</strong>. To distinguish between different variations,
+Microsoft employs specific <strong>naming schemes</strong> by appending characters to the base function name. The suffix <strong>“A”</strong> indicates ANSI encoding using an 8-bit character set, <strong>“W”</strong> indicates Unicode encoding, and <strong>“Ex”</strong> represents an extended version of the function, often supporting additional in/out parameters. Alongside naming conventions, each API call follows a <strong>predefined structure</strong> for its <strong>input and output parameters</strong>. These parameters are documented individually, with details about their purpose, expected input, output behavior, and accepted values.</p>
+<p><strong>C API Implementations</strong>
+Microsoft provides low-level programming languages such as <strong>C</strong> and <strong>C++</strong> with a pre-configured set of libraries to access Win32 API calls. The most important is the <strong>windows.h header file</strong>, which defines call structures and obtains function pointers automatically. By including this header at the top of a program with #include &lt;windows.h&gt;, developers can immediately make use of the API.
+As a first example, we can create a <strong>pop-up window titled “Hello THM!”</strong> using the <strong>CreateWindowExA</strong> function. This API call takes a series of input and output parameters, including style definitions, position, dimensions, parent handle, and instance handle.</p>
+<p>Here is a sample in C code:</p>
+<p>To implement this into a working application, we can register a simple window class and call CreateWindowEx to spawn the blank window.</p>
+<p>If this code is successful, it produces a window with a specific title.</p>
+<p><strong>.NET and Powershell API Implementations</strong>
+<strong>P/Invoke</strong> (Platform Invoke) enables managed code to call unmanaged Win32 API functions by importing DLLs and assigning pointers to their addresses. Because of ASLR, direct memory addresses are unreliable, so P/Invoke provides a structured way to resolve function locations dynamically.
+In .NET, this begins by creating a class to hold the API call definition. The DllImport attribute is used to import the required DLL, which contains the desired API function. For example, to call GetComputerNameA from kernel32.dll, we define:</p>
+<p>Here,** DllImport** loads the DLL, and the <strong>extern</strong> keyword declares the function as an external method. Once defined, the function can be called like any other managed method. A simple program that retrieves the computer name looks like this:</p>
+<p>Running this will print the computer name of the current device.</p>
+<p>The same syntax can be adapted in <strong>PowerShell</strong>, though it requires one extra step. Instead of a class, the method definitions are declared as a string containing the DLL imports:</p>
+<p>PowerShell then uses <strong>Add-Type</strong> to create a temporary compiled type in memory with these method definitions:
+<strong>$Kernel32 = Add-Type -MemberDefinition $MethodDefinition -Name &#39;Kernel32&#39; -NameSpace &#39;Win32&#39; -PassThru;</strong>
+After this step, the imported functions can be invoked using syntax like:
+<strong>[Win32.Kernel32]::GetProcAddress($hModule, &quot;SomeFunction&quot;)</strong>
+This shows how P/Invoke can bridge managed environments such as .NET or PowerShell with unmanaged Win32 APIs, offering developers and attackers alike a powerful way to extend functionality beyond normal runtime boundaries.</p>
+<p><strong>Commonly Abused API Calls</strong>
+Certain <strong>Win32 API calls</strong> are frequently leveraged for malicious purposes because of the direct system access they provide. Security researchers and organizations, including <strong>SANS</strong> and <strong>MalAPI.io</strong>, have attempted to document these abuse cases, but in practice a handful of calls consistently appear in real-world malware samples.
+Some of the most <strong>commonly abused API calls</strong> include functions for <strong>DLL injection, system reconnaissance, and memory manipulation</strong>. For example,** LoadLibraryA** can be used to map a malicious DLL into a process, while <strong>GetProcAddress</strong> retrieves the address of exported DLL functions, both of which are common steps in process injection. Reconnaissance calls like <strong>GetUserNameA</strong>, <strong>GetComputerNameA</strong>, and** GetVersionExA** allow malware to gather information about the system environment and user context. Other calls, such as <strong>GetModuleFileNameA</strong>, <strong>GetStartupInfoA</strong>, and <strong>GetModuleHandle</strong>, provide insight into process structure and loaded modules. Finally, functions like <strong>VirtualProtect</strong> are often abused to change memory protections so malicious code can be written and executed in memory.
+Together, these API calls form part of the <strong>core toolkit</strong> for attackers, providing stealthy ways to <strong>load payloads, manipulate processes, bypass protections, and extract valuable system details</strong>. Understanding their normal use and their malicious applications is critical for both detection and prevention.</p>
+<p><strong>Malware Case Study</strong>
+<strong>Case Study 1: Keylogger</strong>
+Objective
+The objective of the keylogger is to <strong>monitor and capture keystrokes</strong> by setting a low-level keyboard hook inside the process.
+Relevant API Calls and Their Role</p>
+<ul>
+<li><strong>SetWindowsHookEx</strong> – Installs a hook in the Windows message-handling chain, specifically <strong>WHKEYBOARDLL</strong> (value 13) for keyboard events. This is the keylogger’s core function: it intercepts keystrokes.</li>
+<li><strong>UnhookWindowsHookEx</strong> – Removes the hook once the program is finished. This is cleanup to avoid crashing or leaving traces.</li>
+<li><strong>GetModuleHandle</strong> – Retrieves a handle to the current module (process). This is needed to register the hook properly so Windows knows which process/module to attach the hook to.</li>
+<li><strong>GetCurrentProcess</strong> – Returns a pseudo-handle for the current process. It provides context for the hook setup.
+<strong>Flow of Execution</strong></li>
+</ul>
+<ol>
+<li>The program starts and immediately sets a hook by calling SetHook, which internally uses <strong>SetWindowsHookEx</strong>.</li>
+<li>It passes the process handle (GetModuleHandle(curProcess.ProcessName)) and the hook type (WHKEYBOARDLL).</li>
+<li>The program then enters a loop with <strong>Application.Run()</strong>, meaning it continues running while intercepting keystrokes.</li>
+<li>When terminated, it removes the hook with <strong>UnhookWindowsHookEx</strong> and exits cleanly.
+<strong>Summary</strong>: The keylogger doesn’t show how it records keystrokes (that part is omitted for ethics), but its API usage reveals that it relies on the <strong>Windows hook mechanism</strong> to silently intercept all keyboard input.</li>
+</ol>
+<p><strong>Case Study 2: Shellcode Launcher</strong>
+<strong>Objective</strong>
+The goal of the shellcode launcher is to <strong>inject and execute arbitrary code</strong> in the context of the running process.</p>
+<p><strong>Relevant API Calls and Their Role</strong></p>
+<ul>
+<li><strong>VirtualAlloc</strong> – Allocates memory in the virtual address space of the current process with <strong>PAGE_EXECUTE_READWRITE</strong> permissions, allowing execution of arbitrary code.</li>
+<li><strong>Marshal.Copy</strong> – Copies the shellcode bytes from the program into the allocated memory.</li>
+<li><strong>CreateThread</strong> – Starts a new thread with its entry point set to the beginning of the injected shellcode.</li>
+<li><strong>WaitForSingleObject</strong> – Pauses execution until the created thread finishes running the shellcode.
+<strong>Flow of Execution</strong>
+The program allocates space for the shellcode with <strong>VirtualAlloc</strong>. Memory is reserved and committed, with read, write, and execute permissions. UInt32 funcAddr = VirtualAlloc(0, (UInt32)shellcode.Length, MEM_COMMIT, PAGE_EXECUTE_READWRITE);</li>
+</ul>
+<ol>
+<li>The shellcode is copied into that memory using <strong>Marshal.Copy</strong>.</li>
+<li>A new thread is created with <strong>CreateThread</strong>, pointing directly to the allocated memory region as its start address.</li>
+<li>The program waits for the thread to finish with <strong>WaitForSingleObject</strong>.</li>
+</ol>
+<p>The <strong>keylogger</strong> abuses the <strong>Windows message-handling system</strong> (<strong>SetWindowsHookEx</strong>) to spy on user input.The <strong>shellcode launcher</strong> abuses <strong>memory management functions</strong> <strong>(VirtualAlloc, CreateThread</strong>) to run arbitrary code directly in process memory.</p>
+</article>
+${series_nav}
+
+			<!-- Footer -->
+			<footer
+				class="cyber-footer py-12 bg-black border-t border-gray-800 mt-12"
+			>
+				<div class="container mx-auto px-4">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<div class="mb-6 md:mb-0">
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN_SEC</h3>
+							<p class="text-sm text-gray-400 cyber-text">
+								Penetration Testing & Security Consulting
+							</p>
+						</div>
+						<div class="flex space-x-6">
+							<a
+								href="#"
+								class="hover:text-neongreen transition-colors cyber-link"
+								>Imprint</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonpink transition-colors cyber-link"
+								>Privacy</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>Legal</a
+							>
+						</div>
+					</div>
+					<div
+						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+					>
+						<p class="cyber-text">
+							© 2025 HEXEN. All systems operational.
+							<span class="text-neongreen">//</span> Secure by design.
+						</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+		<script type="module" src="../assets/js/menu.js" defer></script>
+	</body>
+</html>

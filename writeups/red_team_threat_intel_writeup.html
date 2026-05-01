@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="HEXEN - Penetration Tester & Penetration Tester Portfolio"
+		/>
+		<title>HEXEN // CYBERPUNK PEN-TESTER PORTFOLIO</title>
+		<link rel="stylesheet" href="../assets/css/writeups.css" />
+	</head>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div
+			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+		></div>
+
+		<!-- Navigation -->
+		<nav
+			class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen"
+		>
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span
+							class="text-neongreen font-bold text-xl glitch-effect"
+							data-text="HEXEN"
+							>HEXEN</span
+						>
+						<span class="text-neonpink text-sm ml-2"
+							>// SECURITY_SPECIALIST</span
+						>
+					</div>
+
+					<!-- Desktop Menu -->
+					<div class="hidden md:flex space-x-6">
+						<a href="../" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+
+					<!-- Mobile Menu Button -->
+					<div class="md:hidden mt-4">
+						<button
+							id="mobile-menu-button"
+							type="button"
+							class="text-neongreen focus:outline-none"
+						>
+							<svg
+								class="h-6 w-6 transition-transform duration-300"
+								id="menu-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 6h16M4 12h16M4 18h16"
+								></path>
+							</svg>
+							<svg
+								class="h-6 w-6 transition-transform duration-300 hidden"
+								id="close-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Menu (hidden by default) -->
+				<div
+					id="mobile-menu"
+					class="md:hidden mt-2 border-t border-neongreen border-opacity-30 transform origin-top transition-all duration-300 scale-y-0 opacity-0 max-h-0"
+				>
+					<div class="flex flex-col space-y-4">
+						<a href="../index.html" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<section id="writeup-controls" class="px-6 pt-6 pb-2 text-center">
+  
+
+  <div id='tags-container'>
+    
+  </div>
+</section>
+
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Red Team Fundamentals</span>
+    <span class="series-part">Part 2 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot active-module" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot" title="Initial Access (4 parts)"></span><span class="series-dot" title="Post Compromise (3 parts)"></span><span class="series-dot" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <a href="red_team_fundamentals_writeup.html" class="series-nav-btn cyber-link">← red team fundamentals</a>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <a href="red_team_opsec_writeup.html" class="series-nav-btn cyber-link">red team opsec →</a>
+  </div>
+</div>
+<!-- Writeup content -->
+<article class="markdown-body"><h1>Red Team Threat Intel</h1>
+<p><strong>Threat Intelligence (TI)</strong> or <strong>Cyber Threat Intelligence</strong> **(CTI) **is the information, or TTP (Tactics Techniques and Procedures), that is commonly used to help detection.</p>
+<p>Cyber Threat Intelligence is consumed by collecting <strong>Indicators of Compromise</strong> and TTP’s distributed and maintained by <strong>ISAC (Information and Sharing Analysis Centers)</strong></p>
+<p><strong>IOC</strong>’s are quantified by traces left by adversaries. These can include domains, IPs, files, strings etc.
+The blue team can utilize varios IOCs to build detections and analyze behavior.</p>
+<p>To aid in consuming CTIs and collecting TTP’s, red teams often use threat intelligence platforms and frameworks such as MITRE ATT&amp;CK, TIBER-EU and OST Map.</p>
+<p>The categorization of the collected TTP’s is done based on characteristics like:1. Threat Group
+2. Kill Chain Phase
+3. Tactic
+4. Objective/Goal</p>
+<p>TIBER-EU (Threat Intelligence-based Ethical Red Teaming) is a common framework developed by the Europian Central Bank that focuses on the usage of threat intelligence.</p>
+<p><strong>TTP Mapping</strong></p>
+<p>TTP Mapping is employed by the red cell to map adversaries’collected TTPs to a standard cyber kill chain.
+To begin the process of mapping TTPs, an adversary must be selected as a target.
+Adversaries can be chosen based on a few different criteria for an adversary to be chosen, those being:</p>
+<ul>
+<li>Target Industry</li>
+<li>Employed Attack Vectors</li>
+<li>Country of Origin</li>
+<li>Other Factors</li>
+</ul>
+<p>Within the Mitre ATT&amp;CK framework , we can see how an APT called “Carbanak” operated during a specific attack. There, we can see that they used <strong>valid</strong> compromised accounts to gain initial access into the system. They then held onto these accounts for persistence, and then escalated using Windows Services.</p>
+<p>For defense Evasion, they masqueraded their malicious acts as a legitimate task/service, then disabled the compromised systems’ system firewalls. Lastly, they used a legitimate signed binary in the form of “Rundll32”.</p>
+<p>In regards to C2 Activity, they deployed two tactics. One being RAT (Remote Access Tools), with bidirectional Actor-Victim communication.</p>
+<p>**CTI **can also be used during engagement execution, emulating the adversary’s behavioral characteristics, such as:
+<strong>C2 Traffic</strong>
+These include <strong>User Agents</strong>, <strong>Ports and Protocols</strong>, and <strong>Listener Profiles</strong></p>
+<p><strong>Malware and Tooling</strong>
+These include <strong>IOCs</strong> and <strong>Behaviors</strong></p>
+<p>A red team can manipulate the traffic of C2 servers. CTI can be used to identify adversaries’ traffic and modify their traffic to emulate it.An example of this would be <strong>malleable profiles</strong>. These malleable profiles allow a red team operator to control multiple aspects of a C2 Listener’s traffic.</p>
+<p>Information to be implemented in thiis profile can be gathered from ISACs and collected IOCs or packet captures, including:<strong>Host Headers</strong>
+<strong>POST URIs</strong>
+<strong>Server Responses and Headers</strong>
+Another use of CTI would be analyzing behavior and actions of an adversaries’ malware and tools to develop your offensive tooling that behaves similarly.</p>
+<p>An example would be to use a <strong>custom dropper</strong>. The red team can emulate the dropper by:
+<strong>Identifying traffic</strong>
+<strong>Observing syscalls and API calls</strong>
+<strong>Identifying overall dropper behavior and objective</strong>
+<strong>Tampering with file signatures and IOCs</strong></p>
+</article>
+${series_nav}
+
+			<!-- Footer -->
+			<footer
+				class="cyber-footer py-12 bg-black border-t border-gray-800 mt-12"
+			>
+				<div class="container mx-auto px-4">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<div class="mb-6 md:mb-0">
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN_SEC</h3>
+							<p class="text-sm text-gray-400 cyber-text">
+								Penetration Testing & Security Consulting
+							</p>
+						</div>
+						<div class="flex space-x-6">
+							<a
+								href="#"
+								class="hover:text-neongreen transition-colors cyber-link"
+								>Imprint</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonpink transition-colors cyber-link"
+								>Privacy</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>Legal</a
+							>
+						</div>
+					</div>
+					<div
+						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+					>
+						<p class="cyber-text">
+							© 2025 HEXEN. All systems operational.
+							<span class="text-neongreen">//</span> Secure by design.
+						</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+		<script type="module" src="../assets/js/menu.js" defer></script>
+	</body>
+</html>

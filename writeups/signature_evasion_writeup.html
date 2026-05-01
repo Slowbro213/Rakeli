@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="HEXEN - Penetration Tester & Penetration Tester Portfolio"
+		/>
+		<title>HEXEN // CYBERPUNK PEN-TESTER PORTFOLIO</title>
+		<link rel="stylesheet" href="../assets/css/writeups.css" />
+	</head>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div
+			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+		></div>
+
+		<!-- Navigation -->
+		<nav
+			class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen"
+		>
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span
+							class="text-neongreen font-bold text-xl glitch-effect"
+							data-text="HEXEN"
+							>HEXEN</span
+						>
+						<span class="text-neonpink text-sm ml-2"
+							>// SECURITY_SPECIALIST</span
+						>
+					</div>
+
+					<!-- Desktop Menu -->
+					<div class="hidden md:flex space-x-6">
+						<a href="../" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+
+					<!-- Mobile Menu Button -->
+					<div class="md:hidden mt-4">
+						<button
+							id="mobile-menu-button"
+							type="button"
+							class="text-neongreen focus:outline-none"
+						>
+							<svg
+								class="h-6 w-6 transition-transform duration-300"
+								id="menu-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 6h16M4 12h16M4 18h16"
+								></path>
+							</svg>
+							<svg
+								class="h-6 w-6 transition-transform duration-300 hidden"
+								id="close-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Menu (hidden by default) -->
+				<div
+					id="mobile-menu"
+					class="md:hidden mt-2 border-t border-neongreen border-opacity-30 transform origin-top transition-all duration-300 scale-y-0 opacity-0 max-h-0"
+				>
+					<div class="flex flex-col space-y-4">
+						<a href="../index.html" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<section id="writeup-controls" class="px-6 pt-6 pb-2 text-center">
+  
+
+  <div id='tags-container'>
+    
+  </div>
+</section>
+
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Host Evasions</span>
+    <span class="series-part">Part 18 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot" title="Initial Access (4 parts)"></span><span class="series-dot" title="Post Compromise (3 parts)"></span><span class="series-dot active-module" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <a href="obfuscation_principles_writeup.html" class="series-nav-btn cyber-link">← obfuscation principles</a>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <span class="series-nav-btn disabled">end →</span>
+  </div>
+</div>
+<!-- Writeup content -->
+<article class="markdown-body"><h1>Signature Evasion</h1>
+<p><strong>Signature Identification</strong>
+When working with <strong>signatures</strong> in malware analysis or AV testing, the key idea is that AV engines look for specific <strong>byte patterns</strong> within a binary. These patterns can correspond to a function, a string, or even a short sequence of machine code instructions that is known to appear in malicious tools.
+To manually identify where such a signature starts, analysts often use a <strong>binary-splitting approach</strong>. The process is iterative:</p>
+<ol>
+<li>Take the compiled binary and split it in half (using tools like head, dd, or split).</li>
+<li>Test each half against the AV engine:</li>
+<li>If the <strong>alert still triggers</strong>, the signature is in that half.</li>
+<li>If no alert occurs, it must be in the other half.</li>
+<li>Continue halving the portion that still triggers an alert, recursively narrowing the search.</li>
+<li>Once you reach a point where splitting further isn’t practical (e.g., a kilobyte or smaller region), open the suspicious portion in a <strong>hex editor</strong> to inspect it.
+In the example provided, the hex dump shows a series of bytes near the <strong>C2E0 offset</strong> of a binary:
+Here, the repeating sequences (E9, 6A, 68, etc.) are likely part of the machine code instructions that the AV is flagging. Depending on the tool or method used to generate the binary, these bytes may be human-readable (ASCII strings) or not.
+This manual approach is useful for <strong>learning</strong> and for very small cases, but it quickly becomes <strong>time-consuming</strong> if done repeatedly. That’s why, as you noted, analysts typically turn to <strong>FOSS automation tools</strong> that scan binaries and help pinpoint signature regions more efficiently, removing the guesswork from constant splitting and testing.
+<strong>TASK CHALLENGE</strong>
+First, I move the “shell.exe” file to somewhere without an Exclusion, like the desktop. Then, I check for available tools on this machine. I see “amsitrigger” and “ThreatCheck”. I open both.</li>
+</ol>
+<p><strong>Automating Signature Identification</strong>
+To speed up the process of locating signatures inside binaries, we can automate the splitting and scanning process instead of manually cutting a file and testing each chunk. On the Windows lab machine, a PowerShell script called <strong>Find-AVSignature</strong> is provided. This script recursively splits a binary over a given interval and saves the resulting files so they can be scanned by the antivirus engine. To use it, the script must first be dot-sourced into the PowerShell session and then executed.</p>
+<p>The script will then prompt for parameters such as the starting byte, the ending byte, and the interval size. For example, setting the start to 0, the end to max, and the interval to 1000 will produce 1 KB chunks of the binary. These chunks are saved in C:\Users\TryHackMe\ and can be scanned individually to determine which range of bytes contains the signature. While this removes much of the manual work from the previous task, it is still limited because it only inspects strings dropped to disk rather than leveraging full antivirus scanning logic.
+For more accurate results, the compiled tool <strong>ThreatCheck</strong> can be used. ThreatCheck is a fork of DefenderCheck that directly uses antivirus engines to analyze a file and report the offsets where bad bytes are located. It can be executed with the following syntax, pointing to a target file and selecting an engine:</p>
+<p>or, to leverage the AMSI scanning engine:</p>
+<p>The output provides the total file size, the location of the detected bytes, and a hex dump showing the exact region in which the suspicious code appears. This makes it much easier to identify the signature range compared to splitting manually or with Find-AVSignature.
+For PowerShell scripts specifically, another tool called <strong>AMSITrigger</strong> is available. It works by sending portions of a script to AMSI and reporting the exact lines or sections that trigger alerts. It can be used with the following syntax:</p>
+<p><strong>For Task 3’s challenge,</strong> if we change the value of -e from Defender to AMSI, we can eventually see the beginning of the bad bytes if we wait some time:</p>
+<p>Eventually…</p>
+<p><strong>Static Code-Based Signatures</strong>
+Once a troublesome static signature has been identified, the next step is to determine how to neutralize it without breaking the functionality of the program. Depending on the type and strength of the signature, it may be possible to handle it with simple obfuscation, or it may require a more targeted modification. The <em>Layered Obfuscation Taxonomy</em> organizes these approaches at the <strong>Obfuscating Methods</strong> and <strong>Obfuscating Classes</strong> layers. Techniques such as <strong>method proxy</strong>, <strong>method scattering/aggregation</strong>, and <strong>method clone</strong> fall under methods, while <strong>class hierarchy flattening</strong>, <strong>class splitting/coalescing</strong>, and <strong>dropping modifiers</strong> apply to classes.
+When simplified, these techniques can be grouped into two broad categories. The first category involves <strong>splitting and merging objects</strong>, which is similar to concatenation. A function or class is broken down and rebuilt in pieces to ensure that the signature bytes no longer match, while still performing the same operation. A well-known example is the <strong>Covenant GetMessageFormat string</strong>, where the original string triggered detection:</p>
+<p>This was refactored into a new class that builds the string piece by piece, effectively scattering the method:</p>
+<p>Here the use of <strong>class splitting</strong> and <strong>method scattering</strong> creates a new, signature-safe implementation while maintaining identical output.
+The second category is <strong>removing or obscuring identifiable information</strong>. This follows the same principle as renaming variables or stripping symbols but is applied specifically to flagged objects, methods, or classes. A case study can be found in Mimikatz, where the hardcoded string wdigest.dll was detected. Simply renaming or replacing this string across the codebase with randomized identifiers breaks the signature. This falls under the <strong>method proxy</strong> technique, since the flagged reference is replaced with a neutral one.
+The PowerShell snippet below illustrates another common scenario where identifiable strings such as AmsiScanBuffer or module references like amsi.dll may be flagged. Obfuscation here requires modifying these values or splitting them into concatenated pieces so that the signature is no longer directly present, while keeping the logic intact.</p>
+<p><strong>Task Challenge</strong>
+For this task, we are required to obfuscate the above Powershell Snippet using AmsiTrigger to visualize signatures.
+<strong>Using a useful modification i found at  <strong><strong>DEF CON 27 Workshop Materials</strong></strong> Page 62, I was able to get the flag as a popup.</strong></p>
+<p><strong>Statistic Property-Based Signatures</strong>
+When analysts or detection engines build hypotheses about a file, they do not rely exclusively on static signatures like strings. Instead, they may examine multiple <strong>file properties</strong> such as hash, entropy, author, filename, or metadata. These properties are often combined into <strong>rule sets</strong> like <strong>YARA</strong> or <strong>Sigma</strong>, which allow flexible detection beyond simple string matching. Some properties are trivial to manipulate, while others — particularly those tied to closed-source or signed binaries — can be much harder to alter without breaking functionality.
+A <strong>file hash</strong> (checksum) is a unique identifier for a file and is frequently used to tag known malicious samples. Any change to the file’s content, even a single byte, will produce a new hash. If the source code is available, simply modifying and recompiling will produce a different hash. In the case of a signed or closed-source application, however, one must resort to <strong>bit-flipping</strong>. Bit-flipping iteratively flips individual bits in a binary until a variant is found that alters the hash while keeping the program functional. This can produce thousands of mutated versions, one of which may still verify with a valid certificate.</p>
+<p>An example Python implementation of bit-flipping might look like this:
+Once the variants are created, functionality must be verified. For example, if mutating msbuild.exe, one could loop through the flipped binaries with <strong>signtool</strong> to identify those that retain a valid signature:</p>
+</article>
+${series_nav}
+
+			<!-- Footer -->
+			<footer
+				class="cyber-footer py-12 bg-black border-t border-gray-800 mt-12"
+			>
+				<div class="container mx-auto px-4">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<div class="mb-6 md:mb-0">
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN_SEC</h3>
+							<p class="text-sm text-gray-400 cyber-text">
+								Penetration Testing & Security Consulting
+							</p>
+						</div>
+						<div class="flex space-x-6">
+							<a
+								href="#"
+								class="hover:text-neongreen transition-colors cyber-link"
+								>Imprint</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonpink transition-colors cyber-link"
+								>Privacy</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>Legal</a
+							>
+						</div>
+					</div>
+					<div
+						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+					>
+						<p class="cyber-text">
+							© 2025 HEXEN. All systems operational.
+							<span class="text-neongreen">//</span> Secure by design.
+						</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+		<script type="module" src="../assets/js/menu.js" defer></script>
+	</body>
+</html>

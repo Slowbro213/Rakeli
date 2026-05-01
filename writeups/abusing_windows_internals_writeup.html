@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="HEXEN - Penetration Tester & Penetration Tester Portfolio"
+		/>
+		<title>HEXEN // CYBERPUNK PEN-TESTER PORTFOLIO</title>
+		<link rel="stylesheet" href="../assets/css/writeups.css" />
+	</head>
+
+	<body class="cyberpunk-body">
+		<!-- Matrix Rain Background -->
+		<div id="matrix-rain" class="matrix-rain"></div>
+
+		<!-- Grid Background -->
+		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
+
+		<!-- Scanlines -->
+		<div
+			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+		></div>
+
+		<!-- Navigation -->
+		<nav
+			class="cyber-nav fixed top-0 left-0 w-full z-50 bg-black bg-opacity-80 backdrop-blur-sm border-b border-neongreen"
+		>
+			<div class="container mx-auto px-4 py-3">
+				<div class="flex justify-between items-center">
+					<div class="cyber-logo">
+						<span
+							class="text-neongreen font-bold text-xl glitch-effect"
+							data-text="HEXEN"
+							>HEXEN</span
+						>
+						<span class="text-neonpink text-sm ml-2"
+							>// SECURITY_SPECIALIST</span
+						>
+					</div>
+
+					<!-- Desktop Menu -->
+					<div class="hidden md:flex space-x-6">
+						<a href="../" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+
+					<!-- Mobile Menu Button -->
+					<div class="md:hidden mt-4">
+						<button
+							id="mobile-menu-button"
+							type="button"
+							class="text-neongreen focus:outline-none"
+						>
+							<svg
+								class="h-6 w-6 transition-transform duration-300"
+								id="menu-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 6h16M4 12h16M4 18h16"
+								></path>
+							</svg>
+							<svg
+								class="h-6 w-6 transition-transform duration-300 hidden"
+								id="close-icon"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								></path>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Mobile Menu (hidden by default) -->
+				<div
+					id="mobile-menu"
+					class="md:hidden mt-2 border-t border-neongreen border-opacity-30 transform origin-top transition-all duration-300 scale-y-0 opacity-0 max-h-0"
+				>
+					<div class="flex flex-col space-y-4">
+						<a href="../index.html" class="nav-link">HOME</a>
+						<a href="../about.html" class="nav-link">ABOUT</a>
+						<a href="../writeups.html" class="nav-link">WRITEUPS</a>
+						<a href="../blogs.html" class="nav-link">BLOGS</a>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<main class="relative z-10 pt-20">
+			<section id="writeup-controls" class="px-6 pt-6 pb-2 text-center">
+  
+
+  <div id='tags-container'>
+    
+  </div>
+</section>
+
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Host Evasions</span>
+    <span class="series-part">Part 14 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot" title="Initial Access (4 parts)"></span><span class="series-dot" title="Post Compromise (3 parts)"></span><span class="series-dot active-module" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <a href="introduction_to_windows_api_writeup.html" class="series-nav-btn cyber-link">← introduction to windows api</a>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <a href="introduction_to_antivirus_writeup.html" class="series-nav-btn cyber-link">introduction to antivirus →</a>
+  </div>
+</div>
+<!-- Writeup content -->
+<article class="markdown-body"><h1>Abusing Windows Internals</h1>
+<p><strong>Abusing Processes</strong>
+A <strong>process</strong> represents a running program and contains components like its <strong>virtual memory space, executable code, open handles, security context, process ID, and threads</strong>. Because processes control memory and execution, they are common targets for attackers.
+<strong>Process injection</strong> is the technique of inserting malicious code into a process to execute under its context. Common forms include:</p>
+<ul>
+<li><strong>Process Hollowing</strong> – replacing the memory of a suspended process.</li>
+<li><strong>Thread Hijacking</strong> – redirecting a suspended thread.</li>
+<li><strong>DLL Injection</strong> – forcing a process to load a malicious DLL.</li>
+<li><strong>PE Injection</strong> – manually loading a malicious executable image.
+At the simplest level, injection often takes the form of <strong>shellcode injection</strong>, which follows four basic steps:</li>
+</ul>
+<ol>
+<li><strong>OpenProcess</strong> – get a handle to the target process.</li>
+<li><strong>VirtualAllocEx</strong> – allocate memory inside the process.</li>
+<li><strong>WriteProcessMemory</strong> – write the shellcode into the allocated memory.</li>
+<li><strong>CreateRemoteThread</strong> – start execution of the shellcode by creating a new thread.
+This API sequence is the foundation for many injection techniques: obtain access, allocate space, write payload, and execute.</li>
+</ol>
+<p><strong>TASK 2 EXERCISE</strong>
+Objective 1:Identify a PID of a process running as THM-Attacker to target. Once identified supply the PID as an argument to execute shellcode-injector.exe located in the Injectors directory on the desktop.</p>
+<p>I ran .\shellcode-injector.exe with the process name and indeed got the flag.</p>
+<p><strong>Expanding Process Abuse</strong>
+<strong>Process hollowing</strong> is a technique that allows an attacker to inject a full malicious Portable Executable (PE) into another process by creating a legitimate process in a suspended state, un-mapping its memory, and replacing it with the malicious code.
+The overall workflow consists of six steps: creating the target process suspended, opening and loading the malicious image into local memory, un-mapping the original image from the target, allocating and writing the malicious sections, updating the entry point, and finally resuming the process to run the injected payload.
+The first step creates a suspended process using <strong>CreateProcessA</strong> and stores its information in the <strong>STARTUPINFOA</strong> and <strong>PROCESS_INFORMATION</strong> structures.</p>
+<p>Next, the malicious payload is opened with** CreateFileA**, its size retrieved with** GetFileSize**, and memory allocated locally with <strong>VirtualAlloc</strong>. The file is then read into that memory with <strong>ReadFile</strong>.</p>
+<p>The hollowing phase begins by identifying the base address of the target image using <strong>GetThreadContext</strong> and** ReadProcessMemory**.</p>
+<p>The memory is then unmapped using <strong>ZwUnmapViewOfSection</strong> obtained dynamically from <strong>ntdll.dll</strong>.</p>
+<p>After unmapping, new space is allocated inside the target process for the malicious image using <strong>VirtualAllocEx</strong>. The PE headers are written with <strong>WriteProcessMemory</strong>, followed by each section of the image in a loop.</p>
+<p>Finally, the thread context is updated so the instruction pointer points to the entry point of the malicious code, and the suspended process is resumed to execute it.</p>
+<p><strong>TASK 3 EXERCISE</strong></p>
+<p>I ran the injector named “hollowing-injector.exe” against the PID I chose as well as its’ respective executable name.</p>
+<p><strong>Abusing Process Components</strong>
+<strong>Thread hijacking</strong> is a process injection technique where malicious code is injected into a process and then executed by taking over one of its existing threads. Instead of creating a new thread, the attacker suspends a legitimate thread, changes its instruction pointer to point at malicious code, and then resumes it. This allows the payload to run in the context of a trusted process thread.
+At a high level, thread hijacking consists of eleven steps: open the target process, allocate memory, write shellcode, locate a target thread, open it, suspend it, grab its context, change the instruction pointer, rewrite the context, and finally resume the thread.
+The first three steps mirror standard process injection:</p>
+<p>Once the payload is in memory, the next step is to locate the thread we want to hijack. This is done by enumerating threads in the system with <strong>CreateToolhelp32Snapshot</strong>,** Thread32First**, and** Thread32Next**, and checking for a match on the target process ID.</p>
+<p>Once we have the thread handle, we suspend it with <strong>SuspendThread</strong>.
+<strong>SuspendThread(hThread);</strong>
+Then we retrieve its execution context with <strong>GetThreadContext</strong>.
+<strong>CONTEXT context;</strong>
+<strong>GetThreadContext(hThread, &amp;context);</strong>
+The key step is to overwrite the <strong>RIP register</strong> (on x64) so the thread will execute the malicious buffer next.
+<strong>context.Rip = (DWORD_PTR)remoteBuffer;</strong>
+We then save the modified context back with** SetThreadContext**:
+<strong>SetThreadContext(hThread, &amp;context);</strong>
+Finally, we resume the thread so execution jumps directly into the injected shellcode:
+<strong>ResumeThread(hThread);</strong></p>
+<p><strong>TASK 4 EXERCISE</strong>
+We firstly open powershell and select it, and its’ PID.</p>
+<p>Then we run thread-injector.exe with the PID as a target.</p>
+<p>That gives us the flag.</p>
+<p><strong>Abusing DLLs</strong>
+<strong>DLL injection</strong> is the technique of forcing a process to load and run a malicious dynamic-link library (DLL) in its memory space. At a high level, the steps are: locate a target process, open it, allocate memory, write the DLL path into that memory, and finally load and execute it with a remote thread.
+The first step is to locate the target process ID (PID). This is usually done by enumerating all processes with <strong>CreateToolhelp32Snapshot</strong>,** Process32First**, and <strong>Process32Next</strong>, comparing their names to the intended target.</p>
+<p>Once the PID is found, we open the process with** OpenProcess:**</p>
+<p>Next, we allocate memory inside the target for the DLL path using <strong>VirtualAllocEx</strong>:</p>
+<p>The DLL path string is then written into the allocated memory with <strong>WriteProcessMemory</strong>:</p>
+<p>With the path now inside the target process, the final step is to load the DLL. The attacker gets the address of b from <strong>kernel32.dll</strong> and uses <strong>CreateRemoteThread</strong> to execute it inside the target:</p>
+<p><strong>TASK 5 EXERCISE</strong></p>
+<p>After running dll-injector for explorer.exe with the evil.dll file, we then get the following flag.</p>
+<p><strong>Memory Execution Alternatives</strong>
+Execution is just as important as allocation and writing in process injection, but the method you choose depends heavily on the environment you’re working in. If common APIs like **CreateThread *<em>or <strong>CreateRemoteThread</strong> are being monitored by EDR, alternate execution techniques can be used to achieve the same result with fewer artifacts.
+One evasive option is the function pointer method. By casting a pointer to locally allocated shellcode as a function and then invoking it, you can execute code without calling any APIs at all. The syntax looks dense, but it simply defines a void function pointer, casts the memory pointer to it, and then executes:
+**((void(<em>)())addressPointer)();</em></em>
+Another option is Asynchronous Procedure Calls (APCs). An APC is queued to a thread with <strong>QueueUserAPC</strong>, and the function executes the next time the thread enters an alertable state (such as when waiting on <strong>Sleep</strong> or <strong>WaitForSingleObject</strong>). Once the shellcode address is queued, resuming the thread triggers a software interrupt and executes the payload:</p>
+<p>A more complex but powerful technique is section manipulation, where the attacker leverages PE sections like <strong>.data</strong> or <strong>.text</strong> for execution. This requires parsing the Portable Executable structure, including headers, section tables, and relocation tables, and then redirecting execution flow to injected data within those sections. This method doesn’t rely on thread creation at all and instead abuses how Windows loads and maps PE files, making detection harder if implemented carefully.
+Overall, the ability to mix and match these execution strategies provides attackers with flexibility. Function pointers reduce API footprints, APCs allow payloads to ride on legitimate thread behavior, and section manipulation hijacks the PE loading process itself. Each carries different trade-offs in terms of stealth and complexity, but together they expand the options for executing injected shellcode beyond the obvious** CreateThread** family of calls.</p>
+</article>
+${series_nav}
+
+			<!-- Footer -->
+			<footer
+				class="cyber-footer py-12 bg-black border-t border-gray-800 mt-12"
+			>
+				<div class="container mx-auto px-4">
+					<div class="flex flex-col md:flex-row justify-between items-center">
+						<div class="mb-6 md:mb-0">
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN_SEC</h3>
+							<p class="text-sm text-gray-400 cyber-text">
+								Penetration Testing & Security Consulting
+							</p>
+						</div>
+						<div class="flex space-x-6">
+							<a
+								href="#"
+								class="hover:text-neongreen transition-colors cyber-link"
+								>Imprint</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonpink transition-colors cyber-link"
+								>Privacy</a
+							>
+							<a
+								href="#"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>Legal</a
+							>
+						</div>
+					</div>
+					<div
+						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
+					>
+						<p class="cyber-text">
+							© 2025 HEXEN. All systems operational.
+							<span class="text-neongreen">//</span> Secure by design.
+						</p>
+					</div>
+				</div>
+			</footer>
+		</main>
+		<script type="module" src="../assets/js/menu.js" defer></script>
+	</body>
+</html>
