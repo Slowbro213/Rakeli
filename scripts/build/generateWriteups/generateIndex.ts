@@ -3,11 +3,19 @@ import { join } from 'path';
 
 console.log('🚧 Using streamlined writeups index generator...');
 
+interface SeriesInfo {
+	series: string;
+	series_title: string;
+	module: string;
+	part: number;
+}
+
 interface Writeup {
 	id: string;
 	title: string;
 	description: string;
 	tags: string[];
+	seriesInfo?: SeriesInfo;
 }
 
 // Configuration
@@ -16,47 +24,108 @@ const tagsJsonPath = join(process.cwd(), 'out', 'tags.json');
 const outputPath = join(process.cwd(), 'public', 'writeups.html');
 const templatePath = join(process.cwd(), 'src', 'html', 'template.html');
 
+function buildSeriesSection(writeups: Writeup[]): string {
+	// Group by series id
+	const seriesMap = new Map<string, Writeup[]>();
+	for (const w of writeups) {
+		if (!w.seriesInfo) continue;
+		const key = w.seriesInfo.series;
+		if (!seriesMap.has(key)) seriesMap.set(key, []);
+		seriesMap.get(key)!.push(w);
+	}
+	if (seriesMap.size === 0) return '';
+
+	const seriesCards = [...seriesMap.entries()]
+		.map(([, parts]) => {
+			const sorted = [...parts].sort(
+				(a, b) => (a.seriesInfo?.part ?? 0) - (b.seriesInfo?.part ?? 0),
+			);
+			const first = sorted[0]!;
+			const { series_title } = first.seriesInfo!;
+
+			// Group parts by module
+			const moduleMap = new Map<string, Writeup[]>();
+			for (const p of sorted) {
+				const mod = p.seriesInfo?.module ?? 'Other';
+				if (!moduleMap.has(mod)) moduleMap.set(mod, []);
+				moduleMap.get(mod)!.push(p);
+			}
+
+			const modulesHtml = [...moduleMap.entries()]
+				.map(([mod, modParts]) => {
+					const partLinks = modParts
+						.map(
+							(p) =>
+								`<a href="writeups/${p.id}.html" class="playlist-part-link cyber-link">
+                  <span class="playlist-part-num">${p.seriesInfo!.part}</span>
+                  <span class="playlist-part-title">${p.title}</span>
+                </a>`,
+						)
+						.join('');
+					return `<div class="playlist-module">
+              <div class="playlist-module-name">${mod}</div>
+              <div class="playlist-parts">${partLinks}</div>
+            </div>`;
+				})
+				.join('');
+
+			return `
+    <div class="series-card">
+      <div class="series-card-header">
+        <h2 class="series-card-title cyber-text">${series_title}</h2>
+        <span class="series-card-count">${sorted.length} parts</span>
+      </div>
+      <div class="playlist-modules">${modulesHtml}</div>
+      <a href="writeups/${first.id}.html" class="writeup-link cyber-link mt-4 inline-block">START →</a>
+    </div>`;
+		})
+		.join('');
+
+	return `
+    <div class="series-section">
+      <h2 class="series-section-title cyber-text">SERIES &amp; PLAYLISTS</h2>
+      <div class="series-grid">${seriesCards}</div>
+    </div>
+    <div class="section-divider"></div>`;
+}
+
 export async function generateWriteupsIndex() {
 	try {
-		// ✅ Check if writeups.json exists
 		if (!existsSync(writeupsJsonPath)) {
 			console.error(`❌ writeups.json not found at: ${writeupsJsonPath}`);
 			process.exit(1);
 		}
 
-		// ✅ Read and parse writeups data
 		const writeupsData = readFileSync(writeupsJsonPath, 'utf8');
 		const writeups: Writeup[] = JSON.parse(writeupsData);
-
 		console.log(`📊 Found ${writeups.length} writeups to process`);
 
-		// ✅ Read the template file
 		if (!existsSync(templatePath)) {
 			console.error(`❌ Template file not found at: ${templatePath}`);
 			process.exit(1);
 		}
 		let template = readFileSync(templatePath, 'utf8');
+
 		const writeupsHtml = writeups
-			.map(
-				(writeup) => `
-  <div class="writeup-card" data-id="${writeup.id}">
+			.map((writeup) => {
+				const seriesBadge = writeup.seriesInfo
+					? `<span class="series-badge">${writeup.seriesInfo.series_title} · Part ${writeup.seriesInfo.part}</span>`
+					: '';
+				const tagsHtml =
+					writeup.tags && writeup.tags.length
+						? `<div>${writeup.tags.map((tag) => `<button type="button">${tag}</button>`).join('')}</div>`
+						: '';
+				return `
+  <div class="writeup-card" data-id="${writeup.id}" data-series="${writeup.seriesInfo?.series ?? ''}">
+    ${seriesBadge}
     <h2 class="writeup-title cyber-text">${writeup.title}</h2>
     <p class="writeup-description">${writeup.description}</p>
-    ${
-			writeup.tags && writeup.tags.length
-				? `<div>
-            ${writeup.tags.map((tag) => `<button type="button">${tag}</button>`).join('')}
-          </div>`
-				: ''
-		}
-    <a href="writeups/${writeup.id}.html" class="writeup-link cyber-link">
-      READ_WRITEUP
-    </a>
-  </div>`,
-			)
+    ${tagsHtml}
+    <a href="writeups/${writeup.id}.html" class="writeup-link cyber-link">READ_WRITEUP</a>
+  </div>`;
+			})
 			.join('');
 
-		// ✅ Generate pagination HTML (if needed)
 		const itemsPerPage = 6;
 		const pageCount = Math.ceil(writeups.length / itemsPerPage);
 		const paginationHtml =
@@ -70,44 +139,36 @@ export async function generateWriteupsIndex() {
 
 		let tags: string[] = [];
 		if (existsSync(tagsJsonPath)) {
-			const tagsData = readFileSync(tagsJsonPath, 'utf8');
-			tags = JSON.parse(tagsData);
-		} else {
-			console.warn(
-				`⚠️ tags.json not found at: ${tagsJsonPath} (continuing without tags)`,
-			);
+			tags = JSON.parse(readFileSync(tagsJsonPath, 'utf8'));
 		}
-		const tagsHtml = (tags ?? [])
+		const tagsHtml = tags
 			.map(
 				(t) =>
-					`<button type="button"
-        class="tag small"
-        data-tag="${t}">
-        ${t}
-      </button>`,
+					`<button type="button" class="tag small" data-tag="${t}">${t}</button>`,
 			)
 			.join('');
 
-		// ✅ Main content block (clean and minimal — no duplicate filters/search)
+		const seriesSection = buildSeriesSection(writeups);
+
 		const mainContent = `
       <div class="writeups-container">
         <h1 class="cyber-text glitch-effect text-center" data-text="PENETRATION_TESTING_WRITEUPS">
           PENETRATION_TESTING_WRITEUPS
         </h1>
-
         <div class="text-center mt-4">
           <a href="blogs.html" class="writeup-link cyber-link">VIEW_BLOGS</a>
         </div>
 
+        ${seriesSection}
+
+        <h2 class="section-all-title cyber-text">ALL WRITEUPS</h2>
         <div id="writeupsList" class="writeups-grid">
           ${writeupsHtml}
         </div>
-
         <div class="pagination mt-8">${paginationHtml}</div>
       </div>
     `;
 
-		// ✅ Update template paths for correct relative linking
 		const templateWithStyles = template.replace(
 			'</head>',
 			`  <link rel="stylesheet" href="assets/css/writeupIndex.css" /></head>`,
@@ -115,6 +176,7 @@ export async function generateWriteupsIndex() {
 
 		const finalHtml = templateWithStyles
 			.replace('${content}', mainContent)
+			.replace('${series_nav}', '')
 			.replace('${tags}', tagsHtml)
 			.replace(
 				'</body>',
@@ -135,7 +197,6 @@ export async function generateWriteupsIndex() {
 				`<script type="module" src="assets/js/menu.js" defer></script>`,
 			);
 
-		// ✅ Write final HTML file
 		writeFileSync(outputPath, finalHtml);
 		console.log(`✅ Writeups index generated successfully at: ${outputPath}`);
 	} catch (error) {
