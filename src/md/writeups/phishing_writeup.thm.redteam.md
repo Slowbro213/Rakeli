@@ -73,6 +73,8 @@ Go Phish allows you to **store your SMTP server settings** for sending emails, i
 **SET (Social Engineering Toolkit) ****trustedsec.com**
 The Social Engineering Toolkit contains a multitude of tools, but some of the important ones for phishing are the ability to create spear-phishing attacks and deploy fake versions of common websites to trick victims into entering their credentials.
 
+![](../../assets/storage/images/writeups/phishing/img001_image74.png)
+
 1. DNS Server
 - Resolves attacker-controlled domains (e.g., login-secure.com) to the correct malicious IPs.
 - May also be used to **log DNS queries** for analytics or exfiltration techniques (e.g., DNS tunneling).
@@ -97,12 +99,14 @@ The Social Engineering Toolkit contains a multitude of tools, but some of the im
 - May use spoofed sender domains to appear legit (e.g., admin@securebanking.com).
 
 **Using GoPhish**
+![](../../assets/storage/images/writeups/phishing/img002_image75.png)
 
+![](../../assets/storage/images/writeups/phishing/img003_image76.png)
 After logging in, we can see the site’s dashboard:
 
 We will now create a new Sending Profile.
 **Sending Profiles** are the connection details required to actually send the phishing emails. This is simply a **SMTP **server that you have access to. Clicking the Sending Profiles link on the left-hand menu and then the “New Profile” button will create a new profile.
-
+![](../../assets/storage/images/writeups/phishing/img004_image77.png)
 **Landing Pages**
 We will now set up the landing page. This is the website that the Phishing email will direct the victim to. This is usually a spoof of the website that the victim is familiar with.
 To do this we click the Landing Pages link on the left-hand menu and then click the “New Page” button. Then, we name it and press the Source button to enter the required HTML code.
@@ -115,24 +119,27 @@ We can do this by highlighting the link text and then clicking the link button o
 **Users & Groups**
 This is where we can store the email addresses of our intended targets.
 Click the **Users & Groups** link on the left-hand menu and then the **New Group** button. Give the group a name and then add some email addresses. Then save the template.
+![](../../assets/storage/images/writeups/phishing/img005_image78.png)
 
 **Campaigns**
 Now it is time to send the first phishing emails.
 We click the **Campaigns** link on the left-hand menu, and the **New Campaign**.
 Then we input data as needed.
-
+![](../../assets/storage/images/writeups/phishing/img006_image79.png)
 We will now be redirected to the results page for our campaign.
 
 **Results**This page gives an idea of how our campaign is doing by letting us know how many emails have been delivered, opened, clicked and how many users have submitted data to our spoof website.
 You’ll see at the bottom of the screen a breakdown for each email address.
 Here, you’ll notice that two of our emails have been sent successfully, but on one occasion we have an error.
+![](../../assets/storage/images/writeups/phishing/img007_image80.png)
 
 We can look further into the arrow by clicking the dropdown arrow next to the account row and viewing details etc.
 In this case, it says the user is unknown.
-
+![](../../assets/storage/images/writeups/phishing/img008_image81.png)
 That just means that the user does not exist.
 
 Anyways, let’s focus on the use that actually submitted a set of credentials on the spoofed page, which got sent to our server:
+![](../../assets/storage/images/writeups/phishing/img009_image82.png)
 
 **Droppers**
 Droppers are software that phishing victims tend to be tricked into downloading and running into their system. The dropper advertises itself as a useful file or something legitimate like a codec to view a certain video or software that is needed to open a specific file.
@@ -160,6 +167,7 @@ A common trick for choosing a domain would be to use the same name but with a di
 
 **IDN Homograph Attack/Script Spoofing:**
 Originally domain names were made up of Latin characters a-z and 0-9, but in 1998, IDN (internationalized domain name) was implemented to support language-specific script or alphabet from other languages such as Arabic, Chinese, Cyrillic, Hebrew and more. An issue that arises from the IDN implementation is that different letters from different languages can actually appear identical. For example, Unicode character U+0430 (Cyrillic small letter a) looks identical to Unicode character U+0061 (Latin small letter a) used in English, enabling attackers to register a domain name that looks almost identical to another.
+![](../../assets/storage/images/writeups/phishing/img010_image83.png)
 
 **Using MS Office in Phishing**
 Often during phishing campaigns, a Microsoft Office document (typically Word, Excel or PowerPoint) will be included as an attachment. Office documents can contain macros; macros do have a legitimate use but can also be used to run computer commands that can cause malware to be installed onto the victim's computer or connect back to an attacker's network and allow the attacker to take control of the victim's computer.

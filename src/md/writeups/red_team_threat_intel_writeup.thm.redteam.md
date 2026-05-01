@@ -23,6 +23,7 @@ The categorization of the collected TTP’s is done based on characteristics lik
 4. Objective/Goal
 
 TIBER-EU (Threat Intelligence-based Ethical Red Teaming) is a common framework developed by the Europian Central Bank that focuses on the usage of threat intelligence.
+![](../../assets/storage/images/writeups/red_team_threat_intel/img001_image1.png)
 
 **TTP Mapping**
 

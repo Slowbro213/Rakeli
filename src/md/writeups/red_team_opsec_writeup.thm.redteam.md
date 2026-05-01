@@ -17,6 +17,8 @@ OPSEC process has five elements:
 1. **Apply appropriate countermeasures**: Countermeasures are designed to prevent an adversary from detecting critical information, provide an alternative interpretation of critical information or indicators (deception), or deny the adversary’s collection system.
 
 Denying any potential adversary the ability to gether information about our capabilities and intentions is critical to maintaining OPSEC.OPSEC is a process to perform the following:**Identification, Control and Protection** regarding any information related to the planning and execution of our activities.
+![](../../assets/storage/images/writeups/red_team_opsec/img001_image2.png)
+![](../../assets/storage/images/writeups/red_team_opsec/img002_image3.png)
 
 **Critical Information Identification**
 Red teamers define critical information as anything that, if discovered by the blue team, could compromise the mission. This includes not only sensitive data but also operational details like intentions, tools, and infrastructure. To identify such information, red teams must think adversarially—asking what the blue team would need to know to stop them.
