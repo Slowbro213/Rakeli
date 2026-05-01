@@ -56,7 +56,7 @@ The domain registrar is responsible for maintaining the WHOIS records for the do
 - Admin contact info and address (unless withheld for privacy)
 - Tech contact info and address (unless withheld for privacy)
 
-![](../../assets/storage/images/writeups/red_team_recon/img001_image25.png)
+![](../assets/storage/images/writeups/red_team_recon/img001_image25.png)
 An example:
 
 There is quite a lot of valuable information to gain with only a domain name.
@@ -65,16 +65,16 @@ At the end of the whois query, we find the authoritative name servers for the do
 
 **DNS Queries** can be executed with many different tools found on our systems, especially Unix-like systems. One common tool found on Unix-like systems, Windows, and macOS is **nslookup**.
 In the following query, we can see how nslookup uses the default DNS server to get the A and AAAA records related to our domain.
-![](../../assets/storage/images/writeups/red_team_recon/img002_image26.png)
+![](../assets/storage/images/writeups/red_team_recon/img002_image26.png)
 
 Another tool commonly found on Unix-lik esystems is **dig**, short for Domain Information Groper.
 
 **Dig** provides a lot of query options and even allows for specifying a different DNS server to use. For example, we can use Cloudflare’s DNS server: **dig @1.1.1.1 ****tryhackme.com**
 
-![](../../assets/storage/images/writeups/red_team_recon/img003_image27.png)
+![](../assets/storage/images/writeups/red_team_recon/img003_image27.png)
 
 **Host **is another useful alternative for **querying DNS servers for DNS reconds.**
-![](../../assets/storage/images/writeups/red_team_recon/img004_image28.png)
+![](../assets/storage/images/writeups/red_team_recon/img004_image28.png)
 Consider the following example:
 
 The final tool that ships with Unix-like Systems is **traceroute**. Or on MS Windows systems, called **tracert**.
@@ -82,7 +82,7 @@ As the name indicates, it traces the route taken by the packets from our system 
 The console output below shows that **traceroute** provided us with the routers (hops) connecting us to the target system.
 Some routers don’t respond to the packets sent by traceroute though. We don’t see their IP addresses, and **a “*” is used to indicate such cases.**
 
-![](../../assets/storage/images/writeups/red_team_recon/img005_image29.png)
+![](../assets/storage/images/writeups/red_team_recon/img005_image29.png)
 
 So, in summary, we can always rely on:
 - **whois **to query the WHOIS database
@@ -162,17 +162,17 @@ With reverse IP lookup however, starting from a domain name or an IP address, yo
 
 In the figure below, we used reverse IP lookup to find other servers sharing the same Ip addresses used by **cafe.thmredteam.com****.**
 Therefore, it is important to note that knowing the IP address does not necessarily lead to a single website.
-![](../../assets/storage/images/writeups/red_team_recon/img006_image30.png)
+![](../assets/storage/images/writeups/red_team_recon/img006_image30.png)
 
 **Threat Intelligence Platform**
 Threat Intelligence Platform requires you to provide a domain name or an IP address, and it will launch a series of tests from malware checks to WHOIS and DNS queries.
 The WHOIS and DNS results are similar to the results we would get using **whois** and **dig**, but Threat Intelligence Platform presents them in a more readable and visually appealing way.
 
 There is extra information that we get with our report. For instance, after we look up **thmredteam.com**, we see that Name Server (NS) records were resolved to their respective IPv4 and IPv6 addresses, as shown in the figure below.
-![](../../assets/storage/images/writeups/red_team_recon/img007_image31.png)
+![](../assets/storage/images/writeups/red_team_recon/img007_image31.png)
 
 On the other hand, searching for **cafe.thmredteam.com** also gets us a list of other domains on the same IP address. The result we see in the figure below is similar to the results obtained by using ViewDNS.info
-![](../../assets/storage/images/writeups/red_team_recon/img008_image32.png)
+![](../assets/storage/images/writeups/red_team_recon/img008_image32.png)
 
 **Specialized Search Engines**
 
@@ -189,7 +189,7 @@ It is clear that this IP address is used to server websites other than **cafe.th
 In other words, this IP address belongs to a company other than our client, Organic Cafe.
 It’s critical to make this distinction so that we don’t probe systems outside the scope of our contract.
 
-![](../../assets/storage/images/writeups/red_team_recon/img009_image33.png)
+![](../assets/storage/images/writeups/red_team_recon/img009_image33.png)
 
 **Shodan**
 
@@ -204,7 +204,7 @@ To learn more about what to do with **shodan**, it is recommended to look at **S
 Let’s now demonstrate a simple example of looking up information about one of the IP addresses we got from **“nslookup ****cafe.thmredteam.com****”**.
 Using “shodan host IP_Address” , we can get the geographical location of the IP address and the open ports, as shown below.
 
-![](../../assets/storage/images/writeups/red_team_recon/img010_image34.png)
+![](../assets/storage/images/writeups/red_team_recon/img010_image34.png)
 
 **Recon-ng**
 Recon-ng is a framework that helps automate the OSINT work. It uses modules from various authors and provides a multitude of functionality. Some modules require keys to work;
@@ -241,7 +241,7 @@ Let’s consider the case where we know the target’s domain name, **thmredteam
 
 We want to insert the domain name “thmredteam.com” into the domains table. We can do this by using the command **db insert domains**.
 
-![](../../assets/storage/images/writeups/red_team_recon/img011_image35.png)
+![](../assets/storage/images/writeups/red_team_recon/img011_image35.png)
 
 **Recon-ng Marketplace**
 We have a domain name now, so a logical next step would be to search for a module that transforms domains into other types of information. Assuming we are starting from a fresh installation of Recon-ng, we will search for suitable modules from the marketplace.
@@ -256,7 +256,7 @@ Moreover, recon is also divided into many subcategories depending on the transfo
 
 Run **marketplace search** to get a list of all available modules.
 In the terminal below, we search for modules containing **domains-**
-![](../../assets/storage/images/writeups/red_team_recon/img012_image36.png)
+![](../assets/storage/images/writeups/red_team_recon/img012_image36.png)
 
 We notice many categories under **recon**, such as **domains-companies, domains-contacts **and **domains-hosts**. This naming tells us what kind of new information we will get from that transformation. For instance, **domains-hosts** means that the module will find hosts related to the provided domain.
 
@@ -289,7 +289,7 @@ To **run** it, we need to set the required options:
 
 In a previous step, we have installed the module **google_site_web**, so let’s load it using **load google_site_web** and run it with **run**.
 We have already added the domain **thmredteam.com** to the database, so when the module is run, it will read that value from the database, get new kinds of information, and add them to the database in turn. The commands and results are shown in the terminal output below:
-![](../../assets/storage/images/writeups/red_team_recon/img013_image37.png)
+![](../assets/storage/images/writeups/red_team_recon/img013_image37.png)
 This module has queried Google and found two hosts:**cafe.thmredteam.com**  and  **clinic.thmredteam.com**.
 
 It is possible that by the time you run these steps, new hosts will also appear.
@@ -319,7 +319,7 @@ The information collected in Maltego can be used for later stages. For instance,
 Think of each block on a Maltego graph as an entity. An entity can have values to describe it. In Maltego’s terminology, a **transform** is a piece of code that would query an **API **to retrieve information related to a specific entity.
 The logic is shown in the picture below.**Information** related to an entity goes via a **transform** to return zero or more entities.
 
-![](../../assets/storage/images/writeups/red_team_recon/img014_image38.png)
+![](../assets/storage/images/writeups/red_team_recon/img014_image38.png)
 
 It is crucial to mention that some of the transforms available in Maltego might actively connect to the target system.
 Therefore, it is better to know how the transform works before using it if you want to limit yourself to passive reconnaissance.
@@ -327,7 +327,7 @@ Therefore, it is better to know how the transform works before using it if you w
 Every transform might lead to several new values. For instance, if we start from the “DNS Name” **cafe.thmredteam.com** , we expect to get new kinds of entities based on the transform we use.
 For instance, “To IP Address” is expected to return IP Addresses as shown next.
 
-![](../../assets/storage/images/writeups/red_team_recon/img015_image39.png)
+![](../assets/storage/images/writeups/red_team_recon/img015_image39.png)
 One way to achieve this in Maltego is to right-click on the “DNS Name” **cafe.thmredteam.com** and choose:
 
 1. Standard Transforms
@@ -336,7 +336,7 @@ One way to achieve this in Maltego is to right-click on the “DNS Name” **caf
 
 After executing this transform, we would get one or more IP addresses, as shown below.
 
-![](../../assets/storage/images/writeups/red_team_recon/img016_image40.png)
+![](../assets/storage/images/writeups/red_team_recon/img016_image40.png)
 
 Then, we can choose to apply another transform for one of the IP addresses. Consider the following transform:
 1. DNS from IP
@@ -347,7 +347,7 @@ This will populate our graph with new DNS names.
 With a couple more clicks, we can then get the location of the IP Address, and so on.
 The result might be similar to the image below.
 
-![](../../assets/storage/images/writeups/red_team_recon/img017_image41.png)
+![](../assets/storage/images/writeups/red_team_recon/img017_image41.png)
 
 The above two examples should give you an idea of the workflow using Maltego.
 
@@ -361,8 +361,8 @@ Interestingly, Maltego transforms were able to extract and arrange the informati
 
 Although the returned email addresses are not helpful due to privacy protection, it is worth seeing how Maltego can extract such information and how it’s presented.
 
-![](../../assets/storage/images/writeups/red_team_recon/img018_image42.png)
+![](../assets/storage/images/writeups/red_team_recon/img018_image42.png)
 
 Now that we have learned how Maltego’s power stems from its transforms, the only logical thing is to make Maltego more powerful by adding new Transforms. Transforms are usually grouped into different categories based on data type, pricing, and target audience. Although many transforms can be used using Maltego Community Edition and free transforms, other transforms require a paid subscription. A screenshot is shown below to give a clearer idea
 
-![](../../assets/storage/images/writeups/red_team_recon/img019_image43.png)
+![](../assets/storage/images/writeups/red_team_recon/img019_image43.png)
