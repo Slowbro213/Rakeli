@@ -130,22 +130,27 @@
 <p><strong>Network Infrastructure</strong>
 When a red team gains initial access to an unknown network, the first step is <strong>enumeration</strong>: identifying the <strong>target system</strong>, its <strong>services</strong>, and the surrounding <strong>network environment</strong>.
 <strong>Network segmentation</strong> is a common security practice that divides the network into smaller <strong>subnets</strong>. This helps prevent <strong>unauthorized access</strong> and improves <strong>network management</strong>. One popular method for segmentation is the use of <strong>VLANs (Virtual Local Area Networks)</strong>, which isolate communication between devices unless they belong to the same VLAN.
-<strong>Internal networks</strong> are often segmented based on the <strong>sensitivity of devices</strong> or the <strong>importance of data</strong>. These networks support <strong>internal communication</strong>, <strong>information sharing</strong>, <strong>operational tools</strong>, and <strong>services</strong> while maintaining <strong>security</strong> and <strong>performance control</strong>.</p>
-<p><strong>Demilitarized Zone (DMZ)</strong>
-<strong>A DMZ (Demilitarized Zone)</strong> is an** edge network** that provides an **additional security layer **between a corporation&#39;s <strong>internal network</strong> and <strong>untrusted traffic</strong> (such as the public internet).
+<strong>Internal networks</strong> are often segmented based on the <strong>sensitivity of devices</strong> or the <strong>importance of data</strong>. These networks support <strong>internal communication</strong>, <strong>information sharing</strong>, <strong>operational tools</strong>, and <strong>services</strong> while maintaining <strong>security</strong> and <strong>performance control</strong>.
+<img src="../../assets/storage/images/writeups/the_lay_of_the_land/img001_image84.png" alt="">
+<strong>Demilitarized Zone (DMZ)</strong>
+<strong>A DMZ (Demilitarized Zone)</strong> is an** edge network** that provides an <strong>additional security layer <strong>between a corporation&#39;s <strong>internal network</strong> and <strong>untrusted traffic</strong> (such as the public internet).
 A typical DMZ design places a subnetwork between the public internet and internal systems, acting as a buffer zone to filter and control access.
-The design of a DMZ depends on the organization’s needs and services. If a company offers public-facing services like websites, DNS, FTP, Proxy, or VPN, a DMZ helps to isolate these services and enforce access controls on incoming public traffic.</p>
-<p><strong>I</strong>n the previous diagram,** red network traffic** represents <strong>untrusted connections</strong> coming from the <strong>internet to the DMZ</strong>. In contrast, <strong>green network traffic</strong> represents <strong>controlled internal communication</strong>, which typically passes through one or more <strong>network security devices</strong>.
+The design of a DMZ depends on the organization’s needs and services. If a company offers public-facing services like websites, DNS, FTP, Proxy, or VPN, a DMZ helps to isolate these services and enforce access controls on incoming public traffic.
+<img src="../../assets/storage/images/writeups/the_lay_of_the_land/img002_image85.png" alt="">
+<strong>I</strong>n the previous diagram,</strong> red network traffic</strong> represents <strong>untrusted connections</strong> coming from the <strong>internet to the DMZ</strong>. In contrast, <strong>green network traffic</strong> represents <strong>controlled internal communication</strong>, which typically passes through one or more <strong>network security devices</strong>.
 <strong>The enumeration phase</strong> is the** discovery stage** where an attacker gathers information about <strong>the system</strong> and the** internal network**. This information is then used to perform lateral movement or privilege escalation, aiming to increase access within the system or the Active Directory (AD) environment.</p>
 <p><strong>Network Enumeration</strong>
 There are various things to check, related to networking aspects, like **TCP **and **UDP **ports and established connections, routing tables, ARP tables etc.
+<img src="../../assets/storage/images/writeups/the_lay_of_the_land/img003_image86.png" alt="">
 We can start checking the target machine’s TCP and UDP open ports. This can be done using the <strong>netstat</strong> command as shown below:</p>
-<p>The output reveals open ports as well as established connections. Next, we can list the <strong>ARP table</strong>. This contains the IP address and physical address of the computers that communicated with the target machines within the network. This could be helpful to see the communications within the network to scan the other machines for open ports and vulnerabilities.</p>
+<p>The output reveals open ports as well as established connections. Next, we can list the <strong>ARP table</strong>. This contains the IP address and physical address of the computers that communicated with the target machines within the network. This could be helpful to see the communications within the network to scan the other machines for open ports and vulnerabilities.
+<img src="../../assets/storage/images/writeups/the_lay_of_the_land/img004_image87.png" alt=""></p>
 <p><strong>Internal Network Services</strong>
 It provides private and internal network communication access for internal network devices.An example of network services is an <strong>internal DNS</strong>, web servers, custom applications etc.
 Internal network services are <strong>not accessible outside the network</strong>.However, once we have initial access to one of the networks that access these network services,hey will be reachable and available for communications.</p>
 <p><strong>Active Directory (AD) Environment</strong>
-The active directory is a <strong>Windows-based directory service</strong> that <strong>stores and provides data objects</strong> to the internal network environment. It allows for centralized management of authentication and authorization.The AD contains <strong>essential information</strong> about the network and the environment, including users, computers, printers etc.For example, AD might have users’details such as job title, phone number, address, <strong>passwords</strong>, groups, permission etc.</p>
+The active directory is a <strong>Windows-based directory service</strong> that <strong>stores and provides data objects</strong> to the internal network environment. It allows for centralized management of authentication and authorization.The AD contains <strong>essential information</strong> about the network and the environment, including users, computers, printers etc.For example, AD might have users’details such as job title, phone number, address, <strong>passwords</strong>, groups, permission etc.
+<img src="../../assets/storage/images/writeups/the_lay_of_the_land/img005_image88.png" alt=""></p>
 <p>The above diagram shows a potential AD design.
 The AD <strong>controller</strong> is placed in a subnet for servers, and then the AD clients are on a separate network where they can join the domain and use the AD services via a firewall.This is the list of AD components we need to be familiar with:<strong>Domain Controllers</strong>
 <strong>Organizational Units</strong>
@@ -154,15 +159,18 @@ The AD <strong>controller</strong> is placed in a subnet for servers, and then t
 <strong>Forest</strong>
 <strong>AD Service Accounts (Built-in local users, Domain users, Managed service accounts)</strong>
 <strong>Domain Administrators</strong></p>
-<p>A <strong>domain controller</strong> is a Windows server that provides AD services and controls the entire domain. It is a form of centralized user management that provides encryption of user data as well as controlling access to a network. It also enables resource sharing.These are all reasons why attackers target a domain controller in a domain because it contains a lot of high value information.</p>
+<p>A <strong>domain controller</strong> is a Windows server that provides AD services and controls the entire domain. It is a form of centralized user management that provides encryption of user data as well as controlling access to a network. It also enables resource sharing.These are all reasons why attackers target a domain controller in a domain because it contains a lot of high value information.
+<img src="../../assets/storage/images/writeups/the_lay_of_the_land/img006_image89.png" alt=""></p>
 <p><strong>Organizational Units (OU’s)</strong>
 **Organizational Units **are containers within the AD Domain with a hierarchical structure.
 <strong>Active Directory Objects</strong> can be a single user or a group, or a hardware component. Each domain holds a database that contains object identity information that creates an AD environment, including:**Users - **A security principal that is allowed to authenticate to machines in the domain
 **Computers - **A special type of user account
 **GPOs - **Collections of policies that are applied to other AD objects</p>
 <p>**AD Domains **are a collection of Microsoft components within an AD network.
-<strong>AD Forest</strong> is a collection of domains that trust eachother.</p>
-<p>To check if the Windows machine is part of the AD environment or not, we can use the command <strong>systeminfo</strong>. The output of the <strong>systeminfo</strong> provides machine information like system name and version, hostname, and other hardware information, as well as the AD domain.</p>
+<strong>AD Forest</strong> is a collection of domains that trust eachother.
+<img src="../../assets/storage/images/writeups/the_lay_of_the_land/img007_image90.png" alt="">
+To check if the Windows machine is part of the AD environment or not, we can use the command <strong>systeminfo</strong>. The output of the <strong>systeminfo</strong> provides machine information like system name and version, hostname, and other hardware information, as well as the AD domain.
+<img src="../../assets/storage/images/writeups/the_lay_of_the_land/img008_image91.png" alt=""></p>
 <p><strong>Users and Group Management</strong>
 Common Active Directory service accounts include:<strong>Built-in Local User Accounts</strong> which are used to manage the system locally, which is not part of the AD environment
 <strong>Domain user accounts</strong> with access to an AD environment can use the AD Services
@@ -171,16 +179,19 @@ Common Active Directory service accounts include:<strong>Built-in Local User Acc
 <p>The following are AD Admin accounts:</p>
 <p><strong>Active Directory Enumeration</strong>
 Once we confirm that the machine is part of the AD environment, we can start hunting for any useful information. We will use <strong>PowerShell</strong> to enumerate for users and groups.</p>
-<p>The following PS command is to <strong>get all active directory user accounts</strong>. Note that we need to use <strong>-Filter</strong> argument.</p>
+<p>The following PS command is to <strong>get all active directory user accounts</strong>. Note that we need to use <strong>-Filter</strong> argument.
+<img src="../../assets/storage/images/writeups/the_lay_of_the_land/img009_image92.png" alt=""></p>
 <p>We can also use the LDAP hierarchical tree structure to find a user within the AD environment.
 The <strong>Distinguished Name (DN)</strong> is a collection of comma-seperated key and value pairs used to identify unique records within the directory.
 The DN consists of:<strong>Domain Component (DC),</strong>
 <strong>OrganizationalUnitName(OU),</strong>
 <strong>Common Name (CN),</strong>
 <strong>and others.</strong></p>
-<p>Using the <strong>SearchBase</strong> option, we specify a specific Common Name <strong>CN</strong> in the active directory. For example, we can specify to list any users that are part of <strong>Users:</strong></p>
+<p>Using the <strong>SearchBase</strong> option, we specify a specific Common Name <strong>CN</strong> in the active directory. For example, we can specify to list any users that are part of <strong>Users:</strong>
+<img src="../../assets/storage/images/writeups/the_lay_of_the_land/img010_image93.png" alt=""></p>
 <p><strong>Q1:Use the “Get-DUser -Filter * -SearchBase” command to list the available user accounwithin THM OU in the <strong><strong>thmredteam.com</strong></strong> domain. How many users are available?</strong></p>
-<p><strong>There are 6 users.</strong>
+<p><img src="../../assets/storage/images/writeups/the_lay_of_the_land/img011_image94.png" alt="">
+<strong>There are 6 users.</strong>
 <strong>Q2:</strong>
 The admin account’s email is <a href="mailto:thmadmin@thmredteam.com">thmadmin@thmredteam.com</a></p>
 <p><strong>Host Security Solution #1</strong>
@@ -262,9 +273,12 @@ Without external tools, PowerShell can test open ports:<strong>Test-NetConnectio
 <strong>(New-Object System.Net.Sockets.TcpClient(&quot;127.0.0.1&quot;, &quot;80&quot;)).Connected</strong></p>
 <p>If the result is <strong>True</strong>, inbound port 80 is open and allowed.
 Remote systems can also be tested by changing the **-ComputerName **argument for the <strong>Test-NetConnection</strong></p>
-<p>Q1 (Not enabled):</p>
-<p>Q2:</p>
-<p>Q3:</p>
+<p><img src="../../assets/storage/images/writeups/the_lay_of_the_land/img012_image95.png" alt="">
+Q1 (Not enabled):</p>
+<p><img src="../../assets/storage/images/writeups/the_lay_of_the_land/img013_image96.png" alt="">
+Q2:</p>
+<p>Q3:
+<img src="../../assets/storage/images/writeups/the_lay_of_the_land/img014_image97.png" alt=""></p>
 <p><strong>Host Security Solution #2</strong>
 <strong>Summary: Security Event Logging, Sysmon, HIDS/HIPS, and EDR</strong>
 Red teamers must identify host-level monitoring solutions to avoid detection. The following sections cover major host security logging tools and how to enumerate them</p>
@@ -337,8 +351,10 @@ These check for AV/EDR via:<ul>
 </ul>
 </li>
 </ul>
-<p>Solution for question 1 and 2 on task 9:</p>
-<p>Question 3:</p>
+<p><img src="../../assets/storage/images/writeups/the_lay_of_the_land/img015_image98.png" alt="">
+Solution for question 1 and 2 on task 9:</p>
+<p><img src="../../assets/storage/images/writeups/the_lay_of_the_land/img016_image99.png" alt="">
+Question 3:</p>
 </article>
 ${series_nav}
 

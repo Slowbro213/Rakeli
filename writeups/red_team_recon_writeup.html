@@ -168,20 +168,25 @@ The domain registrar is responsible for maintaining the WHOIS records for the do
 <li>Admin contact info and address (unless withheld for privacy)</li>
 <li>Tech contact info and address (unless withheld for privacy)</li>
 </ul>
-<p>An example:</p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img001_image25.png" alt="">
+An example:</p>
 <p>There is quite a lot of valuable information to gain with only a domain name.
 After a whois lookup, we might get lucky and find names, email addresses, postal addresses, and even phone numbers.
 At the end of the whois query, we find the authoritative name servers for the domain in question.</p>
 <p><strong>DNS Queries</strong> can be executed with many different tools found on our systems, especially Unix-like systems. One common tool found on Unix-like systems, Windows, and macOS is <strong>nslookup</strong>.
-In the following query, we can see how nslookup uses the default DNS server to get the A and AAAA records related to our domain.</p>
+In the following query, we can see how nslookup uses the default DNS server to get the A and AAAA records related to our domain.
+<img src="../../assets/storage/images/writeups/red_team_recon/img002_image26.png" alt=""></p>
 <p>Another tool commonly found on Unix-lik esystems is <strong>dig</strong>, short for Domain Information Groper.</p>
 <p><strong>Dig</strong> provides a lot of query options and even allows for specifying a different DNS server to use. For example, we can use Cloudflare’s DNS server: **dig @1.1.1.1 **<strong>tryhackme.com</strong></p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img003_image27.png" alt=""></p>
 <p>**Host **is another useful alternative for <strong>querying DNS servers for DNS reconds.</strong>
+<img src="../../assets/storage/images/writeups/red_team_recon/img004_image28.png" alt="">
 Consider the following example:</p>
 <p>The final tool that ships with Unix-like Systems is <strong>traceroute</strong>. Or on MS Windows systems, called <strong>tracert</strong>.
 As the name indicates, it traces the route taken by the packets from our system to the target host.
 The console output below shows that <strong>traceroute</strong> provided us with the routers (hops) connecting us to the target system.
 Some routers don’t respond to the packets sent by traceroute though. We don’t see their IP addresses, and <strong>a “*” is used to indicate such cases.</strong></p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img005_image29.png" alt=""></p>
 <p>So, in summary, we can always rely on:</p>
 <ul>
 <li>**whois **to query the WHOIS database</li>
@@ -241,12 +246,15 @@ Some of these websites offer rich functionality and could have a complete room d
 <p>With shared hosting, one IP address is shared among many different web servers with different domain names.
 With reverse IP lookup however, starting from a domain name or an IP address, you can find the other domain names using specific IP Address(es).</p>
 <p>In the figure below, we used reverse IP lookup to find other servers sharing the same Ip addresses used by <strong>cafe.thmredteam.com</strong><strong>.</strong>
-Therefore, it is important to note that knowing the IP address does not necessarily lead to a single website.</p>
+Therefore, it is important to note that knowing the IP address does not necessarily lead to a single website.
+<img src="../../assets/storage/images/writeups/red_team_recon/img006_image30.png" alt=""></p>
 <p><strong>Threat Intelligence Platform</strong>
 Threat Intelligence Platform requires you to provide a domain name or an IP address, and it will launch a series of tests from malware checks to WHOIS and DNS queries.
 The WHOIS and DNS results are similar to the results we would get using <strong>whois</strong> and <strong>dig</strong>, but Threat Intelligence Platform presents them in a more readable and visually appealing way.</p>
-<p>There is extra information that we get with our report. For instance, after we look up <strong>thmredteam.com</strong>, we see that Name Server (NS) records were resolved to their respective IPv4 and IPv6 addresses, as shown in the figure below.</p>
-<p>On the other hand, searching for <strong>cafe.thmredteam.com</strong> also gets us a list of other domains on the same IP address. The result we see in the figure below is similar to the results obtained by using ViewDNS.info</p>
+<p>There is extra information that we get with our report. For instance, after we look up <strong>thmredteam.com</strong>, we see that Name Server (NS) records were resolved to their respective IPv4 and IPv6 addresses, as shown in the figure below.
+<img src="../../assets/storage/images/writeups/red_team_recon/img007_image31.png" alt=""></p>
+<p>On the other hand, searching for <strong>cafe.thmredteam.com</strong> also gets us a list of other domains on the same IP address. The result we see in the figure below is similar to the results obtained by using ViewDNS.info
+<img src="../../assets/storage/images/writeups/red_team_recon/img008_image32.png" alt=""></p>
 <p><strong>Specialized Search Engines</strong></p>
 <p><strong>Censys</strong>
 <strong><a href="https://search.censys.io/">https://search.censys.io/</a></strong></p>
@@ -256,6 +264,7 @@ We can easily infer that the IP address we looked up belongs to Cloudflare.</p>
 <p>It is clear that this IP address is used to server websites other than <strong>cafe.thmredteam.com</strong></p>
 <p>In other words, this IP address belongs to a company other than our client, Organic Cafe.
 It’s critical to make this distinction so that we don’t probe systems outside the scope of our contract.</p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img009_image33.png" alt=""></p>
 <p><strong>Shodan</strong></p>
 <p>Using shodan from the commandline is simple.</p>
 <p>To use Shodan from the commandline properly, we first create an account with Shodan.
@@ -264,6 +273,7 @@ Then, we configure <strong>shodan</strong> to use our API key using the command:
 To learn more about what to do with <strong>shodan</strong>, it is recommended to look at *<em>Shodan CLI (<strong><strong><a href="https://cli.shodan.io/">https://cli.shodan.io/</a></strong></strong>)</em>*</p>
 <p>Let’s now demonstrate a simple example of looking up information about one of the IP addresses we got from <strong>“nslookup <strong><strong>cafe.thmredteam.com</strong></strong>”</strong>.
 Using “shodan host IP_Address” , we can get the geographical location of the IP address and the open ports, as shown below.</p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img010_image34.png" alt=""></p>
 <p><strong>Recon-ng</strong>
 Recon-ng is a framework that helps automate the OSINT work. It uses modules from various authors and provides a multitude of functionality. Some modules require keys to work;
 The key allows the module to query the related online API.</p>
@@ -298,6 +308,7 @@ In recon, we start with one piece of information and then transform it into new 
 </ol>
 <p>Let’s consider the case where we know the target’s domain name, <strong>thmredteam.com</strong>, and we would like to feed it to the Recon-ng database related to the active workspace. If we want to check the names of the tables in our database, we can run <strong>db schema</strong>.</p>
 <p>We want to insert the domain name “thmredteam.com” into the domains table. We can do this by using the command <strong>db insert domains</strong>.</p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img011_image35.png" alt=""></p>
 <p><strong>Recon-ng Marketplace</strong>
 We have a domain name now, so a logical next step would be to search for a module that transforms domains into other types of information. Assuming we are starting from a fresh installation of Recon-ng, we will search for suitable modules from the marketplace.</p>
 <p>Before we start installing marketplace modules, there are some useful commands related to marketplace usage:**marketplace search KEYWORD **to search for available modules with a keyword.
@@ -307,7 +318,8 @@ We have a domain name now, so a logical next step would be to search for a modul
 <p>The modules are grouped under multiple categories, such as discovery, import, recon and reporting.
 Moreover, recon is also divided into many subcategories depending on the transform type.</p>
 <p>Run <strong>marketplace search</strong> to get a list of all available modules.
-In the terminal below, we search for modules containing <strong>domains-</strong></p>
+In the terminal below, we search for modules containing <strong>domains-</strong>
+<img src="../../assets/storage/images/writeups/red_team_recon/img012_image36.png" alt=""></p>
 <p>We notice many categories under <strong>recon</strong>, such as **domains-companies, domains-contacts **and <strong>domains-hosts</strong>. This naming tells us what kind of new information we will get from that transformation. For instance, <strong>domains-hosts</strong> means that the module will find hosts related to the provided domain.</p>
 <p>Some modules, like <strong>whoxy_whois</strong> require a key, as we can tell from the ***** under the <strong>K</strong> column.
 This indicates that the module is not usable unless we have a key to use that service.</p>
@@ -327,8 +339,9 @@ To <strong>run</strong> it, we need to set the required options:</p>
 <p>**options list **to list the options that we can set for the loaded module
 **options set <option> <value> **to set the value of an option.</p>
 <p>In a previous step, we have installed the module <strong>google_site_web</strong>, so let’s load it using <strong>load google_site_web</strong> and run it with <strong>run</strong>.
-We have already added the domain <strong>thmredteam.com</strong> to the database, so when the module is run, it will read that value from the database, get new kinds of information, and add them to the database in turn. The commands and results are shown in the terminal output below:</p>
-<p>This module has queried Google and found two hosts:<strong>cafe.thmredteam.com</strong>  and  <strong>clinic.thmredteam.com</strong>.</p>
+We have already added the domain <strong>thmredteam.com</strong> to the database, so when the module is run, it will read that value from the database, get new kinds of information, and add them to the database in turn. The commands and results are shown in the terminal output below:
+<img src="../../assets/storage/images/writeups/red_team_recon/img013_image37.png" alt="">
+This module has queried Google and found two hosts:<strong>cafe.thmredteam.com</strong>  and  <strong>clinic.thmredteam.com</strong>.</p>
 <p>It is possible that by the time you run these steps, new hosts will also appear.</p>
 <p><strong>Keys</strong>
 Some modules cannot be used without a key for the respective service API.**K **indicates that you need to provide the relevant service key to use the module in question.</p>
@@ -348,17 +361,20 @@ Then you can let this piece of information go through various transforms.</p>
 <p>The information collected in Maltego can be used for later stages. For instance, company information, contact names, and email addresses collected can be used to create very legitimate-looking phishing emails.</p>
 <p>Think of each block on a Maltego graph as an entity. An entity can have values to describe it. In Maltego’s terminology, a <strong>transform</strong> is a piece of code that would query an **API **to retrieve information related to a specific entity.
 The logic is shown in the picture below.<strong>Information</strong> related to an entity goes via a <strong>transform</strong> to return zero or more entities.</p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img014_image38.png" alt=""></p>
 <p>It is crucial to mention that some of the transforms available in Maltego might actively connect to the target system.
 Therefore, it is better to know how the transform works before using it if you want to limit yourself to passive reconnaissance.</p>
 <p>Every transform might lead to several new values. For instance, if we start from the “DNS Name” <strong>cafe.thmredteam.com</strong> , we expect to get new kinds of entities based on the transform we use.
 For instance, “To IP Address” is expected to return IP Addresses as shown next.</p>
-<p>One way to achieve this in Maltego is to right-click on the “DNS Name” <strong>cafe.thmredteam.com</strong> and choose:</p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img015_image39.png" alt="">
+One way to achieve this in Maltego is to right-click on the “DNS Name” <strong>cafe.thmredteam.com</strong> and choose:</p>
 <ol>
 <li>Standard Transforms</li>
 <li>Resolve to IP</li>
 <li>To IP Address (DNS)</li>
 </ol>
 <p>After executing this transform, we would get one or more IP addresses, as shown below.</p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img016_image40.png" alt=""></p>
 <p>Then, we can choose to apply another transform for one of the IP addresses. Consider the following transform:</p>
 <ol>
 <li>DNS from IP</li>
@@ -367,6 +383,7 @@ For instance, “To IP Address” is expected to return IP Addresses as shown ne
 <p>This will populate our graph with new DNS names.</p>
 <p>With a couple more clicks, we can then get the location of the IP Address, and so on.
 The result might be similar to the image below.</p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img017_image41.png" alt=""></p>
 <p>The above two examples should give you an idea of the workflow using Maltego.</p>
 <p>You can observe that all the work is based on transforms, and Maltego will help you keep your graph organised. You would get the same results by querying the different online websites and databases; however, Maltego helps you get all the information you need with a few clicks.</p>
 <p>We experimented with <strong>whois</strong> and <strong>nslookup</strong> in a previous task.
@@ -374,7 +391,9 @@ You get plenty of information, from names, emails, IP addresses etc.</p>
 <p>The results of whois and nslookup <strong>are shown visually</strong> in the following Maltego graph.
 Interestingly, Maltego transforms were able to extract and arrange the information returned from the WHOIS database.</p>
 <p>Although the returned email addresses are not helpful due to privacy protection, it is worth seeing how Maltego can extract such information and how it’s presented.</p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img018_image42.png" alt=""></p>
 <p>Now that we have learned how Maltego’s power stems from its transforms, the only logical thing is to make Maltego more powerful by adding new Transforms. Transforms are usually grouped into different categories based on data type, pricing, and target audience. Although many transforms can be used using Maltego Community Edition and free transforms, other transforms require a paid subscription. A screenshot is shown below to give a clearer idea</p>
+<p><img src="../../assets/storage/images/writeups/red_team_recon/img019_image43.png" alt=""></p>
 </article>
 ${series_nav}
 

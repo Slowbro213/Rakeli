@@ -230,15 +230,19 @@ Below is an example of using strip to remove the symbols from a binary compiled 
 Several other properties should be considered before actively using a tool, such as entropy or hash. These concepts are covered in task 5 of the Signature Evasion room.</p>
 <p><strong>Using the knowledge you have accrued throughout this task, remove any meaningful identifiers or debug information from the C++ source code below using the AttackBox or your own virtual machine. Once adequately obfuscated and stripped compile the source code using MingW32-G++ and submit it to the webserver. Note: the file name must be challenge-8.exe to receive the flag.</strong>
 ** What flag is found after uploading a properly obfuscated snippet? Hint : To build the source, use x86_64-w64-mingw32-g++ challenge-8.cpp -o challenge-8.exe.**
+<img src="../../assets/storage/images/writeups/obfuscation_principles/img001_image179.png" alt="">
 First, I create the challenge-8.c file:
 First, we will change the names for these variables, and also any occurrences of them:
 <strong>processHandle  -&gt;  mzkbzk</strong>
 <strong>remoteThread    -&gt;  asdasd</strong>
 <strong>remoteBuffer      -&gt; spfspf</strong>
 Then, we remove the leaked string, as well as any “cout”-s.
+<img src="../../assets/storage/images/writeups/obfuscation_principles/img002_image180.png" alt="">
 This is the result of the uncompiled code:</p>
-<p>So now we compile it.</p>
-<p>Now let’s upload it to THM’s file server for this challenge and see if it fits the criteria.</p>
+<p>So now we compile it.
+<img src="../../assets/storage/images/writeups/obfuscation_principles/img003_image181.png" alt="">
+Now let’s upload it to THM’s file server for this challenge and see if it fits the criteria.
+<img src="../../assets/storage/images/writeups/obfuscation_principles/img004_image182.png" alt=""></p>
 </article>
 ${series_nav}
 
