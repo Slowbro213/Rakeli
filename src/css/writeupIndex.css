@@ -225,3 +225,124 @@
   outline: 2px solid rgba(255, 0, 0, 0.9);
   outline-offset: 2px;
 }
+
+/* ── Series & Playlists ─────────────────────────────────────────────── */
+.series-section {
+  margin: 2.5rem 0 1.5rem;
+}
+
+.series-section-title {
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: var(--neon-green);
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--neon-green);
+  padding-bottom: 0.4rem;
+}
+
+.section-divider {
+  border-top: 1px solid #1a1a1a;
+  margin: 2rem 0;
+}
+
+.section-all-title {
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: #888;
+  margin-bottom: 1.25rem;
+}
+
+.series-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.series-card {
+  border: 1px solid var(--neon-green);
+  background: rgba(0, 255, 65, 0.02);
+  padding: 1.25rem;
+}
+
+.series-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.series-card-title {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.series-card-count {
+  color: #888;
+  font-size: 0.75rem;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+}
+
+.playlist-modules {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.playlist-module-name {
+  color: var(--neon-pink);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 0.4rem;
+}
+
+.playlist-parts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.playlist-part-link {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  text-decoration: none;
+  font-size: 0.82rem;
+  padding: 0.2rem 0.3rem;
+  border-left: 2px solid transparent;
+  transition: border-color 0.15s;
+}
+
+.playlist-part-link:hover {
+  border-left-color: var(--neon-green);
+  background: rgba(0, 255, 65, 0.04);
+}
+
+.playlist-part-num {
+  color: #555;
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  min-width: 1.4rem;
+}
+
+.playlist-part-title {
+  color: #ccc;
+}
+
+.series-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-family: 'Courier New', monospace;
+  color: var(--neon-pink);
+  border: 1px solid var(--neon-pink);
+  padding: 0.1rem 0.4rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+.writeup-card[data-series]:not([data-series=""]) {
+  border-color: rgba(0, 255, 65, 0.4);
+}

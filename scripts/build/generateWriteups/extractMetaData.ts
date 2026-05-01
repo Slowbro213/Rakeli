@@ -2,15 +2,25 @@ import fs from 'fs';
 import path from 'path';
 import { inputDir, jsonWriteupsOutput, jsonTagsOutput } from './config';
 
-function stripFrontmatter(md: string): string {
-	// Remove leading YAML frontmatter if present
-	if (md.startsWith('---')) {
-		const end = md.indexOf('\n---', 3);
-		if (end !== -1) {
-			return md.slice(end + 4);
-		}
+function parseFrontmatter(md: string): { frontmatter: Record<string, string>; body: string } {
+	if (!md.startsWith('---')) return { frontmatter: {}, body: md };
+	const end = md.indexOf('\n---', 3);
+	if (end === -1) return { frontmatter: {}, body: md };
+	const raw = md.slice(3, end).trim();
+	const body = md.slice(end + 4);
+	const frontmatter: Record<string, string> = {};
+	for (const line of raw.split('\n')) {
+		const colon = line.indexOf(':');
+		if (colon === -1) continue;
+		const key = line.slice(0, colon).trim();
+		const val = line.slice(colon + 1).trim();
+		frontmatter[key] = val;
 	}
-	return md;
+	return { frontmatter, body };
+}
+
+function stripFrontmatter(md: string): string {
+	return parseFrontmatter(md).body;
 }
 
 function cleanInlineMarkdown(s: string): string {
@@ -150,11 +160,19 @@ function findFirstParagraphAfterTitle(md: string): string {
 	return '';
 }
 
+interface SeriesInfo {
+	series: string;
+	series_title: string;
+	module: string;
+	part: number;
+}
+
 interface Metadata {
 	id: string;
 	title: string;
 	description: string;
 	tags: string[];
+	seriesInfo?: SeriesInfo;
 }
 
 function extractTitleAndTagsFromMd(filename: string): {
@@ -173,18 +191,30 @@ function extractTitleAndTagsFromMd(filename: string): {
 }
 
 function extractMetadataFromMd(mdContent: string, filename: string): Metadata {
-	mdContent = stripFrontmatter(mdContent);
+	const { frontmatter, body } = parseFrontmatter(mdContent);
+	mdContent = body;
 
 	const { title: titlePart, tags: tagParts } =
 		extractTitleAndTagsFromMd(filename);
 
 	const title = titlePart.replace(/[-_]/g, ' ');
 
+	let seriesInfo: SeriesInfo | undefined;
+	if (frontmatter['series']) {
+		seriesInfo = {
+			series: frontmatter['series']!,
+			series_title: frontmatter['series_title'] ?? '',
+			module: frontmatter['module'] ?? '',
+			part: parseInt(frontmatter['part'] ?? '0', 10),
+		};
+	}
+
 	let metadata: Metadata = {
 		id: titlePart,
 		title,
 		description: '',
 		tags: tagParts,
+		...(seriesInfo ? { seriesInfo } : {}),
 	};
 
 	// Extract title from first H1 (#) heading
@@ -300,7 +330,7 @@ export const extractMetaData = async () => {
 		const startMarker = '// AUTO-GENERATED-WRITEUPS-START';
 		const endMarker = '// AUTO-GENERATED-WRITEUPS-END';
 
-		const newArrayContent = `const writeups: Writeup[] = ${JSON.stringify(metadataArray, null, 2)};`;
+		const newArrayContent = `const writeups: Writeup[] = ${JSON.stringify(metadataArray, null, 2)} as Writeup[];`;
 
 		// Use regex to replace content between markers
 		const regex = new RegExp(`${startMarker}[\\s\\S]*?${endMarker}`, 'g');
