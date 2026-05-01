@@ -145,30 +145,30 @@ The <strong>Win32 API</strong>, more commonly called the <strong>Windows API</st
 <li><strong>In/Out Parameters</strong> – The bottom layer, representing the <strong>values passed into or returned from API calls</strong>, defining how data flows during execution.</li>
 </ul>
 <p><strong>OS Libraries</strong>
-Each Win32 API call exists in memory and requires a pointer to its location. Because of <strong>Address Space Layout Randomization (ASLR)</strong>, these locations change at runtime, and different approaches are used to resolve them. In unmanaged code such as C or C++, Microsoft provides the <strong>windows.h</strong> header file, also known as the Windows loader, which automatically handles this process by creating a thunk table that maps function addresses at runtime.
-This means developers can simply include the header file and call Win32 functions directly. In managed environments such as C#, the process is handled through P/Invoke (Platform Invoke). P/Invoke allows managed code to call unmanaged Win32 functions by first importing the relevant DLL with the <strong>DllImport</strong> attribute and then defining an external method with the <strong>extern</strong> keyword.
-Once this mapping is complete, the unmanaged function can be invoked as if it were part of the managed program. In essence, <strong>windows.h</strong> simplifies direct unmanaged calls, while P/Invoke bridges managed and unmanaged environments, both providing reliable ways to overcome ASLR and access Win32 API functionality.</p>
+Each Win32 API call exists in memory and requires a pointer to its location. Because of <strong>Address Space Layout Randomization (ASLR)</strong>, these locations change at runtime, and different approaches are used to resolve them. In unmanaged code such as C or C++, Microsoft provides the <code>windows.h</code> header file, also known as the Windows loader, which automatically handles this process by creating a thunk table that maps function addresses at runtime.
+This means developers can simply include the header file and call Win32 functions directly. In managed environments such as C#, the process is handled through P/Invoke (Platform Invoke). P/Invoke allows managed code to call unmanaged Win32 functions by first importing the relevant DLL with the <code>DllImport</code> attribute and then defining an external method with the <code>extern</code> keyword.
+Once this mapping is complete, the unmanaged function can be invoked as if it were part of the managed program. In essence, <code>windows.h</code> simplifies direct unmanaged calls, while P/Invoke bridges managed and unmanaged environments, both providing reliable ways to overcome ASLR and access Win32 API functionality.</p>
 <p><strong>API Call Structure</strong>
 <strong>API calls</strong> are the second main component of the <strong>Win32 library</strong> and provide the extensibility and flexibility that make the API useful for a wide range of purposes. Most of these calls are well documented in both the <strong>Windows API documentation</strong> and community resources such as <strong>pinvoke.net</strong>. To distinguish between different variations,
 Microsoft employs specific <strong>naming schemes</strong> by appending characters to the base function name. The suffix <strong>“A”</strong> indicates ANSI encoding using an 8-bit character set, <strong>“W”</strong> indicates Unicode encoding, and <strong>“Ex”</strong> represents an extended version of the function, often supporting additional in/out parameters. Alongside naming conventions, each API call follows a <strong>predefined structure</strong> for its <strong>input and output parameters</strong>. These parameters are documented individually, with details about their purpose, expected input, output behavior, and accepted values.
-<img src="../../assets/storage/images/writeups/introduction_to_windows_api/img001_image120.png" alt="">
+<img src="../assets/storage/images/writeups/introduction_to_windows_api/img001_image120.png" alt="">
 <strong>C API Implementations</strong>
 Microsoft provides low-level programming languages such as <strong>C</strong> and <strong>C++</strong> with a pre-configured set of libraries to access Win32 API calls. The most important is the <strong>windows.h header file</strong>, which defines call structures and obtains function pointers automatically. By including this header at the top of a program with #include &lt;windows.h&gt;, developers can immediately make use of the API.
 As a first example, we can create a <strong>pop-up window titled “Hello THM!”</strong> using the <strong>CreateWindowExA</strong> function. This API call takes a series of input and output parameters, including style definitions, position, dimensions, parent handle, and instance handle.</p>
 <p>Here is a sample in C code:
-<img src="../../assets/storage/images/writeups/introduction_to_windows_api/img002_image121.png" alt="">
-To implement this into a working application, we can register a simple window class and call CreateWindowEx to spawn the blank window.
-<img src="../../assets/storage/images/writeups/introduction_to_windows_api/img003_image122.png" alt="">
+<img src="../assets/storage/images/writeups/introduction_to_windows_api/img002_image121.png" alt="">
+To implement this into a working application, we can register a simple window class and call <code>CreateWindowEx</code> to spawn the blank window.
+<img src="../assets/storage/images/writeups/introduction_to_windows_api/img003_image122.png" alt="">
 If this code is successful, it produces a window with a specific title.</p>
 <p><strong>.NET and Powershell API Implementations</strong>
 <strong>P/Invoke</strong> (Platform Invoke) enables managed code to call unmanaged Win32 API functions by importing DLLs and assigning pointers to their addresses. Because of ASLR, direct memory addresses are unreliable, so P/Invoke provides a structured way to resolve function locations dynamically.
 In .NET, this begins by creating a class to hold the API call definition. The DllImport attribute is used to import the required DLL, which contains the desired API function. For example, to call GetComputerNameA from kernel32.dll, we define:
-<img src="../../assets/storage/images/writeups/introduction_to_windows_api/img004_image123.png" alt="">
+<img src="../assets/storage/images/writeups/introduction_to_windows_api/img004_image123.png" alt="">
 Here,** DllImport** loads the DLL, and the <strong>extern</strong> keyword declares the function as an external method. Once defined, the function can be called like any other managed method. A simple program that retrieves the computer name looks like this:
-<img src="../../assets/storage/images/writeups/introduction_to_windows_api/img005_image124.png" alt="">
+<img src="../assets/storage/images/writeups/introduction_to_windows_api/img005_image124.png" alt="">
 Running this will print the computer name of the current device.</p>
 <p>The same syntax can be adapted in <strong>PowerShell</strong>, though it requires one extra step. Instead of a class, the method definitions are declared as a string containing the DLL imports:
-<img src="../../assets/storage/images/writeups/introduction_to_windows_api/img006_image125.png" alt="">
+<img src="../assets/storage/images/writeups/introduction_to_windows_api/img006_image125.png" alt="">
 PowerShell then uses <strong>Add-Type</strong> to create a temporary compiled type in memory with these method definitions:
 <strong>$Kernel32 = Add-Type -MemberDefinition $MethodDefinition -Name &#39;Kernel32&#39; -NameSpace &#39;Win32&#39; -PassThru;</strong>
 After this step, the imported functions can be invoked using syntax like:

@@ -224,7 +224,7 @@ Sudo Privileges</li>
 <strong>Sensitive files</strong>:** /etc/shadow**, <strong>/var/mail/root</strong>, running services.
 <strong>Network details</strong>: Can be mapped with <strong>ip</strong>, <strong>netstat</strong>, and** lsof**.
 <strong>Processes</strong>: <strong>ps</strong> shows real-time system activity, useful for identifying what users are doing.
-<strong>Security Insight</strong>: Internal enumeration reveals much more detail than external scans (e.g., <strong>nmap</strong>).</p>
+<strong>Security Insight</strong>: Internal enumeration reveals much more detail than external scans (e.g., <code>nmap</code>).</p>
 <p><strong>Windows Enumeration</strong>
 <strong>System Information</strong>
 **systeminfo: **Displays OS version, hotfixes, build number, hardware, and more.
@@ -242,25 +242,25 @@ Sudo Privileges</li>
 <strong>net accounts:</strong> Displays local account and password policy.
 <strong>net accounts /domain</strong> for domain policies.</p>
 <p><strong>Network Configuration</strong>
-<strong>ipconfig</strong> or** **<strong>ipconfig /all</strong> Displays IP address, subnet mask, gateway, and DNS configuration.
-<strong>netstat -abno</strong> Shows all listening and established connections, associated processes, and PIDs. Options:</p>
+<code>ipconfig</code> or** **<code>ipconfig /all</code> Displays IP address, subnet mask, gateway, and DNS configuration.
+<code>netstat -abno</code> Shows all listening and established connections, associated processes, and PIDs. Options:</p>
 <ul>
-<li>-a: <strong>all connections</strong></li>
-<li>-b: <strong>show executable</strong></li>
-<li>-n: <strong>numeric IPs/ports</strong></li>
-<li>-o: <strong>process ID</strong>
-<strong>arp -a</strong> Lists recent LAN IP-to-MAC address mappings.</li>
+<li><code>-a</code>: <strong>all connections</strong></li>
+<li><code>-b</code>: <strong>show executable</strong></li>
+<li><code>-n</code>: <strong>numeric IPs/ports</strong></li>
+<li><code>-o</code>: <strong>process ID</strong>
+<code>arp -a</code> Lists recent LAN IP-to-MAC address mappings.</li>
 </ul>
 <p><strong>DNS,SMB and SMTP</strong>
 <strong>DNS Enumeration</strong></p>
 <ul>
 <li>Purpose: Discover subdomains and internal hosts by querying DNS records.</li>
-<li>Records: Common types include <strong>A</strong>**, <strong><strong>AAAA</strong></strong>, <strong><strong>CNAME</strong></strong>, **<strong>TXT</strong>.</li>
+<li>Records: Common types include <code>A</code>**, <strong><code>AAAA</code></strong>, <strong><code>CNAME</code></strong>, **<code>TXT</code>.</li>
 <li>Zone Transfer:<ul>
 <li>A misconfigured DNS server may allow full zone transfers, revealing all records.
-Use the dig command:<strong>dig -t AXFR DOMAIN_NAME @DNS_SERVER</strong><ul>
-<li><strong>-t AXFR</strong>: Zone transfer query type</li>
-<li><strong>@DNS_SERVER</strong>: Target DNS server
+Use the <code>dig</code> command:<code>dig -t AXFR DOMAIN_NAME @DNS_SERVER</code><ul>
+<li><code>-t AXFR</code>: Zone transfer query type</li>
+<li><code>@DNS_SERVER</code>: Target DNS server
 <strong>SMB Enumeration</strong>
 Purpose: Identify shared folders, files, printers, and users on Windows systems.
 Command:<strong>net share</strong></li>
