@@ -218,7 +218,20 @@ Another option is Asynchronous Procedure Calls (APCs). An APC is queued to a thr
 A more complex but powerful technique is section manipulation, where the attacker leverages PE sections like <strong>.data</strong> or <strong>.text</strong> for execution. This requires parsing the Portable Executable structure, including headers, section tables, and relocation tables, and then redirecting execution flow to injected data within those sections. This method doesn’t rely on thread creation at all and instead abuses how Windows loads and maps PE files, making detection harder if implemented carefully.
 Overall, the ability to mix and match these execution strategies provides attackers with flexibility. Function pointers reduce API footprints, APCs allow payloads to ride on legitimate thread behavior, and section manipulation hijacks the PE loading process itself. Each carries different trade-offs in terms of stealth and complexity, but together they expand the options for executing injected shellcode beyond the obvious</strong> CreateThread</strong> family of calls.</p>
 </article>
-${series_nav}
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Host Evasions</span>
+    <span class="series-part">Part 14 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot" title="Initial Access (4 parts)"></span><span class="series-dot" title="Post Compromise (3 parts)"></span><span class="series-dot active-module" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <a href="introduction_to_windows_api_writeup.html" class="series-nav-btn cyber-link">← introduction to windows api</a>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <a href="introduction_to_antivirus_writeup.html" class="series-nav-btn cyber-link">introduction to antivirus →</a>
+  </div>
+</div>
 
 			<!-- Footer -->
 			<footer

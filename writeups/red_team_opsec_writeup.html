@@ -166,7 +166,20 @@ Vulnerability analysis reveals that using a rare or easily identifiable OS, or k
 The risk level depends on the environment. If red team activity involves connecting to VPNs or monitored services, there’s a high likelihood that identifying details will be logged. In environments with active defenders and log aggregation (like SIEM), the risk of exposure is even higher.
 To mitigate this risk, countermeasures should be applied. This includes changing VM hostnames to blend in with the client’s naming conventions, customizing user agents in tools like Nmap, and potentially modifying or obfuscating the OS to avoid detection. For example, using Nmap’s --script-args http.useragent=&quot;CUSTOM_AGENT&quot; helps avoid detection from the default &quot;Nmap Scripting Engine&quot; string in logs.</p>
 </article>
-${series_nav}
+
+<div class="series-nav">
+  <div class="series-nav-header">
+    <span class="series-label">TryHackMe Red Team Path</span>
+    <span class="series-module">Module: Red Team Fundamentals</span>
+    <span class="series-part">Part 3 / 18</span>
+  </div>
+  <div class="series-nav-dots"><span class="series-dot active-module" title="Red Team Fundamentals (4 parts)"></span><span class="series-dot" title="Initial Access (4 parts)"></span><span class="series-dot" title="Post Compromise (3 parts)"></span><span class="series-dot" title="Host Evasions (7 parts)"></span></div>
+  <div class="series-nav-links">
+    <a href="red_team_threat_intel_writeup.html" class="series-nav-btn cyber-link">← red team threat intel</a>
+    <a href="../writeups.html" class="series-nav-btn cyber-link">↑ all writeups</a>
+    <a href="intro_to_c2_writeup.html" class="series-nav-btn cyber-link">intro to c2 →</a>
+  </div>
+</div>
 
 			<!-- Footer -->
 			<footer
