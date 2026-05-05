@@ -7,7 +7,7 @@
 			name="description"
 			content="HEXEN - About Me - Experienced penetration tester with expertise in vulnerability assessment and security research"
 		/>
-		<title>HEXEN // ABOUT_ME - Penetration Tester</title>
+		<title>HEXEN // ABOUT_ME</title>
 		<link rel="stylesheet" href="assets/css/styles.css" />
 	</head>
 
@@ -170,8 +170,8 @@
 						</h1>
 						<div class="cyber-subtitle-container">
 							<h2 class="cyber-subtitle text-2xl md:text-4xl font-bold mb-6">
-								<span class="text-neonpink cyber-text-glow">DIGITAL</span>
-								<span class="text-neonblue cyber-text-glow">SHADOW</span>
+								<span class="text-neonpink cyber-text-glow">OFFENSIVE</span>
+								<span class="text-neonblue cyber-text-glow">SECURITY</span>
 							</h2>
 						</div>
 					</div>
@@ -790,6 +790,16 @@
 document.addEventListener("DOMContentLoaded", () => {
   const canvas = document.querySelector(".fire-border-canvas");
   if (!canvas) return;
+
+  // Only start the animation when the card scrolls into view
+  const observer = new IntersectionObserver((entries) => {
+    if (!entries[0].isIntersecting) return;
+    observer.disconnect();
+    startFire(canvas);
+  }, { threshold: 0.1 });
+  observer.observe(canvas);
+
+  function startFire(canvas) {
   const ctx = canvas.getContext("2d", { alpha: true });
 
   let w, h;
@@ -859,6 +869,7 @@ document.addEventListener("DOMContentLoaded", () => {
     requestAnimationFrame(loop);
   }
   loop();
+  } // end startFire
 });
 </script>
 
