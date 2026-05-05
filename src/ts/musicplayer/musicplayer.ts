@@ -23,6 +23,7 @@ import {
 	shuffle,
 	shuffleTracks,
 } from './tracks';
+import { tracks } from './registry';
 
 const BAR_COUNT = 64;
 const audioCtx = new window.AudioContext();
@@ -106,10 +107,12 @@ winampResume.onclick = () => winampAudio.play();
 winampPause.onclick = () => winampAudio.pause();
 
 winampPrev.onclick = () => {
+	if (!tracks.length) return;
 	playSong(prevTrack());
 	winampTrackName.innerHTML = currTrackName();
 };
 winampNext.onclick = () => {
+	if (!tracks.length) return;
 	playSong(nextTrack());
 	winampTrackName.innerHTML = currTrackName();
 };
@@ -166,6 +169,12 @@ progressContainer.addEventListener('touchmove', (e: TouchEvent) => {
 // === FINAL AUTOPLAY LOGIC (No click needed if autoplay allowed) ===
 window.addEventListener("load", async () => {
 	updateToggleStyles();
+
+	if (!tracks.length) {
+		winampTrackName.innerHTML = 'NO TRACKS LOADED';
+		return;
+	}
+
 	shuffle.val = true;
 	const randomTrack = nextTrack();
 	playSong(randomTrack);

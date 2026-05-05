@@ -5,13 +5,18 @@ const TRACKS_DIR = resolve('public/assets/storage/mp3');
 const REGISTRY_FILE = resolve('src/ts/musicplayer/registry.ts');
 
 async function findTracks(): Promise<string[]> {
-	const entries = await readdir(TRACKS_DIR, { withFileTypes: true });
-
-	const tracks = entries
-		.filter((entry) => entry.isFile() && entry.name.endsWith('.mp3'))
-		.map((entry) => entry.name);
-
-	return tracks;
+	try {
+		const entries = await readdir(TRACKS_DIR, { withFileTypes: true });
+		return entries
+			.filter((entry) => entry.isFile() && entry.name.endsWith('.mp3'))
+			.map((entry) => entry.name);
+	} catch (err: any) {
+		if (err.code === 'ENOENT') {
+			console.warn(`⚠️  MP3 directory not found at ${TRACKS_DIR} — writing empty registry`);
+			return [];
+		}
+		throw err;
+	}
 }
 
 async function generateTrackRegistry() {

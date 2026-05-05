@@ -7,7 +7,7 @@ export const help: Command = {
 		const coms = [
 			'help',
 			'ls',
-			'cd ( doesnt work yet )',
+			'cd',
 			'slowking',
 			'echo',
 			'clear',

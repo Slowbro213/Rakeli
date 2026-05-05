@@ -5,11 +5,10 @@ export const ls: Command = {
 	name: 'ls',
 	exec: () => {
 		const pages: string[] = [
-			'Pages on this Website:',
-			'About_Me',
-			'Writeups',
-			'Projects',
-			'Home',
+			'drwxr-xr-x  home         →  index.html',
+			'drwxr-xr-x  about        →  about.html',
+			'drwxr-xr-x  writeups     →  writeups.html',
+			'drwxr-xr-x  blogs        →  blogs.html',
 		];
 
 		stdout(pages);
