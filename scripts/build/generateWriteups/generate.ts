@@ -122,7 +122,7 @@ export const generate = async () => {
 
 		const finalHtml = template
 			.replace(/<div class="filter-container[\s\S]*?<\/div>/g, '')
-			.replace('${series_nav}', seriesNav)
+			.replace(/\$\{series_nav\}/g, seriesNav)
 			.replace('${content}', htmlContent)
 			.replace('${tags}', '');
 
