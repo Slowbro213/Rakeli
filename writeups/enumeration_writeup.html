@@ -127,65 +127,114 @@
 </div>
 <!-- Writeup content -->
 <article class="markdown-body"><h1>Enumeration</h1>
-<p><strong>Purpose</strong>
-The goal of post-exploitation enumeration is to <strong>gather information</strong> about the compromised host and the surrounding network. Whether it’s a <strong>server</strong> or <strong>user machine</strong>, the objective is to collect data that enables:</p>
+<h3>Purpose</h3>
+<p>The goal of post-exploitation enumeration is to <strong>gather information</strong> about the compromised host and the surrounding network. Whether it’s a <strong>server</strong> or <strong>user machine</strong>, the objective is to collect data that enables:</p>
 <ul>
-<li><strong>Lateral movement</strong></li>
-<li><strong>Privilege escalation</strong></li>
-<li><strong>Credential harvesting</strong></li>
-<li><strong>Data exfiltration</strong>
-Key Targets of Enumeration</li>
-<li><strong>Users and groups</strong></li>
-<li><strong>Hostnames</strong></li>
-<li><strong>Routing tables</strong></li>
-<li><strong>Network shares</strong></li>
-<li><strong>Network services</strong></li>
-<li><strong>Application versions and banners</strong></li>
-<li><strong>Firewall configurations</strong></li>
-<li><strong>Service settings and audit policies</strong></li>
-<li><strong>SNMP and DNS settings</strong></li>
-<li><strong>Credentials (from browsers, client apps, config files)</strong>
-Valuable information we might find:<strong>SSH keys</strong>: If you find a private key, it may grant access to other systems where the matching public key is trusted.
-<strong>Saved credentials</strong>: Files like <strong>passwords.txt</strong> or** passwords.xlsx** often contain valuable secrets.
-<strong>Source code</strong>: Might expose hardcoded passwords, tokens, or keys — especially if it&#39;s not meant for public release.</li>
+<li><p><strong>Lateral movement</strong></p>
+</li>
+<li><p><strong>Privilege escalation</strong></p>
+</li>
+<li><p><strong>Credential harvesting</strong></p>
+</li>
+<li><p><strong>Data exfiltration</strong></p>
+</li>
 </ul>
-<p><strong>Linux Enumeration</strong>
-Identifying OS Version</p>
+<p>Key Targets of Enumeration</p>
 <ul>
-<li>Use <strong>ls /etc/*-release</strong> to find distribution-specific release files.</li>
-<li>View detailed OS info with cat /etc/os-release.
-Hostname and User Information</li>
-<li>**Get system name: **hostname</li>
-<li>**View logged-in users: **who</li>
-<li>**Identify current user: **whoami</li>
-<li>**Detailed login info: **w (shows user activity)</li>
-<li>**Show user/group IDs: **id</li>
-<li>**View login history: **last
-User &amp; Group Files</li>
-<li>**/etc/passwd: **Lists users and their shells (readable by all).</li>
-<li><strong>/etc/group</strong>: Lists groups and group memberships.</li>
-<li><strong>/etc/shadow</strong>: Stores hashed passwords (root-only access).
-Mail and Sensitive Files</li>
-<li>Mail stored at** /var/mail/** (viewable with ls <strong>-lh /var/mail</strong>).</li>
-<li>Root&#39;s mailbox often contains sensitive info.
-Installed Applications</li>
-<li><strong>View available binaries:</strong> ls /usr/bin/** or** ls /sbin/</li>
-<li><strong>List packages:</strong><ul>
-<li>**RPM-based: **rpm -qa</li>
-<li>**Debian-based: **dpkg -l
-Running Services and Processes</li>
+<li><p><strong>Users and groups</strong></p>
+</li>
+<li><p><strong>Hostnames</strong></p>
+</li>
+<li><p><strong>Routing tables</strong></p>
+</li>
+<li><p><strong>Network shares</strong></p>
+</li>
+<li><p><strong>Network services</strong></p>
+</li>
+<li><p><strong>Application versions and banners</strong></p>
+</li>
+<li><p><strong>Firewall configurations</strong></p>
+</li>
+<li><p><strong>Service settings and audit policies</strong></p>
+</li>
+<li><p><strong>SNMP and DNS settings</strong></p>
+</li>
+<li><p><strong>Credentials (from browsers, client apps, config files)</strong></p>
+</li>
+</ul>
+<p>Valuable information we might find:<strong>SSH keys</strong>: If you find a private key, it may grant access to other systems where the matching public key is trusted.</p>
+<p><strong>Saved credentials</strong>: Files like <strong>passwords.txt</strong> or <strong>passwords.xlsx</strong> often contain valuable secrets.</p>
+<p><strong>Source code</strong>: Might expose hardcoded passwords, tokens, or keys — especially if it&#39;s not meant for public release.</p>
+<h3>Linux Enumeration</h3>
+<p>Identifying OS Version</p>
+<ul>
+<li><p>Use <strong>ls /etc/*-release</strong> to find distribution-specific release files.</p>
+</li>
+<li><p>View detailed OS info with cat /etc/os-release.</p>
+</li>
+</ul>
+<p>Hostname and User Information</p>
+<ul>
+<li><p><strong>Get system name:</strong> hostname</p>
+</li>
+<li><p><strong>View logged-in users:</strong> who</p>
+</li>
+<li><p><strong>Identify current user:</strong> whoami</p>
+</li>
+<li><p><strong>Detailed login info:</strong> w (shows user activity)</p>
+</li>
+<li><p><strong>Show user/group IDs:</strong> id</p>
+</li>
+<li><p><strong>View login history:</strong> last</p>
+</li>
+</ul>
+<p>User &amp; Group Files</p>
+<ul>
+<li><p><strong>/etc/passwd:</strong> Lists users and their shells (readable by all).</p>
+</li>
+<li><p><strong>/etc/group</strong>: Lists groups and group memberships.</p>
+</li>
+<li><p><strong>/etc/shadow</strong>: Stores hashed passwords (root-only access).</p>
+</li>
+</ul>
+<p>Mail and Sensitive Files</p>
+<ul>
+<li><p>Mail stored at <strong>/var/mail/</strong> (viewable with ls <strong>-lh /var/mail</strong>).</p>
+</li>
+<li><p>Root&#39;s mailbox often contains sensitive info.</p>
+</li>
+</ul>
+<p>Installed Applications</p>
+<ul>
+<li><p><strong>View available binaries:</strong> ls /usr/bin/ <strong>or</strong> ls /sbin/</p>
+</li>
+<li><p><strong>List packages:</strong></p>
+<ul>
+<li><p><strong>RPM-based:</strong> rpm -qa</p>
+</li>
+<li><p><strong>Debian-based:</strong> dpkg -l</p>
+</li>
 </ul>
 </li>
-<li><strong>List processes:</strong><ul>
-<li>ps -e, ps -ef, ps aux** for full lists.**</li>
-<li>ps axf** for tree view.**</li>
-<li>**Use grep to filter: e.g. **ps -ef | grep peter
-Sudo Privileges</li>
+</ul>
+<p>Running Services and Processes</p>
+<ul>
+<li><p><strong>List processes:</strong></p>
+<ul>
+<li><p>ps -e, ps -ef, ps aux <strong>for full lists.</strong></p>
+</li>
+<li><p>ps axf <strong>for tree view.</strong></p>
+</li>
+<li><p><strong>Use grep to filter: e.g.</strong> ps -ef | grep peter</p>
+</li>
 </ul>
 </li>
-<li>**Check user sudo rights: **sudo -l</li>
 </ul>
-<p><strong>Networking Enumeration</strong></p>
+<p>Sudo Privileges</p>
+<ul>
+<li><strong>Check user sudo rights:</strong> sudo -l</li>
+</ul>
+<h3>Networking Enumeration</h3>
 <ol>
 <li>Network Interfaces &amp; IP</li>
 </ol>
@@ -202,87 +251,106 @@ Sudo Privileges</li>
 <li>Network Connections</li>
 </ol>
 <ul>
-<li><strong>netstat options:</strong><ul>
-<li>-a: <strong>all connections</strong></li>
-<li>-l: <strong>listening sockets</strong></li>
-<li>-n:** numeric output**</li>
-<li>-p: <strong>show PID/program name</strong></li>
-<li>-t: <strong>TCP</strong>, -u: <strong>UDP</strong>, -x:** UNIX**</li>
+<li><p><strong>netstat options:</strong></p>
+<ul>
+<li><p>-a: <strong>all connections</strong></p>
+</li>
+<li><p>-l: <strong>listening sockets</strong></p>
+</li>
+<li><p>-n: <strong>numeric output</strong></p>
+</li>
+<li><p>-p: <strong>show PID/program name</strong></p>
+</li>
+<li><p>-t: <strong>TCP</strong>, -u: <strong>UDP</strong>, -x: <strong>UNIX</strong></p>
+</li>
 </ul>
 </li>
-<li>Example: sudo netstat -plt shows TCP listeners</li>
-<li>Example: sudo netstat -atupn shows all TCP/UDP connections</li>
+<li><p>Example: sudo netstat -plt shows TCP listeners</p>
+</li>
+<li><p>Example: sudo netstat -atupn shows all TCP/UDP connections</p>
+</li>
 </ul>
 <ol start="4">
 <li>Open Files and Ports</li>
 </ol>
 <ul>
-<li>lsof -i: Show open internet/network connections</li>
-<li>lsof -i :25: Show services using port 25 (e.g., SMTP)</li>
+<li><p>lsof -i: Show open internet/network connections</p>
+</li>
+<li><p>lsof -i :25: Show services using port 25 (e.g., SMTP)</p>
+</li>
 </ul>
-<p><strong>OS and User info</strong>: Easily accessible via** /etc** files and basic commands (<strong>who, id, last</strong>).
-<strong>Sensitive files</strong>:** /etc/shadow**, <strong>/var/mail/root</strong>, running services.
-<strong>Network details</strong>: Can be mapped with <strong>ip</strong>, <strong>netstat</strong>, and** lsof**.
-<strong>Processes</strong>: <strong>ps</strong> shows real-time system activity, useful for identifying what users are doing.
-<strong>Security Insight</strong>: Internal enumeration reveals much more detail than external scans (e.g., <code>nmap</code>).</p>
-<p><strong>Windows Enumeration</strong>
-<strong>System Information</strong>
-**systeminfo: **Displays OS version, hotfixes, build number, hardware, and more.
-**wmic qfe get Caption,Description: **Lists installed Windows updates and hotfixes.</p>
-<p><strong>Installed Applications &amp; Services</strong>
-<strong>wmic product get name,version,vendor</strong>: Lists installed software.
-<strong>net start</strong>: Shows currently running services.</p>
-<p><strong>User Enumeration</strong>
-<strong>whoami: Shows current username.</strong>
-<strong>whoami /priv:</strong> Lists privileges (e.g.<strong>, SeTakeOwnershipPrivilege</strong>)
-<strong>whoami /groups:</strong> Lists group memberships.
-<strong>net user:</strong> Lists all local user accounts.
-**net localgroup: **Lists local groups.
-<strong>net localgroup administrators</strong>: Lists members of the Administrators group.
-<strong>net accounts:</strong> Displays local account and password policy.
-<strong>net accounts /domain</strong> for domain policies.</p>
-<p><strong>Network Configuration</strong>
-<code>ipconfig</code> or** **<code>ipconfig /all</code> Displays IP address, subnet mask, gateway, and DNS configuration.
-<code>netstat -abno</code> Shows all listening and established connections, associated processes, and PIDs. Options:</p>
+<p><strong>OS and User info</strong>: Easily accessible via <strong>/etc</strong> files and basic commands (<strong>who, id, last</strong>).</p>
+<p><strong>Sensitive files</strong>: <strong>/etc/shadow</strong>, <strong>/var/mail/root</strong>, running services.</p>
+<p><strong>Network details</strong>: Can be mapped with <strong>ip</strong>, <strong>netstat</strong>, and <strong>lsof</strong>.</p>
+<p><strong>Processes</strong>: <strong>ps</strong> shows real-time system activity, useful for identifying what users are doing.</p>
+<p><strong>Security Insight</strong>: Internal enumeration reveals much more detail than external scans (e.g., <code>nmap</code>).</p>
+<h3>Windows Enumeration</h3>
+<h3>System Information</h3>
+<p><strong>systeminfo:</strong> Displays OS version, hotfixes, build number, hardware, and more.</p>
+<p><strong>wmic qfe get Caption,Description:</strong> Lists installed Windows updates and hotfixes.</p>
+<h3>Installed Applications &amp; Services</h3>
+<p><strong>wmic product get name,version,vendor</strong>: Lists installed software.</p>
+<p><strong>net start</strong>: Shows currently running services.</p>
+<h3>User Enumeration</h3>
+<h3>whoami: Shows current username.</h3>
+<p><strong>whoami /priv:</strong> Lists privileges (e.g.<strong>, SeTakeOwnershipPrivilege</strong>)</p>
+<p><strong>whoami /groups:</strong> Lists group memberships.</p>
+<p><strong>net user:</strong> Lists all local user accounts.</p>
+<p><strong>net localgroup:</strong> Lists local groups.</p>
+<p><strong>net localgroup administrators</strong>: Lists members of the Administrators group.</p>
+<p><strong>net accounts:</strong> Displays local account and password policy.</p>
+<p><strong>net accounts /domain</strong> for domain policies.</p>
+<h3>Network Configuration</h3>
+<p><code>ipconfig</code> or <code>ipconfig /all</code> Displays IP address, subnet mask, gateway, and DNS configuration.</p>
+<p><code>netstat -abno</code> Shows all listening and established connections, associated processes, and PIDs. Options:</p>
 <ul>
-<li><code>-a</code>: <strong>all connections</strong></li>
-<li><code>-b</code>: <strong>show executable</strong></li>
-<li><code>-n</code>: <strong>numeric IPs/ports</strong></li>
-<li><code>-o</code>: <strong>process ID</strong>
-<code>arp -a</code> Lists recent LAN IP-to-MAC address mappings.</li>
+<li><p><code>-a</code>: <strong>all connections</strong></p>
+</li>
+<li><p><code>-b</code>: <strong>show executable</strong></p>
+</li>
+<li><p><code>-n</code>: <strong>numeric IPs/ports</strong></p>
+</li>
+<li><p><code>-o</code>: <strong>process ID</strong></p>
+</li>
 </ul>
-<p><strong>DNS,SMB and SMTP</strong>
-<strong>DNS Enumeration</strong></p>
+<p><code>arp -a</code> Lists recent LAN IP-to-MAC address mappings.</p>
+<h3>DNS,SMB and SMTP</h3>
+<h3>DNS Enumeration</h3>
 <ul>
-<li>Purpose: Discover subdomains and internal hosts by querying DNS records.</li>
-<li>Records: Common types include <code>A</code>**, <strong><code>AAAA</code></strong>, <strong><code>CNAME</code></strong>, **<code>TXT</code>.</li>
-<li>Zone Transfer:<ul>
-<li>A misconfigured DNS server may allow full zone transfers, revealing all records.
-Use the <code>dig</code> command:<code>dig -t AXFR DOMAIN_NAME @DNS_SERVER</code><ul>
-<li><code>-t AXFR</code>: Zone transfer query type</li>
-<li><code>@DNS_SERVER</code>: Target DNS server
-<strong>SMB Enumeration</strong>
-Purpose: Identify shared folders, files, printers, and users on Windows systems.
-Command:<strong>net share</strong></li>
+<li><p>Purpose: Discover subdomains and internal hosts by querying DNS records.</p>
+</li>
+<li><p>Records: Common types include <code>A</code><strong>,</strong> <code>AAAA</code><strong>,</strong> <code>CNAME</code><strong>,</strong> <code>TXT</code>.</p>
+</li>
+<li><p>Zone Transfer:</p>
+<ul>
+<li>A misconfigured DNS server may allow full zone transfers, revealing all records.</li>
 </ul>
 </li>
 </ul>
-</li>
-<li>Reveals all shared resources.
-Other tools: <strong>smbclient, enum4linux, and crackmapexec</strong> can also be used for advanced enumeration.</li>
+<p>Use the <code>dig</code> command:<code>dig -t AXFR DOMAIN_NAME @DNS_SERVER</code></p>
+<pre><code>- `-t AXFR`: Zone transfer query type
+
+- `@DNS_SERVER`: Target DNS server
+</code></pre>
+<h3>SMB Enumeration</h3>
+<p>Purpose: Identify shared folders, files, printers, and users on Windows systems.</p>
+<p>Command:<strong>net share</strong></p>
+<ul>
+<li>Reveals all shared resources.</li>
 </ul>
-<p><strong>Other Windows Tools</strong>
-<strong>Sysinternals Suite</strong>
-The Sysinternals Suite is a group of command-line and GUI utilities and tools that provides information about various aspects related to the Windows system. To give you an idea, we listed a few examples in the table below.</p>
-<p><strong>Process Explorer</strong>Shows the processes along with the open files and registry keys
-<strong>Process Monitor</strong>Monitor the file system, processes, and Registry
-<strong>PsList</strong>Provides information about processes
-<strong>PsLoggedOn</strong>Shows the logged-in users
-Check <strong>Sysinternals Utilities Index</strong> for a complete list of the utilities.
-<strong>Process Hacker</strong>
-Another efficient and reliable MS Windows GUI tool that lets you gather information about running processes is Process Hacker. Process Hacker gives you detailed information regarding running processes and related active network connections; moreover, it gives you deep insight into system resource utilization from CPU and memory to disk and network.</p>
-<p><strong>GhostPack Seatbelt</strong>
-Seatbelt, part of the GhostPack collection, is a tool written in C#. It is not officially released in binary form; therefore, you are expected to compile it yourself using MS Visual Studio.</p>
+<p>Other tools: <strong>smbclient, enum4linux, and crackmapexec</strong> can also be used for advanced enumeration.</p>
+<h3>Other Windows Tools</h3>
+<h3>Sysinternals Suite</h3>
+<p>The Sysinternals Suite is a group of command-line and GUI utilities and tools that provides information about various aspects related to the Windows system. To give you an idea, we listed a few examples in the table below.</p>
+<p><strong>Process Explorer</strong>Shows the processes along with the open files and registry keys</p>
+<p><strong>Process Monitor</strong>Monitor the file system, processes, and Registry</p>
+<p><strong>PsList</strong>Provides information about processes</p>
+<p><strong>PsLoggedOn</strong>Shows the logged-in users</p>
+<p>Check <strong>Sysinternals Utilities Index</strong> for a complete list of the utilities.</p>
+<h3>Process Hacker</h3>
+<p>Another efficient and reliable MS Windows GUI tool that lets you gather information about running processes is Process Hacker. Process Hacker gives you detailed information regarding running processes and related active network connections; moreover, it gives you deep insight into system resource utilization from CPU and memory to disk and network.</p>
+<h3>GhostPack Seatbelt</h3>
+<p>Seatbelt, part of the GhostPack collection, is a tool written in C#. It is not officially released in binary form; therefore, you are expected to compile it yourself using MS Visual Studio.</p>
 </article>
 
 <div class="series-nav">

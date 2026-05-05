@@ -127,45 +127,54 @@
 </div>
 <!-- Writeup content -->
 <article class="markdown-body"><h1>Red Team Threat Intel</h1>
-<p><strong>Threat Intelligence (TI)</strong> or <strong>Cyber Threat Intelligence</strong> **(CTI) **is the information, or TTP (Tactics Techniques and Procedures), that is commonly used to help detection.</p>
+<p><strong>Threat Intelligence (TI)</strong> or <strong>Cyber Threat Intelligence</strong> <strong>(CTI)</strong> is the information, or TTP (Tactics Techniques and Procedures), that is commonly used to help detection.</p>
 <p>Cyber Threat Intelligence is consumed by collecting <strong>Indicators of Compromise</strong> and TTP’s distributed and maintained by <strong>ISAC (Information and Sharing Analysis Centers)</strong></p>
-<p><strong>IOC</strong>’s are quantified by traces left by adversaries. These can include domains, IPs, files, strings etc.
-The blue team can utilize varios IOCs to build detections and analyze behavior.</p>
+<p><strong>IOC</strong>’s are quantified by traces left by adversaries. These can include domains, IPs, files, strings etc.</p>
+<p>The blue team can utilize varios IOCs to build detections and analyze behavior.</p>
 <p>To aid in consuming CTIs and collecting TTP’s, red teams often use threat intelligence platforms and frameworks such as MITRE ATT&amp;CK, TIBER-EU and OST Map.</p>
-<p>The categorization of the collected TTP’s is done based on characteristics like:1. Threat Group
-2. Kill Chain Phase
-3. Tactic
-4. Objective/Goal</p>
-<p>TIBER-EU (Threat Intelligence-based Ethical Red Teaming) is a common framework developed by the Europian Central Bank that focuses on the usage of threat intelligence.
-<img src="../assets/storage/images/writeups/red_team_threat_intel/img001_image1.png" alt=""></p>
-<p><strong>TTP Mapping</strong></p>
-<p>TTP Mapping is employed by the red cell to map adversaries’collected TTPs to a standard cyber kill chain.
-To begin the process of mapping TTPs, an adversary must be selected as a target.
-Adversaries can be chosen based on a few different criteria for an adversary to be chosen, those being:</p>
+<p>The categorization of the collected TTP’s is done based on characteristics like:1. Threat Group</p>
+<ol start="2">
+<li><p>Kill Chain Phase</p>
+</li>
+<li><p>Tactic</p>
+</li>
+<li><p>Objective/Goal</p>
+</li>
+</ol>
+<p>TIBER-EU (Threat Intelligence-based Ethical Red Teaming) is a common framework developed by the Europian Central Bank that focuses on the usage of threat intelligence.</p>
+<p><img src="../assets/storage/images/writeups/red_team_threat_intel/img001_image1.png" alt=""></p>
+<h3>TTP Mapping</h3>
+<p>TTP Mapping is employed by the red cell to map adversaries’collected TTPs to a standard cyber kill chain.</p>
+<p>To begin the process of mapping TTPs, an adversary must be selected as a target.</p>
+<p>Adversaries can be chosen based on a few different criteria for an adversary to be chosen, those being:</p>
 <ul>
-<li>Target Industry</li>
-<li>Employed Attack Vectors</li>
-<li>Country of Origin</li>
-<li>Other Factors</li>
+<li><p>Target Industry</p>
+</li>
+<li><p>Employed Attack Vectors</p>
+</li>
+<li><p>Country of Origin</p>
+</li>
+<li><p>Other Factors</p>
+</li>
 </ul>
 <p>Within the Mitre ATT&amp;CK framework , we can see how an APT called “Carbanak” operated during a specific attack. There, we can see that they used <strong>valid</strong> compromised accounts to gain initial access into the system. They then held onto these accounts for persistence, and then escalated using Windows Services.</p>
 <p>For defense Evasion, they masqueraded their malicious acts as a legitimate task/service, then disabled the compromised systems’ system firewalls. Lastly, they used a legitimate signed binary in the form of “Rundll32”.</p>
 <p>In regards to C2 Activity, they deployed two tactics. One being RAT (Remote Access Tools), with bidirectional Actor-Victim communication.</p>
-<p>**CTI **can also be used during engagement execution, emulating the adversary’s behavioral characteristics, such as:
-<strong>C2 Traffic</strong>
-These include <strong>User Agents</strong>, <strong>Ports and Protocols</strong>, and <strong>Listener Profiles</strong></p>
-<p><strong>Malware and Tooling</strong>
-These include <strong>IOCs</strong> and <strong>Behaviors</strong></p>
-<p>A red team can manipulate the traffic of C2 servers. CTI can be used to identify adversaries’ traffic and modify their traffic to emulate it.An example of this would be <strong>malleable profiles</strong>. These malleable profiles allow a red team operator to control multiple aspects of a C2 Listener’s traffic.</p>
-<p>Information to be implemented in thiis profile can be gathered from ISACs and collected IOCs or packet captures, including:<strong>Host Headers</strong>
-<strong>POST URIs</strong>
-<strong>Server Responses and Headers</strong>
-Another use of CTI would be analyzing behavior and actions of an adversaries’ malware and tools to develop your offensive tooling that behaves similarly.</p>
-<p>An example would be to use a <strong>custom dropper</strong>. The red team can emulate the dropper by:
-<strong>Identifying traffic</strong>
-<strong>Observing syscalls and API calls</strong>
-<strong>Identifying overall dropper behavior and objective</strong>
-<strong>Tampering with file signatures and IOCs</strong></p>
+<p><strong>CTI</strong> can also be used during engagement execution, emulating the adversary’s behavioral characteristics, such as:</p>
+<h3>C2 Traffic</h3>
+<p>These include <strong>User Agents</strong>, <strong>Ports and Protocols</strong>, and <strong>Listener Profiles</strong></p>
+<h3>Malware and Tooling</h3>
+<p>These include <strong>IOCs</strong> and <strong>Behaviors</strong></p>
+<p>A red team can manipulate the traffic of C2 servers. CTI can be used to identify adversaries’ traffic and modify their traffic to emulate it. An example of this would be <strong>malleable profiles</strong>. These malleable profiles allow a red team operator to control multiple aspects of a C2 Listener’s traffic.</p>
+<p>Information to be implemented in thiis profile can be gathered from ISACs and collected IOCs or packet captures, including:<strong>Host Headers</strong></p>
+<h3>POST URIs</h3>
+<h3>Server Responses and Headers</h3>
+<p>Another use of CTI would be analyzing behavior and actions of an adversaries’ malware and tools to develop your offensive tooling that behaves similarly.</p>
+<p>An example would be to use a <strong>custom dropper</strong>. The red team can emulate the dropper by:</p>
+<h3>Identifying traffic</h3>
+<h3>Observing syscalls and API calls</h3>
+<h3>Identifying overall dropper behavior and objective</h3>
+<h3>Tampering with file signatures and IOCs</h3>
 </article>
 
 <div class="series-nav">

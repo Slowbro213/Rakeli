@@ -127,228 +127,299 @@
 </div>
 <!-- Writeup content -->
 <article class="markdown-body"><h1>The Lay of the Land</h1>
-<p><strong>Network Infrastructure</strong>
-When a red team gains initial access to an unknown network, the first step is <strong>enumeration</strong>: identifying the <strong>target system</strong>, its <strong>services</strong>, and the surrounding <strong>network environment</strong>.
-<strong>Network segmentation</strong> is a common security practice that divides the network into smaller <strong>subnets</strong>. This helps prevent <strong>unauthorized access</strong> and improves <strong>network management</strong>. One popular method for segmentation is the use of <strong>VLANs (Virtual Local Area Networks)</strong>, which isolate communication between devices unless they belong to the same VLAN.
-<strong>Internal networks</strong> are often segmented based on the <strong>sensitivity of devices</strong> or the <strong>importance of data</strong>. These networks support <strong>internal communication</strong>, <strong>information sharing</strong>, <strong>operational tools</strong>, and <strong>services</strong> while maintaining <strong>security</strong> and <strong>performance control</strong>.
-<img src="../assets/storage/images/writeups/the_lay_of_the_land/img001_image84.png" alt="">
-<strong>Demilitarized Zone (DMZ)</strong>
-<strong>A DMZ (Demilitarized Zone)</strong> is an** edge network** that provides an <strong>additional security layer <strong>between a corporation&#39;s <strong>internal network</strong> and <strong>untrusted traffic</strong> (such as the public internet).
-A typical DMZ design places a subnetwork between the public internet and internal systems, acting as a buffer zone to filter and control access.
-The design of a DMZ depends on the organization’s needs and services. If a company offers public-facing services like websites, DNS, FTP, Proxy, or VPN, a DMZ helps to isolate these services and enforce access controls on incoming public traffic.
-<img src="../assets/storage/images/writeups/the_lay_of_the_land/img002_image85.png" alt="">
-<strong>I</strong>n the previous diagram,</strong> red network traffic</strong> represents <strong>untrusted connections</strong> coming from the <strong>internet to the DMZ</strong>. In contrast, <strong>green network traffic</strong> represents <strong>controlled internal communication</strong>, which typically passes through one or more <strong>network security devices</strong>.
-<strong>The enumeration phase</strong> is the** discovery stage** where an attacker gathers information about <strong>the system</strong> and the** internal network**. This information is then used to perform lateral movement or privilege escalation, aiming to increase access within the system or the Active Directory (AD) environment.</p>
-<p><strong>Network Enumeration</strong>
-There are various things to check, related to networking aspects, like **TCP **and **UDP **ports and established connections, routing tables, ARP tables etc.
-<img src="../assets/storage/images/writeups/the_lay_of_the_land/img003_image86.png" alt="">
+<h3>Network Infrastructure</h3>
+<p>When a red team gains initial access to an unknown network, the first step is <strong>enumeration</strong>: identifying the <strong>target system</strong>, its <strong>services</strong>, and the surrounding <strong>network environment</strong>.</p>
+<p><strong>Network segmentation</strong> is a common security practice that divides the network into smaller <strong>subnets</strong>. This helps prevent <strong>unauthorized access</strong> and improves <strong>network management</strong>. One popular method for segmentation is the use of <strong>VLANs (Virtual Local Area Networks)</strong>, which isolate communication between devices unless they belong to the same VLAN.</p>
+<p><strong>Internal networks</strong> are often segmented based on the <strong>sensitivity of devices</strong> or the <strong>importance of data</strong>. These networks support <strong>internal communication</strong>, <strong>information sharing</strong>, <strong>operational tools</strong>, and <strong>services</strong> while maintaining <strong>security</strong> and <strong>performance control</strong>.</p>
+<p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img001_image84.png" alt=""></p>
+<h3>Demilitarized Zone (DMZ)</h3>
+<p><strong>A DMZ (Demilitarized Zone)</strong> is an <strong>edge network</strong> that provides an <strong>additional security layer</strong> between a corporation&#39;s <strong>internal network</strong> and <strong>untrusted traffic</strong> (such as the public internet).</p>
+<p>A typical DMZ design places a subnetwork between the public internet and internal systems, acting as a buffer zone to filter and control access.</p>
+<p>The design of a DMZ depends on the organization’s needs and services. If a company offers public-facing services like websites, DNS, FTP, Proxy, or VPN, a DMZ helps to isolate these services and enforce access controls on incoming public traffic.</p>
+<p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img002_image85.png" alt=""></p>
+<p><strong>I</strong>n the previous diagram, <strong>red network traffic</strong> represents <strong>untrusted connections</strong> coming from the <strong>internet to the DMZ</strong>. In contrast, <strong>green network traffic</strong> represents <strong>controlled internal communication</strong>, which typically passes through one or more <strong>network security devices</strong>.</p>
+<p><strong>The enumeration phase</strong> is the <strong>discovery stage</strong> where an attacker gathers information about <strong>the system</strong> and the <strong>internal network</strong>. This information is then used to perform lateral movement or privilege escalation, aiming to increase access within the system or the Active Directory (AD) environment.</p>
+<h3>Network Enumeration</h3>
+<p>There are various things to check, related to networking aspects, like <strong>TCP</strong> and <strong>UDP</strong> ports and established connections, routing tables, ARP tables etc.</p>
+<p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img003_image86.png" alt="">
 We can start checking the target machine’s TCP and UDP open ports. This can be done using the <strong>netstat</strong> command as shown below:</p>
-<p>The output reveals open ports as well as established connections. Next, we can list the <strong>ARP table</strong>. This contains the IP address and physical address of the computers that communicated with the target machines within the network. This could be helpful to see the communications within the network to scan the other machines for open ports and vulnerabilities.
-<img src="../assets/storage/images/writeups/the_lay_of_the_land/img004_image87.png" alt=""></p>
-<p><strong>Internal Network Services</strong>
-It provides private and internal network communication access for internal network devices.An example of network services is an <strong>internal DNS</strong>, web servers, custom applications etc.
-Internal network services are <strong>not accessible outside the network</strong>.However, once we have initial access to one of the networks that access these network services,hey will be reachable and available for communications.</p>
-<p><strong>Active Directory (AD) Environment</strong>
-The active directory is a <strong>Windows-based directory service</strong> that <strong>stores and provides data objects</strong> to the internal network environment. It allows for centralized management of authentication and authorization.The AD contains <strong>essential information</strong> about the network and the environment, including users, computers, printers etc.For example, AD might have users’details such as job title, phone number, address, <strong>passwords</strong>, groups, permission etc.
-<img src="../assets/storage/images/writeups/the_lay_of_the_land/img005_image88.png" alt=""></p>
-<p>The above diagram shows a potential AD design.
-The AD <strong>controller</strong> is placed in a subnet for servers, and then the AD clients are on a separate network where they can join the domain and use the AD services via a firewall.This is the list of AD components we need to be familiar with:<strong>Domain Controllers</strong>
-<strong>Organizational Units</strong>
-<strong>AD objects</strong>
-<strong>AD domains</strong>
-<strong>Forest</strong>
-<strong>AD Service Accounts (Built-in local users, Domain users, Managed service accounts)</strong>
-<strong>Domain Administrators</strong></p>
-<p>A <strong>domain controller</strong> is a Windows server that provides AD services and controls the entire domain. It is a form of centralized user management that provides encryption of user data as well as controlling access to a network. It also enables resource sharing.These are all reasons why attackers target a domain controller in a domain because it contains a lot of high value information.
-<img src="../assets/storage/images/writeups/the_lay_of_the_land/img006_image89.png" alt=""></p>
-<p><strong>Organizational Units (OU’s)</strong>
-**Organizational Units **are containers within the AD Domain with a hierarchical structure.
-<strong>Active Directory Objects</strong> can be a single user or a group, or a hardware component. Each domain holds a database that contains object identity information that creates an AD environment, including:**Users - **A security principal that is allowed to authenticate to machines in the domain
-**Computers - **A special type of user account
-**GPOs - **Collections of policies that are applied to other AD objects</p>
-<p>**AD Domains **are a collection of Microsoft components within an AD network.
-<strong>AD Forest</strong> is a collection of domains that trust eachother.
-<img src="../assets/storage/images/writeups/the_lay_of_the_land/img007_image90.png" alt="">
-To check if the Windows machine is part of the AD environment or not, we can use the command <strong>systeminfo</strong>. The output of the <strong>systeminfo</strong> provides machine information like system name and version, hostname, and other hardware information, as well as the AD domain.
-<img src="../assets/storage/images/writeups/the_lay_of_the_land/img008_image91.png" alt=""></p>
-<p><strong>Users and Group Management</strong>
-Common Active Directory service accounts include:<strong>Built-in Local User Accounts</strong> which are used to manage the system locally, which is not part of the AD environment
-<strong>Domain user accounts</strong> with access to an AD environment can use the AD Services
-<strong>AD managed service accounts</strong> are limited domain user accounts with higher privileges to manage AD services
-<strong>Domain Administrators</strong> are user accounts that can manage information in an AD environment, including AD configurations, users, groups, permissions, roles, services etc.</p>
+<p>The output reveals open ports as well as established connections. Next, we can list the <strong>ARP table</strong>. This contains the IP address and physical address of the computers that communicated with the target machines within the network. This could be helpful to see the communications within the network to scan the other machines for open ports and vulnerabilities.</p>
+<p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img004_image87.png" alt=""></p>
+<h3>Internal Network Services</h3>
+<p>It provides private and internal network communication access for internal network devices. An example of network services is an <strong>internal DNS</strong>, web servers, custom applications etc.</p>
+<p>Internal network services are <strong>not accessible outside the network</strong>.However, once we have initial access to one of the networks that access these network services,hey will be reachable and available for communications.</p>
+<h3>Active Directory (AD) Environment</h3>
+<p>The active directory is a <strong>Windows-based directory service</strong> that <strong>stores and provides data objects</strong> to the internal network environment. It allows for centralized management of authentication and authorization. The AD contains <strong>essential information</strong> about the network and the environment, including users, computers, printers etc. For example, AD might have users’details such as job title, phone number, address, <strong>passwords</strong>, groups, permission etc.</p>
+<p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img005_image88.png" alt=""></p>
+<p>The above diagram shows a potential AD design.</p>
+<p>The AD <strong>controller</strong> is placed in a subnet for servers, and then the AD clients are on a separate network where they can join the domain and use the AD services via a firewall. This is the list of AD components we need to be familiar with:<strong>Domain Controllers</strong></p>
+<h3>Organizational Units</h3>
+<h3>AD objects</h3>
+<h3>AD domains</h3>
+<h3>Forest</h3>
+<p><strong>AD Service Accounts (Built-in local users, Domain users, Managed service accounts)</strong></p>
+<h3>Domain Administrators</h3>
+<p>A <strong>domain controller</strong> is a Windows server that provides AD services and controls the entire domain. It is a form of centralized user management that provides encryption of user data as well as controlling access to a network. It also enables resource sharing. These are all reasons why attackers target a domain controller in a domain because it contains a lot of high value information.</p>
+<p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img006_image89.png" alt=""></p>
+<p><strong>Organizational Units (OU’s)</strong></p>
+<p><strong>Organizational Units</strong> are containers within the AD Domain with a hierarchical structure.</p>
+<p><strong>Active Directory Objects</strong> can be a single user or a group, or a hardware component. Each domain holds a database that contains object identity information that creates an AD environment, including:<strong>Users -</strong> A security principal that is allowed to authenticate to machines in the domain</p>
+<p><strong>Computers -</strong> A special type of user account</p>
+<p><strong>GPOs -</strong> Collections of policies that are applied to other AD objects</p>
+<p><strong>AD Domains</strong> are a collection of Microsoft components within an AD network.</p>
+<p><strong>AD Forest</strong> is a collection of domains that trust eachother.</p>
+<p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img007_image90.png" alt=""></p>
+<p>To check if the Windows machine is part of the AD environment or not, we can use the command <strong>systeminfo</strong>. The output of the <strong>systeminfo</strong> provides machine information like system name and version, hostname, and other hardware information, as well as the AD domain.</p>
+<p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img008_image91.png" alt=""></p>
+<h3>Users and Group Management</h3>
+<p>Common Active Directory service accounts include:<strong>Built-in Local User Accounts</strong> which are used to manage the system locally, which is not part of the AD environment</p>
+<p><strong>Domain user accounts</strong> with access to an AD environment can use the AD Services</p>
+<p><strong>AD managed service accounts</strong> are limited domain user accounts with higher privileges to manage AD services</p>
+<p><strong>Domain Administrators</strong> are user accounts that can manage information in an AD environment, including AD configurations, users, groups, permissions, roles, services etc.</p>
 <p>The following are AD Admin accounts:</p>
-<p><strong>Active Directory Enumeration</strong>
-Once we confirm that the machine is part of the AD environment, we can start hunting for any useful information. We will use <strong>PowerShell</strong> to enumerate for users and groups.</p>
-<p>The following PS command is to <strong>get all active directory user accounts</strong>. Note that we need to use <strong>-Filter</strong> argument.
-<img src="../assets/storage/images/writeups/the_lay_of_the_land/img009_image92.png" alt=""></p>
-<p>We can also use the LDAP hierarchical tree structure to find a user within the AD environment.
-The <strong>Distinguished Name (DN)</strong> is a collection of comma-seperated key and value pairs used to identify unique records within the directory.
-The DN consists of:<strong>Domain Component (DC),</strong>
-<strong>OrganizationalUnitName(OU),</strong>
-<strong>Common Name (CN),</strong>
-<strong>and others.</strong></p>
-<p>Using the <strong>SearchBase</strong> option, we specify a specific Common Name <strong>CN</strong> in the active directory. For example, we can specify to list any users that are part of <strong>Users:</strong>
-<img src="../assets/storage/images/writeups/the_lay_of_the_land/img010_image93.png" alt=""></p>
-<p><strong>Q1:Use the “Get-DUser -Filter * -SearchBase” command to list the available user accounwithin THM OU in the <strong><strong>thmredteam.com</strong></strong> domain. How many users are available?</strong></p>
+<h3>Active Directory Enumeration</h3>
+<p>Once we confirm that the machine is part of the AD environment, we can start hunting for any useful information. We will use <strong>PowerShell</strong> to enumerate for users and groups.</p>
+<p>The following PS command is to <strong>get all active directory user accounts</strong>. Note that we need to use <strong>-Filter</strong> argument.</p>
+<p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img009_image92.png" alt=""></p>
+<p>We can also use the LDAP hierarchical tree structure to find a user within the AD environment.</p>
+<p>The <strong>Distinguished Name (DN)</strong> is a collection of comma-seperated key and value pairs used to identify unique records within the directory.</p>
+<p>The DN consists of:<strong>Domain Component (DC),</strong></p>
+<h3>OrganizationalUnitName(OU),</h3>
+<h3>Common Name (CN),</h3>
+<h3>and others.</h3>
+<p>Using the <strong>SearchBase</strong> option, we specify a specific Common Name <strong>CN</strong> in the active directory. For example, we can specify to list any users that are part of <strong>Users:</strong></p>
+<p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img010_image93.png" alt=""></p>
+<p><strong>Q1:Use the “Get-DUser -Filter * -SearchBase” command to list the available user accounwithin THM OU in the</strong> thmredteam.com <strong>domain. How many users are available?</strong></p>
 <p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img011_image94.png" alt="">
-<strong>There are 6 users.</strong>
-<strong>Q2:</strong>
-The admin account’s email is <a href="mailto:thmadmin@thmredteam.com">thmadmin@thmredteam.com</a></p>
-<p><strong>Host Security Solution #1</strong>
-Before continuing offensive operations, red teamers must <strong>enumerate security solutions</strong> present on the target system. This reduces detection risk and helps tailor stealthy techniques.</p>
-<p><strong>Host Security Solutions</strong>
-These protect individual systems by detecting and preventing malicious activities.
-Key components include:</p>
+<strong>There are 6 users.</strong></p>
+<h3>Q2:</h3>
+<p>The admin account’s email is <a href="mailto:thmadmin@thmredteam.com">thmadmin@thmredteam.com</a></p>
+<h3>Host Security Solution #1</h3>
+<p>Before continuing offensive operations, red teamers must <strong>enumerate security solutions</strong> present on the target system. This reduces detection risk and helps tailor stealthy techniques.</p>
+<h3>Host Security Solutions</h3>
+<p>These protect individual systems by detecting and preventing malicious activities.</p>
+<p>Key components include:</p>
 <ul>
-<li><strong>Antivirus software</strong></li>
-<li><strong>Microsoft Windows Defender</strong></li>
-<li><strong>Host-based Firewalls</strong></li>
-<li><strong>Security Event Logging and Monitoring</strong></li>
-<li><strong>HIDS/HIPS</strong> (Host-based Intrusion Detection/Prevention Systems)</li>
-<li><strong>EDR</strong> (Endpoint Detection and Response)</li>
+<li><p><strong>Antivirus software</strong></p>
+</li>
+<li><p><strong>Microsoft Windows Defender</strong></p>
+</li>
+<li><p><strong>Host-based Firewalls</strong></p>
+</li>
+<li><p><strong>Security Event Logging and Monitoring</strong></p>
+</li>
+<li><p><strong>HIDS/HIPS</strong> (Host-based Intrusion Detection/Prevention Systems)</p>
+</li>
+<li><p><strong>EDR</strong> (Endpoint Detection and Response)</p>
+</li>
 </ul>
-<p><strong>Antivirus Software (AV)</strong>
-<strong>Antivirus (anti-malware)</strong> software is designed to <strong>monitor, detect, and prevent malware execution</strong> on a host.
-Common AV features:</p>
+<h3>Antivirus Software (AV)</h3>
+<p><strong>Antivirus (anti-malware)</strong> software is designed to <strong>monitor, detect, and prevent malware execution</strong> on a host.</p>
+<p>Common AV features:</p>
 <ul>
-<li><strong>Background scanning</strong> – Real-time scanning of active files.</li>
-<li><strong>Full system scans</strong> – Comprehensive analysis of system files.</li>
-<li><strong>Virus definitions</strong> – Database of known threats that AV uses to identify malware.</li>
+<li><p><strong>Background scanning</strong> – Real-time scanning of active files.</p>
+</li>
+<li><p><strong>Full system scans</strong> – Comprehensive analysis of system files.</p>
+</li>
+<li><p><strong>Virus definitions</strong> – Database of known threats that AV uses to identify malware.</p>
+</li>
 </ul>
 <p>Detection techniques used by AV:<strong>Signature-Based Detection</strong></p>
 <ul>
-<li>Matches known malware &quot;signatures&quot; in a database.</li>
-<li>Effective against <strong>known threats</strong>, but weak against new or obfuscated malware.
-<strong>Heuristic-Based Detection</strong></li>
-<li>Uses <strong>machine learning and static analysis</strong>.</li>
-<li>Detects threats based on suspicious <strong>code patterns</strong>, <strong>system API usage</strong>, etc.</li>
-<li>Can work with or without signatures.
-<strong>Behavior-Based Detection</strong></li>
-<li><strong>Monitors runtime behavior</strong> for abnormal actions:<ul>
-<li>Modifying registry keys</li>
-<li>Creating/killing processes</li>
+<li><p>Matches known malware &quot;signatures&quot; in a database.</p>
+</li>
+<li><p>Effective against <strong>known threats</strong>, but weak against new or obfuscated malware.</p>
+</li>
+</ul>
+<h3>Heuristic-Based Detection</h3>
+<ul>
+<li><p>Uses <strong>machine learning and static analysis</strong>.</p>
+</li>
+<li><p>Detects threats based on suspicious <strong>code patterns</strong>, <strong>system API usage</strong>, etc.</p>
+</li>
+<li><p>Can work with or without signatures.</p>
+</li>
+</ul>
+<h3>Behavior-Based Detection</h3>
+<ul>
+<li><p><strong>Monitors runtime behavior</strong> for abnormal actions:</p>
+<ul>
+<li><p>Modifying registry keys</p>
+</li>
+<li><p>Creating/killing processes</p>
+</li>
 </ul>
 </li>
-<li>Effective against <strong>unknown or zero-day threats</strong>.</li>
+<li><p>Effective against <strong>unknown or zero-day threats</strong>.</p>
+</li>
 </ul>
-<p>As a red teamer, you <strong>must determine whether AV/EDR solutions exist</strong> on the host before proceeding. These tools can <strong>block</strong>, <strong>log</strong>, or <strong>alert</strong> on your actions.
-You can enumerate AV solutions using <strong>built-in Windows tools</strong>, such as <strong>wmic:</strong></p>
-<p><strong>wmic /namespace:\root\securitycenter2 path antivirusproduct</strong></p>
+<p>As a red teamer, you <strong>must determine whether AV/EDR solutions exist</strong> on the host before proceeding. These tools can <strong>block</strong>, <strong>log</strong>, or <strong>alert</strong> on your actions.</p>
+<p>You can enumerate AV solutions using <strong>built-in Windows tools</strong>, such as <strong>wmic:</strong></p>
+<h3>wmic /namespace:\root\securitycenter2 path antivirusproduct</h3>
 <p>Before performing further actions, red teamers must <strong>identify the host&#39;s security solutions</strong>. This includes antivirus software, endpoint defenses, and firewall configurations to avoid detection.</p>
-<p><strong>Powershell AV Enumeration</strong>
-You can enumerate installed antivirus solutions using:
-<strong>Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntivirusProduct</strong></p>
+<h3>Powershell AV Enumeration</h3>
+<p>You can enumerate installed antivirus solutions using:</p>
+<h3>Get-CimInstance -Namespace root/SecurityCenter2 -ClassName AntivirusProduct</h3>
 <p>Example output may show multiple AVs:</p>
 <ul>
-<li><strong>Bitdefender Antivirus</strong></li>
-<li><strong>Windows Defender</strong>
-Note: The <strong>SecurityCenter2</strong> namespace works on <strong>Windows workstations</strong>, not <strong>Windows Server</strong> editions.
-<strong>Microsoft Windows Defender</strong>
-Windows Defender is a built-in antivirus on Windows machines. It uses:</li>
-<li>Machine learning</li>
-<li>Big-data analysisThreat research</li>
-<li>Cloud infrastructure
-<strong>Defender Modes:</strong></li>
-<li>Active – Main antivirus (full protection &amp; remediation)</li>
-<li>Passive – Secondary AV when 3rd-party AV is present (detects only)</li>
-<li>Disabled – Defender is inactive
-To check Defender service status:
-powershell
-Copy code
-<strong>Get-Service WinDefend</strong></li>
+<li><p><strong>Bitdefender Antivirus</strong></p>
+</li>
+<li><p><strong>Windows Defender</strong></p>
+</li>
 </ul>
-<p>To inspect real-time protection:
-powershell
-Copy code
-<strong>Get-MpComputerStatus | select RealTimeProtectionEnabled</strong></p>
-<p><strong>Host-Based Firewall</strong>
-A <strong>host-based firewall <strong>controls</strong> inbound/outbound traffic</strong> at the network layer. It protects the system from untrusted sources on the** same network**. Modern firewalls can also inspect <strong>packet content</strong> and <strong>application-layer attacks</strong> (e.g., SQL injection).</p>
+<p>Note: The <strong>SecurityCenter2</strong> namespace works on <strong>Windows workstations</strong>, not <strong>Windows Server</strong> editions.</p>
+<h3>Microsoft Windows Defender</h3>
+<p>Windows Defender is a built-in antivirus on Windows machines. It uses:</p>
+<ul>
+<li><p>Machine learning</p>
+</li>
+<li><p>Big-data analysisThreat research</p>
+</li>
+<li><p>Cloud infrastructure</p>
+</li>
+</ul>
+<h3>Defender Modes:</h3>
+<ul>
+<li><p>Active – Main antivirus (full protection &amp; remediation)</p>
+</li>
+<li><p>Passive – Secondary AV when 3rd-party AV is present (detects only)</p>
+</li>
+<li><p>Disabled – Defender is inactive</p>
+</li>
+</ul>
+<p>To check Defender service status:</p>
+<p>powershell</p>
+<p>Copy code</p>
+<h3>Get-Service WinDefend</h3>
+<p>To inspect real-time protection:</p>
+<p>powershell</p>
+<p>Copy code</p>
+<h3>Get-MpComputerStatus | select RealTimeProtectionEnabled</h3>
+<h3>Host-Based Firewall</h3>
+<p>A <strong>host-based firewall</strong> controls <strong>inbound/outbound traffic</strong> at the network layer. It protects the system from untrusted sources on the <strong>same network</strong>. Modern firewalls can also inspect <strong>packet content</strong> and <strong>application-layer attacks</strong> (e.g., SQL injection).</p>
 <p>Checking firewall profile status:<strong>Get-NetFirewallProfile | Format-Table Name, Enabled</strong></p>
-<p>To disable all profiles (requires admin):
-<strong>Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False</strong></p>
-<p>To view firewall rules:
-<strong>Get-NetFirewallRule | select DisplayName, Enabled, Description</strong></p>
-<p><strong>Testing Inbound Firewall Rules</strong>
-Without external tools, PowerShell can test open ports:<strong>Test-NetConnection -ComputerName 127.0.0.1 -Port 80</strong>
-<strong>(New-Object System.Net.Sockets.TcpClient(&quot;127.0.0.1&quot;, &quot;80&quot;)).Connected</strong></p>
-<p>If the result is <strong>True</strong>, inbound port 80 is open and allowed.
-Remote systems can also be tested by changing the **-ComputerName **argument for the <strong>Test-NetConnection</strong></p>
+<p>To disable all profiles (requires admin):</p>
+<h3>Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False</h3>
+<p>To view firewall rules:</p>
+<h3>Get-NetFirewallRule | select DisplayName, Enabled, Description</h3>
+<h3>Testing Inbound Firewall Rules</h3>
+<p>Without external tools, PowerShell can test open ports:<strong>Test-NetConnection -ComputerName 127.0.0.1 -Port 80</strong></p>
+<h3>(New-Object System.Net.Sockets.TcpClient(&quot;127.0.0.1&quot;, &quot;80&quot;)).Connected</h3>
+<p>If the result is <strong>True</strong>, inbound port 80 is open and allowed.</p>
+<p>Remote systems can also be tested by changing the <strong>-ComputerName</strong> argument for the <strong>Test-NetConnection</strong></p>
 <p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img012_image95.png" alt="">
 Q1 (Not enabled):</p>
 <p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img013_image96.png" alt="">
 Q2:</p>
-<p>Q3:
-<img src="../assets/storage/images/writeups/the_lay_of_the_land/img014_image97.png" alt=""></p>
-<p><strong>Host Security Solution #2</strong>
-<strong>Summary: Security Event Logging, Sysmon, HIDS/HIPS, and EDR</strong>
-Red teamers must identify host-level monitoring solutions to avoid detection. The following sections cover major host security logging tools and how to enumerate them</p>
-<p><strong>Security Event Logging and Monitoring</strong>
-Operating systems generate logs to record system activities. <strong>Security teams</strong> use event logs for <strong>monitoring</strong>, <strong>incident investigation</strong>, and <strong>auditing</strong>.
-Windows logs events under categories like:</p>
+<p>Q3:</p>
+<p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img014_image97.png" alt=""></p>
+<h3>Host Security Solution #2</h3>
+<h3>Summary: Security Event Logging, Sysmon, HIDS/HIPS, and EDR</h3>
+<p>Red teamers must identify host-level monitoring solutions to avoid detection. The following sections cover major host security logging tools and how to enumerate them</p>
+<h3>Security Event Logging and Monitoring</h3>
+<p>Operating systems generate logs to record system activities. <strong>Security teams</strong> use event logs for <strong>monitoring</strong>, <strong>incident investigation</strong>, and <strong>auditing</strong>.</p>
+<p>Windows logs events under categories like:</p>
 <ul>
-<li><strong>Application</strong></li>
-<li><strong>System</strong></li>
-<li><strong>Security</strong></li>
-<li><strong>Services</strong>
-To list available event logs:
-<strong>Get-EventLog -List</strong></li>
+<li><p><strong>Application</strong></p>
+</li>
+<li><p><strong>System</strong></p>
+</li>
+<li><p><strong>Security</strong></p>
+</li>
+<li><p><strong>Services</strong></p>
+</li>
 </ul>
-<p>The presence of logs such as <strong>Active Directory Web Services</strong>, <strong>DNS Server,</strong> or <strong>PowerShell</strong> can reveal installed services or roles.
-In corporate environments, <strong>log agents</strong> are installed on endpoints to collect and forward logs for centralized analysis.</p>
-<p><strong>System Monitor (Sysmon)</strong>
-<strong>Sysmon</strong> is a Windows service from the <strong>Microsoft Sysinternals suite</strong>, not installed by default. Once deployed, it logs detailed system activity such as:</p>
+<p>To list available event logs:</p>
+<h3>Get-EventLog -List</h3>
+<p>The presence of logs such as <strong>Active Directory Web Services</strong>, <strong>DNS Server,</strong> or <strong>PowerShell</strong> can reveal installed services or roles.</p>
+<p>In corporate environments, <strong>log agents</strong> are installed on endpoints to collect and forward logs for centralized analysis.</p>
+<h3>System Monitor (Sysmon)</h3>
+<p><strong>Sysmon</strong> is a Windows service from the <strong>Microsoft Sysinternals suite</strong>, not installed by default. Once deployed, it logs detailed system activity such as:</p>
 <ul>
-<li><strong>Process creation/termination</strong></li>
-<li><strong>Network connections</strong></li>
-<li><strong>File modifications</strong></li>
-<li><strong>Remote thread injection</strong></li>
-<li><strong>Memory access</strong>
-To check if Sysmon is installed:
-<strong>Get-Process | Where-Object { $_.ProcessName -eq &quot;Sysmon&quot; }</strong>
-<strong>Get-CimInstance win32_service -Filter &quot;Description = &#39;System Monitor service&#39;&quot;</strong>
-<strong>Get-Service | where-object {$_.DisplayName -like &quot;<em>sysm</em>&quot;}</strong>
-<strong>reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Sysmon/Operational</strong></li>
+<li><p><strong>Process creation/termination</strong></p>
+</li>
+<li><p><strong>Network connections</strong></p>
+</li>
+<li><p><strong>File modifications</strong></p>
+</li>
+<li><p><strong>Remote thread injection</strong></p>
+</li>
+<li><p><strong>Memory access</strong></p>
+</li>
 </ul>
-<p>To locate the Sysmon config file:
-<strong>findstr /si &#39;<ProcessCreate onmatch="exclude">&#39; C:\tools*</strong></p>
-<p><strong>Host-based Intrusion Detection and Prevention Systems (HIDS/HIPS)</strong></p>
+<p>To check if Sysmon is installed:</p>
+<h3>Get-Process | Where-Object { $_.ProcessName -eq &quot;Sysmon&quot; }</h3>
+<h3>Get-CimInstance win32_service -Filter &quot;Description = &#39;System Monitor service&#39;&quot;</h3>
+<h3>Get-Service | where-object {$_.DisplayName -like &quot;<em>sysm</em>&quot;}</h3>
+<pre><code>reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Sysmon/Operational
+</code></pre>
+<p>To locate the Sysmon config file:</p>
+<h3>findstr /si &#39;<ProcessCreate onmatch="exclude">&#39; C:\tools*</h3>
+<h3>Host-based Intrusion Detection and Prevention Systems (HIDS/HIPS)</h3>
 <ul>
-<li>**HIDS (Host-based IDS): **Monitors for suspicious behavior. Detection-only.<ul>
-<li><strong>Signature-based:</strong> Uses known attack patterns.</li>
-<li>**Anomaly-based: **Detects deviations from normal behavior.</li>
+<li><p><strong>HIDS (Host-based IDS):</strong> Monitors for suspicious behavior. Detection-only.</p>
+<ul>
+<li><p><strong>Signature-based:</strong> Uses known attack patterns.</p>
+</li>
+<li><p><strong>Anomaly-based:</strong> Detects deviations from normal behavior.</p>
+</li>
 </ul>
 </li>
-<li><strong>HIPS (Host-based IPS): <strong>Actively blocks threats.</strong> It can:</strong><ul>
-<li><strong>Monitor logs</strong></li>
-<li><strong>Protect system resources</strong></li>
-<li><strong>Detect system misuse</strong>
-<strong>HIPS combines features from:</strong></li>
+<li><p><strong>HIPS (Host-based IPS):</strong> Actively blocks threats. <strong>It can:</strong></p>
+<ul>
+<li><p><strong>Monitor logs</strong></p>
+</li>
+<li><p><strong>Protect system resources</strong></p>
+</li>
+<li><p><strong>Detect system misuse</strong></p>
+</li>
 </ul>
 </li>
-<li><strong>Antivirus</strong></li>
-<li><strong>Firewall</strong></li>
-<li><strong>Behavior analysis tools</strong></li>
 </ul>
-<p><strong>Endpoint Detection and Response (EDR)</strong>
-Also called <strong>EDTR (Endpoint Detection and Threat Response)</strong>. EDR systems are advanced host-monitoring tools capable of:</p>
+<h3>HIPS combines features from:</h3>
 <ul>
-<li><strong>Detecting malware, exploit chains, and ransomware</strong></li>
-<li><strong>Monitoring system behavior</strong></li>
-<li><strong>Logging and analyzing host and network activity</strong>
-Common EDR solutions include:</li>
-<li><strong>Cylance</strong></li>
-<li><strong>Crowdstrike</strong></li>
-<li><strong>Symantec</strong></li>
-<li><strong>SentinelOne</strong>
-Even if an attacker bypasses AV and gains a shell, EDR may still monitor and block post-exploitation activities.
-To enumerate EDR products:</li>
-<li><strong>Use tools like Invoke-EDRChecker or SharpEDRChecker</strong>
-These check for AV/EDR via:<ul>
-<li><strong>Running processes</strong></li>
-<li><strong>Loaded DLLs</strong></li>
-<li><strong>Services and drivers</strong></li>
-<li><strong>Metadata and file paths</strong></li>
+<li><p><strong>Antivirus</strong></p>
+</li>
+<li><p><strong>Firewall</strong></p>
+</li>
+<li><p><strong>Behavior analysis tools</strong></p>
+</li>
 </ul>
+<h3>Endpoint Detection and Response (EDR)</h3>
+<p>Also called <strong>EDTR (Endpoint Detection and Threat Response)</strong>. EDR systems are advanced host-monitoring tools capable of:</p>
+<ul>
+<li><p><strong>Detecting malware, exploit chains, and ransomware</strong></p>
+</li>
+<li><p><strong>Monitoring system behavior</strong></p>
+</li>
+<li><p><strong>Logging and analyzing host and network activity</strong></p>
+</li>
+</ul>
+<p>Common EDR solutions include:</p>
+<ul>
+<li><p><strong>Cylance</strong></p>
+</li>
+<li><p><strong>Crowdstrike</strong></p>
+</li>
+<li><p><strong>Symantec</strong></p>
+</li>
+<li><p><strong>SentinelOne</strong></p>
+</li>
+</ul>
+<p>Even if an attacker bypasses AV and gains a shell, EDR may still monitor and block post-exploitation activities.</p>
+<p>To enumerate EDR products:</p>
+<ul>
+<li><strong>Use tools like Invoke-EDRChecker or SharpEDRChecker</strong></li>
+</ul>
+<p>These check for AV/EDR via:</p>
+<ul>
+<li><p><strong>Running processes</strong></p>
+</li>
+<li><p><strong>Loaded DLLs</strong></p>
+</li>
+<li><p><strong>Services and drivers</strong></p>
+</li>
+<li><p><strong>Metadata and file paths</strong></p>
 </li>
 </ul>
 <p><img src="../assets/storage/images/writeups/the_lay_of_the_land/img015_image98.png" alt="">

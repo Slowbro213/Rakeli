@@ -127,96 +127,104 @@
 </div>
 <!-- Writeup content -->
 <article class="markdown-body"><h1>Abusing Windows Internals</h1>
-<p><strong>Abusing Processes</strong>
-A <strong>process</strong> represents a running program and contains components like its <strong>virtual memory space, executable code, open handles, security context, process ID, and threads</strong>. Because processes control memory and execution, they are common targets for attackers.
-<strong>Process injection</strong> is the technique of inserting malicious code into a process to execute under its context. Common forms include:</p>
+<h3>Abusing Processes</h3>
+<p>A <strong>process</strong> represents a running program and contains components like its <strong>virtual memory space, executable code, open handles, security context, process ID, and threads</strong>. Because processes control memory and execution, they are common targets for attackers.</p>
+<p><strong>Process injection</strong> is the technique of inserting malicious code into a process to execute under its context. Common forms include:</p>
 <ul>
-<li><strong>Process Hollowing</strong> – replacing the memory of a suspended process.</li>
-<li><strong>Thread Hijacking</strong> – redirecting a suspended thread.</li>
-<li><strong>DLL Injection</strong> – forcing a process to load a malicious DLL.</li>
-<li><strong>PE Injection</strong> – manually loading a malicious executable image.
-At the simplest level, injection often takes the form of <strong>shellcode injection</strong>, which follows four basic steps:</li>
+<li><p><strong>Process Hollowing</strong> – replacing the memory of a suspended process.</p>
+</li>
+<li><p><strong>Thread Hijacking</strong> – redirecting a suspended thread.</p>
+</li>
+<li><p><strong>DLL Injection</strong> – forcing a process to load a malicious DLL.</p>
+</li>
+<li><p><strong>PE Injection</strong> – manually loading a malicious executable image.</p>
+</li>
 </ul>
+<p>At the simplest level, injection often takes the form of <strong>shellcode injection</strong>, which follows four basic steps:</p>
 <ol>
-<li><strong>OpenProcess</strong> – get a handle to the target process.</li>
-<li><strong>VirtualAllocEx</strong> – allocate memory inside the process.</li>
-<li><strong>WriteProcessMemory</strong> – write the shellcode into the allocated memory.</li>
-<li><strong>CreateRemoteThread</strong> – start execution of the shellcode by creating a new thread.
-This API sequence is the foundation for many injection techniques: obtain access, allocate space, write payload, and execute.</li>
+<li><p><strong>OpenProcess</strong> – get a handle to the target process.</p>
+</li>
+<li><p><strong>VirtualAllocEx</strong> – allocate memory inside the process.</p>
+</li>
+<li><p><strong>WriteProcessMemory</strong> – write the shellcode into the allocated memory.</p>
+</li>
+<li><p><strong>CreateRemoteThread</strong> – start execution of the shellcode by creating a new thread.</p>
+</li>
 </ol>
-<p><strong>TASK 2 EXERCISE</strong>
-Objective 1:Identify a PID of a process running as THM-Attacker to target. Once identified supply the PID as an argument to execute shellcode-injector.exe located in the Injectors directory on the desktop.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img001_image126.png" alt="">
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img002_image127.png" alt=""></p>
+<p>This API sequence is the foundation for many injection techniques: obtain access, allocate space, write payload, and execute.</p>
+<h3>TASK 2 EXERCISE</h3>
+<p>Objective 1:Identify a PID of a process running as THM-Attacker to target. Once identified supply the PID as an argument to execute shellcode-injector.exe located in the Injectors directory on the desktop.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img001_image126.png" alt=""></p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img002_image127.png" alt=""></p>
 <p>I ran .\shellcode-injector.exe with the process name and indeed got the flag.</p>
-<p><strong>Expanding Process Abuse</strong>
-<strong>Process hollowing</strong> is a technique that allows an attacker to inject a full malicious Portable Executable (PE) into another process by creating a legitimate process in a suspended state, un-mapping its memory, and replacing it with the malicious code.
-The overall workflow consists of six steps: creating the target process suspended, opening and loading the malicious image into local memory, un-mapping the original image from the target, allocating and writing the malicious sections, updating the entry point, and finally resuming the process to run the injected payload.
-The first step creates a suspended process using <strong>CreateProcessA</strong> and stores its information in the <strong>STARTUPINFOA</strong> and <strong>PROCESS_INFORMATION</strong> structures.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img003_image128.png" alt="">
-Next, the malicious payload is opened with** CreateFileA**, its size retrieved with** GetFileSize**, and memory allocated locally with <strong>VirtualAlloc</strong>. The file is then read into that memory with <strong>ReadFile</strong>.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img004_image129.png" alt="">
-The hollowing phase begins by identifying the base address of the target image using <strong>GetThreadContext</strong> and** ReadProcessMemory**.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img005_image130.png" alt="">
-The memory is then unmapped using <strong>ZwUnmapViewOfSection</strong> obtained dynamically from <strong>ntdll.dll</strong>.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img006_image131.png" alt="">
-After unmapping, new space is allocated inside the target process for the malicious image using <code>VirtualAllocEx</code>. The PE headers are written with <code>WriteProcessMemory</code>, followed by each section of the image in a loop.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img007_image132.png" alt="">
-Finally, the thread context is updated so the instruction pointer points to the entry point of the malicious code, and the suspended process is resumed to execute it.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img008_image133.png" alt=""></p>
-<p><strong>TASK 3 EXERCISE</strong>
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img009_image134.png" alt="">
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img010_image135.png" alt=""></p>
+<h3>Expanding Process Abuse</h3>
+<p><strong>Process hollowing</strong> is a technique that allows an attacker to inject a full malicious Portable Executable (PE) into another process by creating a legitimate process in a suspended state, un-mapping its memory, and replacing it with the malicious code.</p>
+<p>The overall workflow consists of six steps: creating the target process suspended, opening and loading the malicious image into local memory, un-mapping the original image from the target, allocating and writing the malicious sections, updating the entry point, and finally resuming the process to run the injected payload.</p>
+<p>The first step creates a suspended process using <strong>CreateProcessA</strong> and stores its information in the <strong>STARTUPINFOA</strong> and <strong>PROCESS_INFORMATION</strong> structures.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img003_image128.png" alt=""></p>
+<p>Next, the malicious payload is opened with <strong>CreateFileA</strong>, its size retrieved with <strong>GetFileSize</strong>, and memory allocated locally with <strong>VirtualAlloc</strong>. The file is then read into that memory with <strong>ReadFile</strong>.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img004_image129.png" alt=""></p>
+<p>The hollowing phase begins by identifying the base address of the target image using <strong>GetThreadContext</strong> and <strong>ReadProcessMemory</strong>.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img005_image130.png" alt=""></p>
+<p>The memory is then unmapped using <strong>ZwUnmapViewOfSection</strong> obtained dynamically from <strong>ntdll.dll</strong>.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img006_image131.png" alt=""></p>
+<p>After unmapping, new space is allocated inside the target process for the malicious image using <code>VirtualAllocEx</code>. The PE headers are written with <code>WriteProcessMemory</code>, followed by each section of the image in a loop.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img007_image132.png" alt=""></p>
+<p>Finally, the thread context is updated so the instruction pointer points to the entry point of the malicious code, and the suspended process is resumed to execute it.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img008_image133.png" alt=""></p>
+<h3>TASK 3 EXERCISE</h3>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img009_image134.png" alt=""></p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img010_image135.png" alt=""></p>
 <p>I ran the injector named “hollowing-injector.exe” against the PID I chose as well as its’ respective executable name.</p>
-<p><strong>Abusing Process Components</strong>
-<strong>Thread hijacking</strong> is a process injection technique where malicious code is injected into a process and then executed by taking over one of its existing threads. Instead of creating a new thread, the attacker suspends a legitimate thread, changes its instruction pointer to point at malicious code, and then resumes it. This allows the payload to run in the context of a trusted process thread.
-At a high level, thread hijacking consists of eleven steps: open the target process, allocate memory, write shellcode, locate a target thread, open it, suspend it, grab its context, change the instruction pointer, rewrite the context, and finally resume the thread.
-The first three steps mirror standard process injection:
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img011_image136.png" alt=""></p>
-<p>Once the payload is in memory, the next step is to locate the thread we want to hijack. This is done by enumerating threads in the system with <strong>CreateToolhelp32Snapshot</strong>,** Thread32First**, and** Thread32Next**, and checking for a match on the target process ID.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img012_image137.png" alt="">
-Once we have the thread handle, we suspend it with <strong>SuspendThread</strong>.
-<strong>SuspendThread(hThread);</strong>
-Then we retrieve its execution context with <strong>GetThreadContext</strong>.
-<strong>CONTEXT context;</strong>
-<strong>GetThreadContext(hThread, &amp;context);</strong>
-The key step is to overwrite the <strong>RIP register</strong> (on x64) so the thread will execute the malicious buffer next.
-<strong>context.Rip = (DWORD_PTR)remoteBuffer;</strong>
-We then save the modified context back with** SetThreadContext**:
-<strong>SetThreadContext(hThread, &amp;context);</strong>
-Finally, we resume the thread so execution jumps directly into the injected shellcode:
-<strong>ResumeThread(hThread);</strong></p>
-<p><strong>TASK 4 EXERCISE</strong>
-We firstly open powershell and select it, and its’ PID.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img013_image138.png" alt=""></p>
-<p>Then we run thread-injector.exe with the PID as a target.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img014_image139.png" alt="">
-That gives us the flag.</p>
-<p><strong>Abusing DLLs</strong>
-<strong>DLL injection</strong> is the technique of forcing a process to load and run a malicious dynamic-link library (DLL) in its memory space. At a high level, the steps are: locate a target process, open it, allocate memory, write the DLL path into that memory, and finally load and execute it with a remote thread.
-The first step is to locate the target process ID (PID). This is usually done by enumerating all processes with <strong>CreateToolhelp32Snapshot</strong>,** Process32First**, and <strong>Process32Next</strong>, comparing their names to the intended target.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img015_image140.png" alt="">
-Once the PID is found, we open the process with** OpenProcess:**
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img016_image141.png" alt=""></p>
-<p>Next, we allocate memory inside the target for the DLL path using <strong>VirtualAllocEx</strong>:
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img017_image142.png" alt="">
-The DLL path string is then written into the allocated memory with <strong>WriteProcessMemory</strong>:
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img018_image143.png" alt="">
-With the path now inside the target process, the final step is to load the DLL. The attacker gets the address of b from <strong>kernel32.dll</strong> and uses <strong>CreateRemoteThread</strong> to execute it inside the target:
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img019_image144.png" alt="">
-<strong>TASK 5 EXERCISE</strong>
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img020_image145.png" alt="">
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img021_image146.png" alt="">
-After running dll-injector for explorer.exe with the evil.dll file, we then get the following flag.
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img022_image147.png" alt=""></p>
-<p><strong>Memory Execution Alternatives</strong>
-Execution is just as important as allocation and writing in process injection, but the method you choose depends heavily on the environment you’re working in. If common APIs like <strong>CreateThread <strong>or <strong>CreateRemoteThread</strong> are being monitored by EDR, alternate execution techniques can be used to achieve the same result with fewer artifacts.
-One evasive option is the function pointer method. By casting a pointer to locally allocated shellcode as a function and then invoking it, you can execute code without calling any APIs at all. The syntax looks dense, but it simply defines a void function pointer, casts the memory pointer to it, and then executes:
-<strong>((void(*)())addressPointer)();</strong>
-Another option is Asynchronous Procedure Calls (APCs). An APC is queued to a thread with <strong>QueueUserAPC</strong>, and the function executes the next time the thread enters an alertable state (such as when waiting on <strong>Sleep</strong> or <strong>WaitForSingleObject</strong>). Once the shellcode address is queued, resuming the thread triggers a software interrupt and executes the payload:
-<img src="../assets/storage/images/writeups/abusing_windows_internals/img023_image148.png" alt="">
-A more complex but powerful technique is section manipulation, where the attacker leverages PE sections like <strong>.data</strong> or <strong>.text</strong> for execution. This requires parsing the Portable Executable structure, including headers, section tables, and relocation tables, and then redirecting execution flow to injected data within those sections. This method doesn’t rely on thread creation at all and instead abuses how Windows loads and maps PE files, making detection harder if implemented carefully.
-Overall, the ability to mix and match these execution strategies provides attackers with flexibility. Function pointers reduce API footprints, APCs allow payloads to ride on legitimate thread behavior, and section manipulation hijacks the PE loading process itself. Each carries different trade-offs in terms of stealth and complexity, but together they expand the options for executing injected shellcode beyond the obvious</strong> CreateThread</strong> family of calls.</p>
+<h3>Abusing Process Components</h3>
+<p><strong>Thread hijacking</strong> is a process injection technique where malicious code is injected into a process and then executed by taking over one of its existing threads. Instead of creating a new thread, the attacker suspends a legitimate thread, changes its instruction pointer to point at malicious code, and then resumes it. This allows the payload to run in the context of a trusted process thread.</p>
+<p>At a high level, thread hijacking consists of eleven steps: open the target process, allocate memory, write shellcode, locate a target thread, open it, suspend it, grab its context, change the instruction pointer, rewrite the context, and finally resume the thread.</p>
+<p>The first three steps mirror standard process injection:</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img011_image136.png" alt=""></p>
+<p>Once the payload is in memory, the next step is to locate the thread we want to hijack. This is done by enumerating threads in the system with <strong>CreateToolhelp32Snapshot</strong>, <strong>Thread32First</strong>, and <strong>Thread32Next</strong>, and checking for a match on the target process ID.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img012_image137.png" alt=""></p>
+<p>Once we have the thread handle, we suspend it with <strong>SuspendThread</strong>.</p>
+<h3>SuspendThread(hThread);</h3>
+<p>Then we retrieve its execution context with <strong>GetThreadContext</strong>.</p>
+<h3>CONTEXT context;</h3>
+<h3>GetThreadContext(hThread, &amp;context);</h3>
+<p>The key step is to overwrite the <strong>RIP register</strong> (on x64) so the thread will execute the malicious buffer next.</p>
+<h3>context.Rip = (DWORD_PTR)remoteBuffer;</h3>
+<p>We then save the modified context back with <strong>SetThreadContext</strong>:</p>
+<h3>SetThreadContext(hThread, &amp;context);</h3>
+<p>Finally, we resume the thread so execution jumps directly into the injected shellcode:</p>
+<h3>ResumeThread(hThread);</h3>
+<h3>TASK 4 EXERCISE</h3>
+<p>We firstly open powershell and select it, and its’ PID.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img013_image138.png" alt=""></p>
+<p>Then we run thread-injector.exe with the PID as a target.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img014_image139.png" alt=""></p>
+<p>That gives us the flag.</p>
+<h3>Abusing DLLs</h3>
+<p><strong>DLL injection</strong> is the technique of forcing a process to load and run a malicious dynamic-link library (DLL) in its memory space. At a high level, the steps are: locate a target process, open it, allocate memory, write the DLL path into that memory, and finally load and execute it with a remote thread.</p>
+<p>The first step is to locate the target process ID (PID). This is usually done by enumerating all processes with <strong>CreateToolhelp32Snapshot</strong>, <strong>Process32First</strong>, and <strong>Process32Next</strong>, comparing their names to the intended target.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img015_image140.png" alt=""></p>
+<p>Once the PID is found, we open the process with <strong>OpenProcess:</strong></p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img016_image141.png" alt=""></p>
+<p>Next, we allocate memory inside the target for the DLL path using <strong>VirtualAllocEx</strong>:</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img017_image142.png" alt=""></p>
+<p>The DLL path string is then written into the allocated memory with <strong>WriteProcessMemory</strong>:</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img018_image143.png" alt=""></p>
+<p>With the path now inside the target process, the final step is to load the DLL. The attacker gets the address of b from <strong>kernel32.dll</strong> and uses <strong>CreateRemoteThread</strong> to execute it inside the target:</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img019_image144.png" alt=""></p>
+<h3>TASK 5 EXERCISE</h3>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img020_image145.png" alt=""></p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img021_image146.png" alt="">
+After running dll-injector for explorer.exe with the evil.dll file, we then get the following flag.</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img022_image147.png" alt=""></p>
+<h3>Memory Execution Alternatives</h3>
+<p>Execution is just as important as allocation and writing in process injection, but the method you choose depends heavily on the environment you’re working in. If common APIs like <strong>CreateThread</strong> or <strong>CreateRemoteThread</strong> are being monitored by EDR, alternate execution techniques can be used to achieve the same result with fewer artifacts.</p>
+<p>One evasive option is the function pointer method. By casting a pointer to locally allocated shellcode as a function and then invoking it, you can execute code without calling any APIs at all. The syntax looks dense, but it simply defines a void function pointer, casts the memory pointer to it, and then executes:</p>
+<h3>((void(*)())addressPointer)();</h3>
+<p>Another option is Asynchronous Procedure Calls (APCs). An APC is queued to a thread with <strong>QueueUserAPC</strong>, and the function executes the next time the thread enters an alertable state (such as when waiting on <strong>Sleep</strong> or <strong>WaitForSingleObject</strong>). Once the shellcode address is queued, resuming the thread triggers a software interrupt and executes the payload:</p>
+<p><img src="../assets/storage/images/writeups/abusing_windows_internals/img023_image148.png" alt=""></p>
+<p>A more complex but powerful technique is section manipulation, where the attacker leverages PE sections like <strong>.data</strong> or <strong>.text</strong> for execution. This requires parsing the Portable Executable structure, including headers, section tables, and relocation tables, and then redirecting execution flow to injected data within those sections. This method doesn’t rely on thread creation at all and instead abuses how Windows loads and maps PE files, making detection harder if implemented carefully.</p>
+<p>Overall, the ability to mix and match these execution strategies provides attackers with flexibility. Function pointers reduce API footprints, APCs allow payloads to ride on legitimate thread behavior, and section manipulation hijacks the PE loading process itself. Each carries different trade-offs in terms of stealth and complexity, but together they expand the options for executing injected shellcode beyond the obvious <strong>CreateThread</strong> family of calls.</p>
 </article>
 
 <div class="series-nav">

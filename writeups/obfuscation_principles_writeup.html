@@ -127,122 +127,145 @@
 </div>
 <!-- Writeup content -->
 <article class="markdown-body"><h1>Obfuscation Principles</h1>
-<p><strong>Obfuscation Principles</strong>
-<strong>Obfuscation</strong> is a technique widely used across software development to protect <strong>intellectual property (IP)</strong> and proprietary information. A well-known example is <strong>Minecraft</strong>, which employs the <strong>ProGuard</strong> obfuscator to minimize and obscure its <strong>Java classes</strong>. To support the modding community, Minecraft also releases partial <strong>obfuscation maps</strong>, translating between obfuscated and original class names.
-The broader field of obfuscation encompasses a wide range of methods, documented in the research paper <em>Layered Obfuscation: A Taxonomy of Software Obfuscation Techniques for Layered Security</em>. This taxonomy organizes obfuscation techniques by <strong>layers</strong>, comparable to the <strong>OSI model</strong>, but applied to application data flow. The four layers are the <strong>Code-Element Layer, Software-Component Layer, Inter-Component Layer, and Application Layer</strong>, each with sub-layers detailing specific methods.
-In this context, emphasis is placed on the <strong>Code-Element Layer</strong>, which includes the following sub-layers: <strong>Obfuscating Layout, Obfuscating Controls, Obfuscating Data, Obfuscating Methods, and Obfuscating Classes</strong>. Each sub-layer contains strategies tailored to a specific goal. For instance, to <strong>obfuscate code layout</strong> without altering the program’s functionality, developers can inject <strong>junk code</strong>:
-<strong>Code-Element Layer &gt; Obfuscating Layout &gt; Junk Codes</strong></p>
+<h3>Obfuscation Principles</h3>
+<p><strong>Obfuscation</strong> is a technique widely used across software development to protect <strong>intellectual property (IP)</strong> and proprietary information. A well-known example is <strong>Minecraft</strong>, which employs the <strong>ProGuard</strong> obfuscator to minimize and obscure its <strong>Java classes</strong>. To support the modding community, Minecraft also releases partial <strong>obfuscation maps</strong>, translating between obfuscated and original class names.</p>
+<p>The broader field of obfuscation encompasses a wide range of methods, documented in the research paper <em>Layered Obfuscation: A Taxonomy of Software Obfuscation Techniques for Layered Security</em>. This taxonomy organizes obfuscation techniques by <strong>layers</strong>, comparable to the <strong>OSI model</strong>, but applied to application data flow. The four layers are the <strong>Code-Element Layer, Software-Component Layer, Inter-Component Layer, and Application Layer</strong>, each with sub-layers detailing specific methods.</p>
+<p>In this context, emphasis is placed on the <strong>Code-Element Layer</strong>, which includes the following sub-layers: <strong>Obfuscating Layout, Obfuscating Controls, Obfuscating Data, Obfuscating Methods, and Obfuscating Classes</strong>. Each sub-layer contains strategies tailored to a specific goal. For instance, to <strong>obfuscate code layout</strong> without altering the program’s functionality, developers can inject <strong>junk code</strong>:</p>
+<h3>Code-Element Layer &gt; Obfuscating Layout &gt; Junk Codes</h3>
 <p>While obfuscation serves legitimate purposes, such as protecting software IP, it can also be abused maliciously. <strong>Adversaries and malware developers</strong> leverage obfuscation to <strong>break AV signatures</strong> or complicate <strong>program analysis</strong>, making detection and reverse engineering significantly harder</p>
-<p><strong>Obfuscation’s Function for Static Evasion</strong>
-Two major <strong>security boundaries</strong> that adversaries must overcome are <strong>antivirus engines</strong> and <strong>EDR (Endpoint Detection &amp; Response)</strong> solutions. Both rely on <strong>static signatures</strong> (databases of known patterns) and <strong>heuristic signatures</strong> (behavior-based analysis) to detect malicious code. To evade these detections, adversaries often turn to <strong>obfuscation</strong>, particularly <strong>data obfuscation</strong>, which hides identifiable information within otherwise legitimate-looking applications.
-According to the <em>Layered Obfuscation Taxonomy</em> paper, these practices are organized within the <strong>Code-Element Layer</strong>, specifically under the <strong>Obfuscating Data Sub-Layer</strong>. The taxonomy highlights several key methods:</p>
+<h3>Obfuscation’s Function for Static Evasion</h3>
+<p>Two major <strong>security boundaries</strong> that adversaries must overcome are <strong>antivirus engines</strong> and <strong>EDR (Endpoint Detection &amp; Response)</strong> solutions. Both rely on <strong>static signatures</strong> (databases of known patterns) and <strong>heuristic signatures</strong> (behavior-based analysis) to detect malicious code. To evade these detections, adversaries often turn to <strong>obfuscation</strong>, particularly <strong>data obfuscation</strong>, which hides identifiable information within otherwise legitimate-looking applications.</p>
+<p>According to the <em>Layered Obfuscation Taxonomy</em> paper, these practices are organized within the <strong>Code-Element Layer</strong>, specifically under the <strong>Obfuscating Data Sub-Layer</strong>. The taxonomy highlights several key methods:</p>
 <ul>
-<li><strong>Array Transformation</strong> – modifies arrays by splitting, merging, folding, or flattening them.</li>
-<li><strong>Data Encoding</strong> – applies mathematical functions or ciphers to obscure data.</li>
-<li><strong>Data Procedurization</strong> – replaces static data with dynamically generated values through procedure calls.</li>
-<li><strong>Data Splitting/Merging</strong> – breaks a variable into multiple parts or combines several variables into one.
-For initial obfuscation, focus is often placed on <strong>data splitting/merging</strong>, since <strong>static signatures</strong> are relatively weaker and easier to bypass at this stage. Other techniques, such as <strong>data encoding</strong>, <strong>procedurization</strong>, and <strong>array transformation</strong>, play supporting roles and are covered in more detail in related topics like <strong>Encoding/Packing/Binder/Crypters</strong> and <strong>Signature Evasion</strong>.</li>
+<li><p><strong>Array Transformation</strong> – modifies arrays by splitting, merging, folding, or flattening them.</p>
+</li>
+<li><p><strong>Data Encoding</strong> – applies mathematical functions or ciphers to obscure data.</p>
+</li>
+<li><p><strong>Data Procedurization</strong> – replaces static data with dynamically generated values through procedure calls.</p>
+</li>
+<li><p><strong>Data Splitting/Merging</strong> – breaks a variable into multiple parts or combines several variables into one.</p>
+</li>
 </ul>
-<p><strong>Object Concatenation</strong>
-<strong>Concatenation</strong> is the process of combining two or more separate objects into one, typically strings. Each programming language supports its own set of <strong>concatenation operators</strong>—for example, Python uses &quot;+&quot;, PowerShell can use &quot;+&quot;, &quot;,&quot;, &quot;${content}quot;, or even no operator, while C and C++ rely on functions like <strong>strcat</strong> or <strong>append</strong>.
-Within the <em>Layered Obfuscation Taxonomy</em>, concatenation is categorized under the <strong>Code-Element Layer → Data Splitting/Merging</strong> sub-layer. For <strong>attackers</strong>, concatenation becomes a valuable tool for <strong>signature evasion</strong>. By splitting strings that are normally detectable, malware can disguise itself from static scanners such as <strong>Yara rules</strong>.
-Consider the example rule:</p>
-<p>If a binary contains** &quot;AmsiScanBuffer&quot;**, the Yara rule will flag it. However, by concatenating the string:
-<strong>IntPtr ASBPtr = GetProcAddress(TargetDLL, &quot;Amsi&quot; + &quot;Scan&quot; + &quot;Buffer&quot;);</strong></p>
+<p>For initial obfuscation, focus is often placed on <strong>data splitting/merging</strong>, since <strong>static signatures</strong> are relatively weaker and easier to bypass at this stage. Other techniques, such as <strong>data encoding</strong>, <strong>procedurization</strong>, and <strong>array transformation</strong>, play supporting roles and are covered in more detail in related topics like <strong>Encoding/Packing/Binder/Crypters</strong> and <strong>Signature Evasion</strong>.</p>
+<h3>Object Concatenation</h3>
+<p><strong>Concatenation</strong> is the process of combining two or more separate objects into one, typically strings. Each programming language supports its own set of <strong>concatenation operators</strong>—for example, Python uses &quot;+&quot;, PowerShell can use &quot;+&quot;, &quot;,&quot;, &quot;${content}quot;, or even no operator, while C and C++ rely on functions like <strong>strcat</strong> or <strong>append</strong>.</p>
+<p>Within the <em>Layered Obfuscation Taxonomy</em>, concatenation is categorized under the <strong>Code-Element Layer → Data Splitting/Merging</strong> sub-layer. For <strong>attackers</strong>, concatenation becomes a valuable tool for <strong>signature evasion</strong>. By splitting strings that are normally detectable, malware can disguise itself from static scanners such as <strong>Yara rules</strong>.</p>
+<p>Consider the example rule:</p>
+<p>If a binary contains <strong>&quot;AmsiScanBuffer&quot;</strong>, the Yara rule will flag it. However, by concatenating the string:</p>
+<h3>IntPtr ASBPtr = GetProcAddress(TargetDLL, &quot;Amsi&quot; + &quot;Scan&quot; + &quot;Buffer&quot;);</h3>
 <p>the string becomes functionally identical at runtime but no longer matches the static signature, successfully <strong>evading detection</strong>.</p>
 <p>Beyond concatenation, attackers can further obfuscate signatures with <strong>non-interpreted characters</strong>, which alter string representation without changing execution:</p>
 <ul>
-<li><strong>Breaks</strong> – split into smaller substrings:** (&#39;co&#39;+&#39;ffe&#39;+&#39;e&#39;)**</li>
-<li><strong>Reorders</strong> – reorder parts of strings:** (&#39;{1}{0}&#39; -f &#39;ffee&#39;,&#39;co&#39;)**</li>
-<li><strong>Whitespace</strong> – insert non-interpreted spaces: .<strong>( &#39;Ne&#39; +&#39;w-Ob&#39; + &#39;ject&#39;)</strong></li>
-<li><strong>Ticks</strong> – insert backticks into tokens: <strong>downLoAdString</strong></li>
-<li><strong>Random Case</strong> – arbitrary casing to avoid exact matches: <strong>dOwnLoAdsTRing</strong></li>
+<li><p><strong>Breaks</strong> – split into smaller substrings: <strong>(&#39;co&#39;+&#39;ffe&#39;+&#39;e&#39;)</strong></p>
+</li>
+<li><p><strong>Reorders</strong> – reorder parts of strings: <strong>(&#39;{1}{0}&#39; -f &#39;ffee&#39;,&#39;co&#39;)</strong></p>
+</li>
+<li><p><strong>Whitespace</strong> – insert non-interpreted spaces: .<strong>( &#39;Ne&#39; +&#39;w-Ob&#39; + &#39;ject&#39;)</strong></p>
+</li>
+<li><p><strong>Ticks</strong> – insert backticks into tokens: <strong>downLoAdString</strong></p>
+</li>
+<li><p><strong>Random Case</strong> – arbitrary casing to avoid exact matches: <strong>dOwnLoAdsTRing</strong></p>
+</li>
 </ul>
-<p><strong>Obfuscation’s Function for Analysis Deception</strong></p>
+<h3>Obfuscation’s Function for Analysis Deception</h3>
 <p>Once the <strong>basic functions of malicious code</strong> are obfuscated, it may successfully bypass <strong>software detections</strong> but still remains vulnerable to <strong>human analysis</strong> by malware analysts and reverse engineers. While not a strict security boundary, manual inspection can reveal the application’s functionality and lead to its disruption. To counter this, adversaries turn to <strong>advanced logic</strong> and <strong>mathematical obfuscation</strong> techniques that make code significantly more complex and resistant to reverse engineering.</p>
 <p>The <em>Layered Obfuscation Taxonomy</em> categorizes these practices within the <strong>Code-Element Layer</strong>, specifically under the <strong>Obfuscating Layout</strong> and <strong>Obfuscating Controls</strong> sub-layers. Key methods include:</p>
 <ul>
-<li><strong>Junk Code</strong> – inserting non-functional instructions (also called <strong>code stubs</strong>) to confuse analysis.</li>
-<li><strong>Separation of Related Code</strong> – scattering logically related instructions, making program flow harder to follow.</li>
-<li><strong>Stripping Redundant Symbols</strong> – removing symbolic information (like debug data or symbol tables) to obscure context.</li>
-<li><strong>Meaningless Identifiers</strong> – replacing descriptive variable and function names with meaningless ones.</li>
-<li><strong>Implicit Controls</strong> – converting explicit control instructions into indirect or hidden ones.</li>
-<li><strong>Dispatcher-based Controls</strong> – using runtime mechanisms to determine which block of code executes next.</li>
-<li><strong>Probabilistic Control Flows</strong> – replicating control flows that behave the same semantically but look different syntactically.</li>
-<li><strong>Bogus Control Flows</strong> – inserting fake control paths that will never be executed but mislead analysis.
-Together, these techniques make malicious programs <strong>difficult to read, debug, and reverse engineer</strong>, extending protection beyond defeating automated detection to resisting <strong>manual inspection and behavioral analysis</strong>.</li>
+<li><p><strong>Junk Code</strong> – inserting non-functional instructions (also called <strong>code stubs</strong>) to confuse analysis.</p>
+</li>
+<li><p><strong>Separation of Related Code</strong> – scattering logically related instructions, making program flow harder to follow.</p>
+</li>
+<li><p><strong>Stripping Redundant Symbols</strong> – removing symbolic information (like debug data or symbol tables) to obscure context.</p>
+</li>
+<li><p><strong>Meaningless Identifiers</strong> – replacing descriptive variable and function names with meaningless ones.</p>
+</li>
+<li><p><strong>Implicit Controls</strong> – converting explicit control instructions into indirect or hidden ones.</p>
+</li>
+<li><p><strong>Dispatcher-based Controls</strong> – using runtime mechanisms to determine which block of code executes next.</p>
+</li>
+<li><p><strong>Probabilistic Control Flows</strong> – replicating control flows that behave the same semantically but look different syntactically.</p>
+</li>
+<li><p><strong>Bogus Control Flows</strong> – inserting fake control paths that will never be executed but mislead analysis.</p>
+</li>
 </ul>
-<p><strong>Code Flow and Logic</strong></p>
+<p>Together, these techniques make malicious programs <strong>difficult to read, debug, and reverse engineer</strong>, extending protection beyond defeating automated detection to resisting <strong>manual inspection and behavioral analysis</strong>.</p>
+<h3>Code Flow and Logic</h3>
 <p><strong>Control flow</strong> defines the logical path a program will take during execution. It is driven by <strong>logic statements</strong> such as <strong>if/else</strong>, <strong>try/catch</strong>, <strong>switch case</strong>, and <strong>for/while loops</strong>, which determine whether code blocks are executed or skipped. Normally, a program executes <strong>top-down</strong>, but when a conditional is encountered, execution diverts into the corresponding branch before continuing. For example:</p>
-<p>This produces a <strong>Control Flow Graph (CFG)</strong> with two potential paths, though only one executes.
-For <strong>attackers</strong>, this is highly relevant. Analysts often rely on <strong>control flow analysis</strong> to reverse engineer and understand a program’s true purpose. However, control flow is also one of the easiest aspects of a program to <strong>manipulate</strong>. By adding <strong>obscure, arbitrary, or misleading logic</strong>, adversaries can drastically increase the difficulty of analysis. The goal is to make the program <strong>confusing without breaking functionality</strong>, while avoiding excessive obfuscation that could raise suspicion or trigger heuristic detections.</p>
-<p><strong>Arbitrary Control Flow Patterns</strong>
-<strong>Arbitrary control flow patterns</strong> can be created by injecting additional <strong>maths, logic, or algorithms</strong> into a malicious function. A key tool for this is the use of <strong>predicates</strong>—boolean conditions that decide whether code executes, similar to the condition in an <strong>if statement</strong>.
-When applied to obfuscation, adversaries use <strong>opaque predicates</strong>. These are predicates where the outcome is already <strong>known to the obfuscator</strong> but is deliberately made <strong>hard to deduce</strong> by analysts. According to the paper <em>Opaque Predicate: Attack and Defense in Obfuscated Binary Code</em>, an opaque predicate “is a predicate whose value is known to the obfuscator but is difficult to deduce.” This means they can be combined with methods like <strong>junk code</strong> to create <strong>bogus</strong> or <strong>probabilistic control flows</strong>, greatly complicating reverse engineering.
-A common example of an opaque predicate is the <strong>Collatz Conjecture</strong>, a mathematical problem stating that repeatedly applying two simple arithmetic operations to any positive integer will eventually yield <strong>1</strong>. Because this is guaranteed for all positive integers, it makes an excellent opaque predicate:</p>
-<p>Here, the logic executes only if <strong>x &gt; 1</strong>, but by definition of the <strong>Collatz problem</strong>, the loop will always eventually reduce any positive integer to 1. Thus, the obfuscator knows the outcome, but an analyst must work through the math to understand why the branch always resolves the same way.
-In practice, this creates a <strong>confusing Control Flow Graph (CFG)</strong>. What looks like a complex series of conditional paths is, in reality, a deterministic result. For a <strong>compiled function</strong>, the obfuscation becomes even more difficult to untangle, forcing analysts to sift through <strong>arbitrary control logic</strong> that serves no functional purpose beyond <strong>wasting time and effort</strong>.</p>
-<p><strong>Task 7 Challenge</strong>
-Using the knowledge you have accrued throughout this task, put yourself into the shoes of an analyst and attempt to decode the original function and output of the code snippet below. If you correctly follow the print statements, it will result in a flag you can submit.</p>
-<p>The given code snippet begins with a <strong>Collatz sequence</strong> check (x = 3). As the loop executes, the value of x eventually reduces to <strong>1</strong>, which triggers a nested loop that iterates through several case arrays (case_1 … case_6). Each iteration follows a <strong>switch statement</strong> (swVar) that determines which array element to print and how the state variables (a, b, swVar) change.
-Tracing through the execution step by step:</p>
+<p>This produces a <strong>Control Flow Graph (CFG)</strong> with two potential paths, though only one executes.</p>
+<p>For <strong>attackers</strong>, this is highly relevant. Analysts often rely on <strong>control flow analysis</strong> to reverse engineer and understand a program’s true purpose. However, control flow is also one of the easiest aspects of a program to <strong>manipulate</strong>. By adding <strong>obscure, arbitrary, or misleading logic</strong>, adversaries can drastically increase the difficulty of analysis. The goal is to make the program <strong>confusing without breaking functionality</strong>, while avoiding excessive obfuscation that could raise suspicion or trigger heuristic detections.</p>
+<h3>Arbitrary Control Flow Patterns</h3>
+<p><strong>Arbitrary control flow patterns</strong> can be created by injecting additional <strong>maths, logic, or algorithms</strong> into a malicious function. A key tool for this is the use of <strong>predicates</strong>—boolean conditions that decide whether code executes, similar to the condition in an <strong>if statement</strong>.</p>
+<p>When applied to obfuscation, adversaries use <strong>opaque predicates</strong>. These are predicates where the outcome is already <strong>known to the obfuscator</strong> but is deliberately made <strong>hard to deduce</strong> by analysts. According to the paper <em>Opaque Predicate: Attack and Defense in Obfuscated Binary Code</em>, an opaque predicate “is a predicate whose value is known to the obfuscator but is difficult to deduce.” This means they can be combined with methods like <strong>junk code</strong> to create <strong>bogus</strong> or <strong>probabilistic control flows</strong>, greatly complicating reverse engineering.</p>
+<p>A common example of an opaque predicate is the <strong>Collatz Conjecture</strong>, a mathematical problem stating that repeatedly applying two simple arithmetic operations to any positive integer will eventually yield <strong>1</strong>. Because this is guaranteed for all positive integers, it makes an excellent opaque predicate:</p>
+<p>Here, the logic executes only if <strong>x &gt; 1</strong>, but by definition of the <strong>Collatz problem</strong>, the loop will always eventually reduce any positive integer to 1. Thus, the obfuscator knows the outcome, but an analyst must work through the math to understand why the branch always resolves the same way.</p>
+<p>In practice, this creates a <strong>confusing Control Flow Graph (CFG)</strong>. What looks like a complex series of conditional paths is, in reality, a deterministic result. For a <strong>compiled function</strong>, the obfuscation becomes even more difficult to untangle, forcing analysts to sift through <strong>arbitrary control logic</strong> that serves no functional purpose beyond <strong>wasting time and effort</strong>.</p>
+<h3>Task 7 Challenge</h3>
+<p>Using the knowledge you have accrued throughout this task, put yourself into the shoes of an analyst and attempt to decode the original function and output of the code snippet below. If you correctly follow the print statements, it will result in a flag you can submit.</p>
+<p>The given code snippet begins with a <strong>Collatz sequence</strong> check (x = 3). As the loop executes, the value of x eventually reduces to <strong>1</strong>, which triggers a nested loop that iterates through several case arrays (case_1 … case_6). Each iteration follows a <strong>switch statement</strong> (swVar) that determines which array element to print and how the state variables (a, b, swVar) change.</p>
+<p>Tracing through the execution step by step:</p>
 <ol>
-<li>The program starts with swVar = 1, printing <strong>T</strong>, then switches to case 2.</li>
-<li>Case 2 prints <strong>H</strong>, moves to case 3.Case 3 prints <strong>M</strong>, updates values, and jumps to case 4.</li>
-<li>Case 4 prints <strong>{</strong>, then moves to case 5.</li>
-<li>Case 5 prints <strong>D</strong>, loops back to case 2.</li>
-<li>The alternating logic between cases 2, 3, 4, and 5 continues, printing characters one by one.</li>
-<li>Eventually, as the variables grow, the flow reaches case 6, which prints the last two characters and <strong>breaks the loop</strong>.
-Following the <strong>print statements in order</strong> reveals:  <strong>THM{D3cod3d!!!}</strong>
-<strong>Protecting and Stripping Identifiable Information</strong>
-Identifiable information can be one of the most critical components an analyst can use to dissect and attempt to understand a malicious program. By limiting the amount of identifiable information (variables, function names, etc.), an analyst has, the better chance an attacker has they won’t be able to reconstruct its original function.
-At a high level, we should consider three different types of identifiable data: code structure, object names, and file/compilation properties. In this task, we will break down the core concepts of each and a case study of a practical approach to each.</li>
+<li><p>The program starts with swVar = 1, printing <strong>T</strong>, then switches to case 2.</p>
+</li>
+<li><p>Case 2 prints <strong>H</strong>, moves to case 3.Case 3 prints <strong>M</strong>, updates values, and jumps to case 4.</p>
+</li>
+<li><p>Case 4 prints <strong>{</strong>, then moves to case 5.</p>
+</li>
+<li><p>Case 5 prints <strong>D</strong>, loops back to case 2.</p>
+</li>
+<li><p>The alternating logic between cases 2, 3, 4, and 5 continues, printing characters one by one.</p>
+</li>
+<li><p>Eventually, as the variables grow, the flow reaches case 6, which prints the last two characters and <strong>breaks the loop</strong>.</p>
+</li>
 </ol>
-<p><strong>Object Names</strong>
-<strong>Object names offer some of the most significant insight into a program’s functionality and can reveal the exact purpose of a function.</strong> An analyst can still deconstruct the purpose of a function from its behavior, but this is much harder if there is no context to the function.
-The importance of literal object names may change depending on if the language is <strong>compiled</strong> or** interpreted**.
-If an interpreted language such as <strong>Python</strong> or** PowerShell** is used, then all objects matter and must be modified. If a compiled language such as <strong>C</strong> or** C#** is used, only objects appearing in the strings are generally significant. An object may appear in the strings by any function that produces an** IO operation**.
-The aforementioned white paper:** Layered Obfuscation Taxonomy**, summarizes these practices well under the** code-element** layer’s** meaningless identifiers** method.
-Below we will observe two basic examples of replacing meaningful identifiers for both an interpreted and compiled language.
-As an example of a compiled language, we can observe a process injector written in C++ that reports its status to the command line.</p>
+<p>Following the <strong>print statements in order</strong> reveals:  <strong>THM{D3cod3d!!!}</strong></p>
+<h3>Protecting and Stripping Identifiable Information</h3>
+<p>Identifiable information can be one of the most critical components an analyst can use to dissect and attempt to understand a malicious program. By limiting the amount of identifiable information (variables, function names, etc.), an analyst has, the better chance an attacker has they won’t be able to reconstruct its original function.</p>
+<p>At a high level, we should consider three different types of identifiable data: code structure, object names, and file/compilation properties. In this task, we will break down the core concepts of each and a case study of a practical approach to each.</p>
+<h3>Object Names</h3>
+<p><strong>Object names offer some of the most significant insight into a program’s functionality and can reveal the exact purpose of a function.</strong> An analyst can still deconstruct the purpose of a function from its behavior, but this is much harder if there is no context to the function.</p>
+<p>The importance of literal object names may change depending on if the language is <strong>compiled</strong> or <strong>interpreted</strong>.</p>
+<p>If an interpreted language such as <strong>Python</strong> or <strong>PowerShell</strong> is used, then all objects matter and must be modified. If a compiled language such as <strong>C</strong> or <strong>C#</strong> is used, only objects appearing in the strings are generally significant. An object may appear in the strings by any function that produces an <strong>IO operation</strong>.</p>
+<p>The aforementioned white paper: <strong>Layered Obfuscation Taxonomy</strong>, summarizes these practices well under the <strong>code-element</strong> layer’s <strong>meaningless identifiers</strong> method.</p>
+<p>Below we will observe two basic examples of replacing meaningful identifiers for both an interpreted and compiled language.</p>
+<p>As an example of a compiled language, we can observe a process injector written in C++ that reports its status to the command line.</p>
 <p>We will now use <strong>strings</strong> to see exactly what was leaked when this source code is compiled.</p>
-<p>All of iostream was written into strings, and even the <strong>shellcode byte array</strong> was leaked.
-If all of this can happen within a smaller program, then surely a full-scale unobfuscated program would look much more complex.</p>
+<p>All of iostream was written into strings, and even the <strong>shellcode byte array</strong> was leaked.</p>
+<p>If all of this can happen within a smaller program, then surely a full-scale unobfuscated program would look much more complex.</p>
 <p>To resolve this leakage issue, we can <strong>remove comments and replace the meaningful identifiers:</strong></p>
 <p>Now, there shouldn’t be anymore identifiable string information, and <strong>the program is safe from string analysis.</strong></p>
-<p>As an example for an interpreted language, we can observe the deprecated <strong>Badger Powershell Loader</strong> from the <strong>BRC4 Community Kit.</strong>
-**Links:**<a href="https://github.com/paranoidninja/Brute-Ratel-C4-Community-Kit/blob/main/deprecated/badger_template.ps1">https://github.com/paranoidninja/Brute-Ratel-C4-Community-Kit/blob/main/deprecated/badger_template.ps1</a>
-<a href="https://github.com/paranoidninja/Brute-Ratel-C4-Community-Kit">https://github.com/paranoidninja/Brute-Ratel-C4-Community-Kit</a></p>
-<p>In this case, we do still keep some functions and cmdlets in the original stage, since sometimes we may want to create an application that <strong>can still confuse reverse engineers after detection but may not look immediately suspicious</strong>.
-If a malware developer were to obfuscate all cmdlets and functions, it would raise the entropy in both interpreted and compiled languages resulting in higher EDR alert scores. It could also lead to an interpreted snippet appearing suspicious in logs if it is seemingly random or visibly heavily obfuscated.</p>
-<p><strong>Code Structure</strong>
-Code structure can be a bothersome problem when dealing with all aspects of malicious code that are often overlooked and not easily identified.** If not adequately addressed in both interpreted and compiled languages, it can lead to signatures or easier reverse engineering from an analyst.**
-As covered in the aforementioned taxonomy paper,** junk code** and <strong>reordering code</strong> are both widely used as additional measures to add complexity to an interpreted program. Because the program is not compiled, an analyst has much greater insight into the program, and if not artificially inflated with complexity, they can focus on the exact malicious functions of an application.
-Separation of related code can impact both interpreted and compiled languages and result in hidden signatures that may be hard to identify. A heuristic signature engine may determine whether a program is malicious based on the surrounding functions or API calls. To circumvent these signatures, an attacker can randomize the occurrence of related code to fool the engine into believing it is a safe call or function.</p>
-<p><strong>File &amp; Compilation Properties</strong>
-More minor aspects of a compiled binary, such as the compilation method, may not seem like a critical component, but they <strong>can lead to several advantages to assist an analyst.</strong> For example**, if a program is compiled as a debug build, an analyst can obtain all the available global variables and other program information.**
-<strong>The compiler will include a symbol file when a program is compiled as a debug build.</strong> Symbols commonly aid in debugging a binary image and can contain global and local variables, function names, and entry points. Attackers must be aware of these possible problems to ensure proper compilation practices and that no information is leaked to an analyst.
-Luckily for attackers, **symbol files are easily removed through the compiler or after compilation. **To remove symbols from a compiler like <strong>Visual Studio</strong>, we need to change the compilation target from Debug to Release or use a lighter-weight compiler like mingw.
-<strong>If we need to remove symbols from a pre-compiled image</strong>,
-we can use the command-line utility: <strong>strip</strong>
-The aforementioned white paper: Layered Obfuscation Taxonomy, summarizes these practices well under the code-element layer’s stripping redundant symbols method.
-Below is an example of using strip to remove the symbols from a binary compiled in gcc with debugging enabled.
-Several other properties should be considered before actively using a tool, such as entropy or hash. These concepts are covered in task 5 of the Signature Evasion room.</p>
-<p><strong>Using the knowledge you have accrued throughout this task, remove any meaningful identifiers or debug information from the C++ source code below using the AttackBox or your own virtual machine. Once adequately obfuscated and stripped compile the source code using MingW32-G++ and submit it to the webserver. Note: the file name must be challenge-8.exe to receive the flag.</strong>
-** What flag is found after uploading a properly obfuscated snippet? Hint : To build the source, use x86_64-w64-mingw32-g++ challenge-8.cpp -o challenge-8.exe.**
-<img src="../assets/storage/images/writeups/obfuscation_principles/img001_image179.png" alt="">
-First, I create the challenge-8.c file:
-First, we will change the names for these variables, and also any occurrences of them:
-<strong>processHandle  -&gt;  mzkbzk</strong>
-<strong>remoteThread    -&gt;  asdasd</strong>
-<strong>remoteBuffer      -&gt; spfspf</strong>
-Then, we remove the leaked string, as well as any “cout”-s.
-<img src="../assets/storage/images/writeups/obfuscation_principles/img002_image180.png" alt="">
+<p>As an example for an interpreted language, we can observe the deprecated <strong>Badger Powershell Loader</strong> from the <strong>BRC4 Community Kit.</strong></p>
+<p>**Links:**<a href="https://github.com/paranoidninja/Brute-Ratel-C4-Community-Kit/blob/main/deprecated/badger_template.ps1">https://github.com/paranoidninja/Brute-Ratel-C4-Community-Kit/blob/main/deprecated/badger_template.ps1</a></p>
+<p><a href="https://github.com/paranoidninja/Brute-Ratel-C4-Community-Kit">https://github.com/paranoidninja/Brute-Ratel-C4-Community-Kit</a></p>
+<p>In this case, we do still keep some functions and cmdlets in the original stage, since sometimes we may want to create an application that <strong>can still confuse reverse engineers after detection but may not look immediately suspicious</strong>.</p>
+<p>If a malware developer were to obfuscate all cmdlets and functions, it would raise the entropy in both interpreted and compiled languages resulting in higher EDR alert scores. It could also lead to an interpreted snippet appearing suspicious in logs if it is seemingly random or visibly heavily obfuscated.</p>
+<h3>Code Structure</h3>
+<p>Code structure can be a bothersome problem when dealing with all aspects of malicious code that are often overlooked and not easily identified. <strong>If not adequately addressed in both interpreted and compiled languages, it can lead to signatures or easier reverse engineering from an analyst.</strong></p>
+<p>As covered in the aforementioned taxonomy paper, <strong>junk code</strong> and <strong>reordering code</strong> are both widely used as additional measures to add complexity to an interpreted program. Because the program is not compiled, an analyst has much greater insight into the program, and if not artificially inflated with complexity, they can focus on the exact malicious functions of an application.</p>
+<p>Separation of related code can impact both interpreted and compiled languages and result in hidden signatures that may be hard to identify. A heuristic signature engine may determine whether a program is malicious based on the surrounding functions or API calls. To circumvent these signatures, an attacker can randomize the occurrence of related code to fool the engine into believing it is a safe call or function.</p>
+<h3>File &amp; Compilation Properties</h3>
+<p>More minor aspects of a compiled binary, such as the compilation method, may not seem like a critical component, but they <strong>can lead to several advantages to assist an analyst.</strong> For example**, if a program is compiled as a debug build, an analyst can obtain all the available global variables and other program information.**</p>
+<p><strong>The compiler will include a symbol file when a program is compiled as a debug build.</strong> Symbols commonly aid in debugging a binary image and can contain global and local variables, function names, and entry points. Attackers must be aware of these possible problems to ensure proper compilation practices and that no information is leaked to an analyst.</p>
+<p>Luckily for attackers, <strong>symbol files are easily removed through the compiler or after compilation.</strong> To remove symbols from a compiler like <strong>Visual Studio</strong>, we need to change the compilation target from Debug to Release or use a lighter-weight compiler like mingw.</p>
+<p><strong>If we need to remove symbols from a pre-compiled image</strong>,</p>
+<p>we can use the command-line utility: <strong>strip</strong></p>
+<p>The aforementioned white paper: Layered Obfuscation Taxonomy, summarizes these practices well under the code-element layer’s stripping redundant symbols method.</p>
+<p>Below is an example of using strip to remove the symbols from a binary compiled in gcc with debugging enabled.</p>
+<p>Several other properties should be considered before actively using a tool, such as entropy or hash. These concepts are covered in task 5 of the Signature Evasion room.</p>
+<p><strong>Using the knowledge you have accrued throughout this task, remove any meaningful identifiers or debug information from the C++ source code below using the AttackBox or your own virtual machine. Once adequately obfuscated and stripped compile the source code using MingW32-G++ and submit it to the webserver. Note: the file name must be challenge-8.exe to receive the flag.</strong></p>
+<p><strong>What flag is found after uploading a properly obfuscated snippet? Hint : To build the source, use x86_64-w64-mingw32-g++ challenge-8.cpp -o challenge-8.exe.</strong></p>
+<p><img src="../assets/storage/images/writeups/obfuscation_principles/img001_image179.png" alt="">
+First, I create the challenge-8.c file:</p>
+<p>First, we will change the names for these variables, and also any occurrences of them:</p>
+<h3>processHandle  -&gt;  mzkbzk</h3>
+<h3>remoteThread    -&gt;  asdasd</h3>
+<h3>remoteBuffer      -&gt; spfspf</h3>
+<p>Then, we remove the leaked string, as well as any “cout”-s.</p>
+<p><img src="../assets/storage/images/writeups/obfuscation_principles/img002_image180.png" alt="">
 This is the result of the uncompiled code:</p>
-<p>So now we compile it.
-<img src="../assets/storage/images/writeups/obfuscation_principles/img003_image181.png" alt="">
-Now let’s upload it to THM’s file server for this challenge and see if it fits the criteria.
-<img src="../assets/storage/images/writeups/obfuscation_principles/img004_image182.png" alt=""></p>
+<p>So now we compile it.</p>
+<p><img src="../assets/storage/images/writeups/obfuscation_principles/img003_image181.png" alt=""></p>
+<p>Now let’s upload it to THM’s file server for this challenge and see if it fits the criteria.</p>
+<p><img src="../assets/storage/images/writeups/obfuscation_principles/img004_image182.png" alt=""></p>
 </article>
 
 <div class="series-nav">

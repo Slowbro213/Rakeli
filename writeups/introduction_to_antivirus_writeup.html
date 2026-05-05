@@ -127,35 +127,41 @@
 </div>
 <!-- Writeup content -->
 <article class="markdown-body"><h1>Introduction to Antivirus</h1>
-<p><strong>AV Static Detection</strong>
-Static detection is the oldest and simplest approach to antivirus technology. It works by comparing files on disk against a database of predefined signatures. These signatures might be simple byte sequences, unique ASCII strings, cryptographic hashes like MD5 or SHA1, or checksums such as CRC. If the signature of a file matches an entry in the AV’s database, the file is flagged as malicious. This makes static detection very effective against known malware but ineffective against new or modified malware samples. Because of this, signature databases must be updated constantly.
-In the ClamAV example, scanning a folder of test samples shows how this works in practice. The EICAR test file is detected by its well-known MD5 hash, and backdoor1.exe is flagged because it contains an identifiable byte sequence of Metasploit shellcode. Backdoor2.exe, however, slips through because the shellcode inside it has been XOR-encrypted, changing the byte pattern so it no longer matches the database. This highlights the weakness of pure signature-based detection: even a small change in a binary alters its hash and byte patterns, defeating static detection.
-ClamAV also allows you to create your own database of signatures. By generating an MD5 hash for a missed sample (like backdoor2.exe) and storing it in a custom <code>.hdb</code> file, you can extend the AV’s coverage. Re-scanning with this database correctly identifies the file as malicious. Tools like sigtool automate this process, showing how analysts or defenders can craft signatures for their environment. The limitation, of course, is that adversaries can trivially modify their malware to produce new hashes and patterns.
-Yara rules extend static detection with more flexibility. Instead of relying on hashes, Yara lets analysts write custom rules based on text strings, byte patterns, or other unique indicators found inside a file. In the example, a unique path string embedded in AV-Check.exe is used as a detection signature. Running ClamAV with this Yara rule successfully identifies the file but also produces a false positive when the same string appears in a benign text file. Refining the rule by requiring the file to begin with the “MZ” magic number ensures it only applies to executables, eliminating the false positive. This demonstrates both the power and the care required when writing detection rules: more flexible than raw hashes, but also more prone to mistakes if conditions are too broad.</p>
-<p><strong>EXERCISES</strong>
-<strong>What is the sigtool tool output to generate an MD5 of the AV-Check.exe binary?</strong>
-<img src="../assets/storage/images/writeups/introduction_to_antivirus/img001_image149.png" alt="">
-<strong>Use the strings tool to list all human-readable strings of the AV-Check binary. What is the flag?</strong>
-<img src="../assets/storage/images/writeups/introduction_to_antivirus/img002_image150.png" alt="">
-I found the flag by simply typing “strings AV-Check.exe”
-<strong>AV Testing and Fingerprinting</strong>
-Testing Environments
-When evaluating a payload or suspicious file, red teamers and defenders alike use <strong>AV testing environments</strong>. The most popular platform is <strong>VirusTotal</strong>, which scans a submitted file against 70+ AV engines and checks for known malicious indicators. Beyond signature checks, it also runs binaries in a sandboxed environment, analyzing API calls, behaviors, and registry interactions. The trade-off is that VirusTotal shares all submissions with vendors — useful for defenders, but dangerous for red teamers, since it “burns” a payload by contributing it to vendor databases.
-To avoid this, alternatives like <strong>AntiscanMe</strong> (six free scans per day) or <strong>Jotti’s Malware Scan</strong> provide multi-engine results without automatic vendor sharing. These alternatives often come with daily limits or paid tiers, but they allow safer private testing of malware samples.
-Fingerprinting AV Software
-On a compromised host, attackers need to know what AV product is running before they can attempt bypasses. Fingerprinting is usually done by looking for artifacts such as process names, services, registry keys, and installation directories. For instance:</p>
+<h3>AV Static Detection</h3>
+<p>Static detection is the oldest and simplest approach to antivirus technology. It works by comparing files on disk against a database of predefined signatures. These signatures might be simple byte sequences, unique ASCII strings, cryptographic hashes like MD5 or SHA1, or checksums such as CRC. If the signature of a file matches an entry in the AV’s database, the file is flagged as malicious. This makes static detection very effective against known malware but ineffective against new or modified malware samples. Because of this, signature databases must be updated constantly.</p>
+<p>In the ClamAV example, scanning a folder of test samples shows how this works in practice. The EICAR test file is detected by its well-known MD5 hash, and backdoor1.exe is flagged because it contains an identifiable byte sequence of Metasploit shellcode. Backdoor2.exe, however, slips through because the shellcode inside it has been XOR-encrypted, changing the byte pattern so it no longer matches the database. This highlights the weakness of pure signature-based detection: even a small change in a binary alters its hash and byte patterns, defeating static detection.</p>
+<p>ClamAV also allows you to create your own database of signatures. By generating an MD5 hash for a missed sample (like backdoor2.exe) and storing it in a custom <code>.hdb</code> file, you can extend the AV’s coverage. Re-scanning with this database correctly identifies the file as malicious. Tools like sigtool automate this process, showing how analysts or defenders can craft signatures for their environment. The limitation, of course, is that adversaries can trivially modify their malware to produce new hashes and patterns.</p>
+<p>Yara rules extend static detection with more flexibility. Instead of relying on hashes, Yara lets analysts write custom rules based on text strings, byte patterns, or other unique indicators found inside a file. In the example, a unique path string embedded in AV-Check.exe is used as a detection signature. Running ClamAV with this Yara rule successfully identifies the file but also produces a false positive when the same string appears in a benign text file. Refining the rule by requiring the file to begin with the “MZ” magic number ensures it only applies to executables, eliminating the false positive. This demonstrates both the power and the care required when writing detection rules: more flexible than raw hashes, but also more prone to mistakes if conditions are too broad.</p>
+<h3>EXERCISES</h3>
+<h3>What is the sigtool tool output to generate an MD5 of the AV-Check.exe binary?</h3>
+<p><img src="../assets/storage/images/writeups/introduction_to_antivirus/img001_image149.png" alt=""></p>
+<p><strong>Use the strings tool to list all human-readable strings of the AV-Check binary. What is the flag?</strong></p>
+<p><img src="../assets/storage/images/writeups/introduction_to_antivirus/img002_image150.png" alt=""></p>
+<p>I found the flag by simply typing “strings AV-Check.exe”</p>
+<h3>AV Testing and Fingerprinting</h3>
+<p>Testing Environments</p>
+<p>When evaluating a payload or suspicious file, red teamers and defenders alike use <strong>AV testing environments</strong>. The most popular platform is <strong>VirusTotal</strong>, which scans a submitted file against 70+ AV engines and checks for known malicious indicators. Beyond signature checks, it also runs binaries in a sandboxed environment, analyzing API calls, behaviors, and registry interactions. The trade-off is that VirusTotal shares all submissions with vendors — useful for defenders, but dangerous for red teamers, since it “burns” a payload by contributing it to vendor databases.</p>
+<p>To avoid this, alternatives like <strong>AntiscanMe</strong> (six free scans per day) or <strong>Jotti’s Malware Scan</strong> provide multi-engine results without automatic vendor sharing. These alternatives often come with daily limits or paid tiers, but they allow safer private testing of malware samples.</p>
+<p>Fingerprinting AV Software</p>
+<p>On a compromised host, attackers need to know what AV product is running before they can attempt bypasses. Fingerprinting is usually done by looking for artifacts such as process names, services, registry keys, and installation directories. For instance:</p>
 <ul>
-<li><strong>Microsoft Defender</strong> → MSMpEng.exe, service WinDefend</li>
-<li><strong>Kaspersky</strong> → avp.exe, service AVP<version></li>
-<li><strong>Bitdefender</strong> → bdagent.exe / vsserv.exe, service VSSERV</li>
-<li><strong>Avast</strong> → AvastSvc.exe / afwServ.exe
-Identifying the AV in place allows operators to recreate the same environment in a lab and test bypasses before deploying them in the real target.</li>
+<li><p><strong>Microsoft Defender</strong> → MSMpEng.exe, service WinDefend</p>
+</li>
+<li><p><strong>Kaspersky</strong> → avp.exe, service AVP<version></p>
+</li>
+<li><p><strong>Bitdefender</strong> → bdagent.exe / vsserv.exe, service VSSERV</p>
+</li>
+<li><p><strong>Avast</strong> → AvastSvc.exe / afwServ.exe</p>
+</li>
 </ul>
-<p>Tools for AV Discovery
-The write-up highlights two approaches:</p>
+<p>Identifying the AV in place allows operators to recreate the same environment in a lab and test bypasses before deploying them in the real target.</p>
+<p>Tools for AV Discovery</p>
+<p>The write-up highlights two approaches:</p>
 <ul>
-<li><strong>SharpEDRChecker</strong>: A public C# tool that enumerates possible AV/EDR products by checking processes, DLLs, registry entries, and service names. Because it probes sensitive APIs, it can itself be flagged as malicious by AV solutions.</li>
-<li><strong>Custom C# AV-Check Program</strong>: A lightweight tool that queries running processes with WMI (select * from win32_process) and checks them against a predefined list of known AV executables. For example, if MSMpEng.exe appears in the process list, it confirms Windows Defender is active.</li>
+<li><p><strong>SharpEDRChecker</strong>: A public C# tool that enumerates possible AV/EDR products by checking processes, DLLs, registry entries, and service names. Because it probes sensitive APIs, it can itself be flagged as malicious by AV solutions.</p>
+</li>
+<li><p><strong>Custom C# AV-Check Program</strong>: A lightweight tool that queries running processes with WMI (select * from win32_process) and checks them against a predefined list of known AV executables. For example, if MSMpEng.exe appears in the process list, it confirms Windows Defender is active.</p>
+</li>
 </ul>
 </article>
 
