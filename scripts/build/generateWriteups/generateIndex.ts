@@ -83,8 +83,13 @@ function buildSeriesSection(writeups: Writeup[]): string {
 
 	return `
     <div class="series-section">
-      <h2 class="series-section-title cyber-text">SERIES &amp; PLAYLISTS</h2>
-      <div class="series-grid">${seriesCards}</div>
+      <details class="series-details" open>
+        <summary class="series-section-title cyber-text">
+          SERIES &amp; PLAYLISTS
+          <span class="series-toggle-icon" aria-hidden="true"></span>
+        </summary>
+        <div class="series-grid">${seriesCards}</div>
+      </details>
     </div>
     <div class="section-divider"></div>`;
 }

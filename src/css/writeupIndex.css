@@ -231,11 +231,55 @@
   margin: 2.5rem 0 1.5rem;
 }
 
+/* Collapsible details element */
+.series-details {
+  width: 100%;
+}
+
+.series-details > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.series-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.series-details > summary:focus-visible {
+  outline: 1px dashed var(--neon-green);
+  outline-offset: 3px;
+}
+
+.series-toggle-icon {
+  font-size: 0.75rem;
+  color: var(--neon-green);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  font-family: 'Courier New', monospace;
+}
+
+.series-toggle-icon::before {
+  content: '[ − ]';
+}
+
+.series-details:not([open]) .series-toggle-icon::before {
+  content: '[ + ]';
+}
+
+.series-details > .series-grid {
+  margin-top: 1.25rem;
+}
+
 .series-section-title {
   font-size: 1rem;
   letter-spacing: 0.12em;
   color: var(--neon-green);
-  margin-bottom: 1.25rem;
+  margin-bottom: 0;
   border-bottom: 1px solid var(--neon-green);
   padding-bottom: 0.4rem;
 }
