@@ -83,7 +83,7 @@ function buildSeriesSection(writeups: Writeup[]): string {
 
 	return `
     <div class="series-section">
-      <details class="series-details" open>
+      <details class="series-details">
         <summary class="series-section-title cyber-text">
           SERIES &amp; PLAYLISTS
           <span class="series-toggle-icon" aria-hidden="true"></span>
