@@ -1,10 +1,12 @@
-import subprocess, xml.etree.ElementTree as ET, os, re, shutil
+import xml.etree.ElementTree as ET, os, re, shutil
 
 W  = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'
 R  = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 
+BASE = os.path.dirname(os.path.abspath(__file__))
+
 # Build rId -> image filename map
-rels_data = open('scripts/docx_media/document.xml.rels', 'rb').read()
+rels_data = open(os.path.join(BASE, 'docx_media', 'document.xml.rels'), 'rb').read()
 rels_root = ET.fromstring(rels_data)
 img_map = {}
 for rel in rels_root.findall('{http://schemas.openxmlformats.org/package/2006/relationships}Relationship'):
@@ -12,7 +14,7 @@ for rel in rels_root.findall('{http://schemas.openxmlformats.org/package/2006/re
         img_map[rel.get('Id')] = rel.get('Target', '').replace('media/', '')
 
 # Build numId -> format map
-num_data = open('scripts/docx_media/numbering.xml', 'rb').read()
+num_data = open(os.path.join(BASE, 'docx_media', 'numbering.xml'), 'rb').read()
 num_root = ET.fromstring(num_data)
 abstract_fmt = {}
 for absNum in num_root.findall('{%s}abstractNum' % W):
@@ -31,6 +33,39 @@ for num in num_root.findall('{%s}num' % W):
 
 CODE_FONTS = {'Courier New', 'Courier', 'Consolas', 'Lucida Console', 'Monaco', 'Roboto Mono'}
 
+# Patterns that indicate a line of text is a shell/code command
+CODE_CMD_STARTS = (
+    'msfvenom', 'Msfvenom', 'hashcat', 'john ', 'john--', 'hydra ',
+    'python3', 'python ', 'nmap ', 'git ', 'curl ', 'wget ',
+    'Get-', 'Set-', 'Invoke-', 'New-Object', 'Add-Type',
+    'reg query', 'reg add', 'reg delete',
+    'nc ', 'netcat ', 'powershell', 'cmd /c',
+    'whoami', 'net user', 'net localgroup',
+    '(New-Object', 'IntPtr ', '$Kernel32', '$cmd',
+    'C:\\>', 'C:\\P', 'C:\\W',  # Windows paths
+    '<url>',
+)
+
+def looks_like_code(text):
+    t = text.strip()
+    if any(t.startswith(s) for s in CODE_CMD_STARTS):
+        return True
+    if 'LHOST=' in t or 'LPORT=' in t:
+        return True
+    # looks like a shell command with flags
+    if re.match(r'^[a-zA-Z0-9_\-]+\s+-[a-zA-Z]', t) and len(t) > 30:
+        return True
+    return False
+
+def wrap_md(text, marker):
+    """Wrap text with markdown marker, keeping leading/trailing spaces outside."""
+    stripped = text.strip()
+    if not stripped:
+        return text
+    lead  = ' ' if text != text.lstrip()  else ''
+    trail = ' ' if text != text.rstrip() else ''
+    return lead + marker + stripped + marker + trail
+
 def run_to_md(run):
     rPr = run.find('{%s}rPr' % W)
     text = ''.join(t.text or '' for t in run.findall('{%s}t' % W))
@@ -43,10 +78,49 @@ def run_to_md(run):
         rf = rPr.find('{%s}rFonts' % W)
         if rf is not None and any(v in CODE_FONTS for v in rf.attrib.values()):
             is_code = True
-    if is_code:               return '`%s`' % text
-    if is_bold and is_italic: return '***%s***' % text
-    if is_bold:               return '**%s**' % text
-    if is_italic:             return '*%s*' % text
+    if is_code:               return '`%s`' % text.strip()
+    if is_bold and is_italic: return wrap_md(text, '***')
+    if is_bold:               return wrap_md(text, '**')
+    if is_italic:             return wrap_md(text, '*')
+    return text
+
+def collect_runs(para):
+    """Collect all text runs and drawings from a paragraph as structured data."""
+    items = []
+    for child in para:
+        tag = child.tag.split('}')[1] if '}' in child.tag else child.tag
+        if tag == 'r':
+            drawing = child.find('{%s}drawing' % W)
+            if drawing is not None:
+                items.append(('drawing', drawing))
+            else:
+                rPr = child.find('{%s}rPr' % W)
+                text = ''.join(t.text or '' for t in child.findall('{%s}t' % W))
+                if text:
+                    is_bold   = rPr is not None and rPr.find('{%s}b' % W) is not None
+                    is_italic = rPr is not None and rPr.find('{%s}i' % W) is not None
+                    is_code   = False
+                    if rPr is not None:
+                        rf = rPr.find('{%s}rFonts' % W)
+                        if rf is not None and any(v in CODE_FONTS for v in rf.attrib.values()):
+                            is_code = True
+                    items.append(('text', text, is_bold, is_italic, is_code))
+        elif tag == 'hyperlink':
+            for r in child.findall('{%s}r' % W):
+                drawing = r.find('{%s}drawing' % W)
+                if drawing is not None:
+                    items.append(('drawing', drawing))
+                else:
+                    text = ''.join(t.text or '' for t in r.findall('{%s}t' % W))
+                    if text:
+                        items.append(('text', text, False, False, False))
+        elif tag == 'drawing':
+            items.append(('drawing', child))
+    return items
+
+def fix_inline_spacing(text):
+    """Fix missing space after period before capital (e.g. 'word.Word' -> 'word. Word')."""
+    text = re.sub(r'([a-z,)])\.([A-Z])', r'\1. \2', text)
     return text
 
 def para_to_md(para, room_slug, img_counter):
@@ -67,52 +141,73 @@ def para_to_md(para, room_slug, img_counter):
                 numId_val = numIdEl.get('{%s}val' % W, '')
                 num_fmt = num_id_map.get(numId_val, 'bullet')
 
-    inline = ''
-    image_lines = []
+    items = collect_runs(para)
+    text_items = [it for it in items if it[0] == 'text']
+    drawing_items = [it for it in items if it[0] == 'drawing']
 
+    # -- Image handling --
+    image_lines = []
     def handle_drawing(drawing_el):
         nonlocal img_counter
         for el in drawing_el.iter():
             embed = el.get('{%s}embed' % R)
             if embed and embed in img_map:
                 src_filename = img_map[embed]
-                src_path = 'scripts/docx_media/%s' % src_filename
+                src_path = os.path.join(BASE, 'docx_media', src_filename)
                 if os.path.exists(src_path):
                     img_counter += 1
-                    dest_dir = 'public/assets/storage/images/writeups/%s' % room_slug
+                    dest_dir = os.path.join('public', 'assets', 'storage', 'images', 'writeups', room_slug)
                     os.makedirs(dest_dir, exist_ok=True)
                     dest_name = 'img%03d_%s' % (img_counter, src_filename)
-                    shutil.copy2(src_path, '%s/%s' % (dest_dir, dest_name))
+                    shutil.copy2(src_path, os.path.join(dest_dir, dest_name))
                     image_lines.append('![](../assets/storage/images/writeups/%s/%s)' % (room_slug, dest_name))
                 break
 
-    for child in para:
-        tag = child.tag.split('}')[1] if '}' in child.tag else child.tag
-        if tag == 'r':
-            # Check if run contains a drawing (images are wrapped in runs)
-            drawing = child.find('{%s}drawing' % W)
-            if drawing is not None:
-                handle_drawing(drawing)
-            else:
-                inline += run_to_md(child)
-        elif tag == 'hyperlink':
-            for r in child.findall('{%s}r' % W):
-                drawing = r.find('{%s}drawing' % W)
-                if drawing is not None:
-                    handle_drawing(drawing)
-                else:
-                    inline += run_to_md(r)
-        elif tag == 'drawing':
-            handle_drawing(child)
+    for _, drawing_el in drawing_items:
+        handle_drawing(drawing_el)
 
-    inline = inline.strip()
-    indent = '  ' * ilvl
     result_lines = []
-
     if image_lines:
         result_lines.extend(image_lines)
 
+    # -- Check for all-bold paragraph (subsection heading) --
+    if (text_items and style == 'Normal' and not num_fmt and not drawing_items):
+        all_bold = all(it[2] for it in text_items)  # it[2] = is_bold
+        any_code_font = any(it[4] for it in text_items)  # it[4] = is_code font
+
+        if all_bold and not any_code_font:
+            plain = ''.join(it[1] for it in text_items).strip()
+            if plain:
+                if len(plain) <= 80:
+                    result_lines.append('### %s' % plain)
+                elif looks_like_code(plain):
+                    result_lines.append('```\n%s\n```' % plain)
+                else:
+                    result_lines.append('**%s**' % plain)
+                return '\n'.join(result_lines), img_counter
+
+    # -- Normal rendering: build inline text --
+    inline_parts = []
+    for it in items:
+        if it[0] == 'drawing':
+            pass  # already handled above
+        else:
+            _, text, is_bold, is_italic, is_code = it
+            if is_code:
+                inline_parts.append('`%s`' % text.strip())
+            elif is_bold and is_italic:
+                inline_parts.append(wrap_md(text, '***'))
+            elif is_bold:
+                inline_parts.append(wrap_md(text, '**'))
+            elif is_italic:
+                inline_parts.append(wrap_md(text, '*'))
+            else:
+                inline_parts.append(text)
+
+    inline = fix_inline_spacing(''.join(inline_parts)).strip()
+
     if inline:
+        indent = '  ' * ilvl
         if style == 'Heading3':
             result_lines.append('## %s' % inline)
         elif num_fmt == 'decimal':
@@ -125,7 +220,7 @@ def para_to_md(para, room_slug, img_counter):
     return '\n'.join(result_lines), img_counter
 
 # Parse document
-data = open('scripts/docx_media/document.xml', 'rb').read()
+data = open(os.path.join(BASE, 'docx_media', 'document.xml'), 'rb').read()
 root = ET.fromstring(data)
 body = root.find('{%s}body' % W)
 
@@ -167,7 +262,7 @@ if current_room and room_paras:
     rooms.append((current_room, current_room_module, list(room_paras)))
 
 part = 0
-OUTPUT_DIR = 'src/md/writeups'
+OUTPUT_DIR = os.path.join(os.path.dirname(BASE), 'src', 'md', 'writeups')
 total_images = 0
 
 for room_heading, module, paras in rooms:
@@ -189,17 +284,15 @@ for room_heading, module, paras in rooms:
              '# %s' % room_name, '']
 
     img_counter = 0
-    prev_was_blank = False
 
     for para in paras:
         md, img_counter = para_to_md(para, room_slug, img_counter)
         if md:
-            lines.append(md)
-            prev_was_blank = False
-        else:
-            if not prev_was_blank:
+            # Always ensure a blank line before each content block
+            if lines and lines[-1] != '':
                 lines.append('')
-            prev_was_blank = True
+            lines.append(md)
+        # Blank docx paragraphs are ignored — blank lines are inserted automatically above
 
     while lines and lines[-1] == '':
         lines.pop()
