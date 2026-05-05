@@ -118,7 +118,7 @@ export async function generateWriteupsIndex() {
 					: '';
 				const tagsHtml =
 					writeup.tags && writeup.tags.length
-						? `<div>${writeup.tags.map((tag) => `<button type="button">${tag}</button>`).join('')}</div>`
+						? `<div>${writeup.tags.map((tag) => `<button type="button" class="tag small" data-tag="${tag}">${tag}</button>`).join('')}</div>`
 						: '';
 				return `
   <div class="writeup-card" data-id="${writeup.id}" data-series="${writeup.seriesInfo?.series ?? ''}">
@@ -181,17 +181,16 @@ export async function generateWriteupsIndex() {
 
 		const finalHtml = templateWithStyles
 			.replace('${content}', mainContent)
-			.replace('${series_nav}', '')
+			.replace(/\$\{series_nav\}/g, '')
 			.replace('${tags}', tagsHtml)
+			.replace('${page_title}', 'WRITEUPS')
 			.replace(
 				'</body>',
 				`  <script type="module" src="assets/js/writeups.js" defer></script></body>`,
 			)
 			.replace(
-				`
-		<link rel="stylesheet" href="../assets/css/writeups.css" />
-`,
-				`		<link rel="stylesheet" href="assets/css/writeups.css" />`,
+				/<link rel="stylesheet" href="\.\.\/assets\/css\/writeups\.css" \/>/,
+				`<link rel="stylesheet" href="assets/css/writeups.css" />`,
 			)
 			.replace(
 				/<a href="\.\.\/(index\.html|about\.html|writeups\.html|blogs\.html)" class="nav-link">(HOME|ABOUT|WRITEUPS|BLOGS)<\/a>/g,

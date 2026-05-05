@@ -40,9 +40,7 @@ export async function generateBlogsIndex() {
     <p class="writeup-description">${blog.description}</p>
     ${
 			blog.tags && blog.tags.length
-				? `<div>
-            ${blog.tags.map((tag) => `<button type="button">${tag}</button>`).join('')}
-          </div>`
+				? `<div>${blog.tags.map((tag) => `<button type="button" class="tag small" data-tag="${tag}">${tag}</button>`).join('')}</div>`
 				: ''
 		}
     <a href="blogs/${blog.id}.html" class="writeup-link cyber-link">
@@ -108,16 +106,16 @@ export async function generateBlogsIndex() {
 
 		const finalHtml = templateWithStyles
 			.replace('${content}', mainContent)
+			.replace(/\$\{series_nav\}/g, '')
 			.replace('${tags}', tagsHtml)
+			.replace('${page_title}', 'BLOGS')
 			.replace(
 				'</body>',
 				`  <script type="module" src="assets/js/blogs.js" defer></script></body>`,
 			)
 			.replace(
-				`
-		<link rel="stylesheet" href="../assets/css/writeups.css" />
-`,
-				`		<link rel="stylesheet" href="assets/css/writeups.css" />`,
+				/<link rel="stylesheet" href="\.\.\/assets\/css\/writeups\.css" \/>/,
+				`<link rel="stylesheet" href="assets/css/writeups.css" />`,
 			)
 			.replace(
 				/<a href="\.\.\/(index\.html|about\.html|writeups\.html|blogs\.html)" class="nav-link">(HOME|ABOUT|WRITEUPS|BLOGS)<\/a>/g,

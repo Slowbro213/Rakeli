@@ -120,11 +120,17 @@ export const generate = async () => {
 		const currentMeta = allMeta.find((m) => m.id === id)!;
 		const seriesNav = buildSeriesNav(currentMeta, allMeta);
 
+		const titleMatch = htmlContent.match(/<h1[^>]*>([^<]*)<\/h1>/);
+		const pageTitle = titleMatch
+			? titleMatch[1]!
+			: id.replace(/_writeup$/, '').replace(/_/g, ' ').toUpperCase();
+
 		const finalHtml = template
 			.replace(/<div class="filter-container[\s\S]*?<\/div>/g, '')
 			.replace(/\$\{series_nav\}/g, seriesNav)
 			.replace('${content}', htmlContent)
-			.replace('${tags}', '');
+			.replace('${tags}', '')
+			.replace('${page_title}', pageTitle);
 
 		await new Promise<void>((resolve) =>
 			writeFile(outputPath, finalHtml, () => {

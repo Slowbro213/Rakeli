@@ -26,10 +26,18 @@ export const generate = async () => {
 
 		const mdContent = readFileSync(inputPath, 'utf8');
 		const htmlContent = await marked.parse(mdContent);
+
+		const titleMatch = htmlContent.match(/<h1[^>]*>([^<]*)<\/h1>/);
+		const pageTitle = titleMatch
+			? titleMatch[1]!
+			: basename(file, '.md').replace(/_/g, ' ').toUpperCase();
+
 		const finalHtml = template
 			.replace(/<div class="filter-container[\s\S]*?<\/div>/g, '')
+			.replace(/\$\{series_nav\}/g, '')
 			.replace('${content}', htmlContent)
-			.replace('${tags}', '');
+			.replace('${tags}', '')
+			.replace('${page_title}', pageTitle);
 
 		writeFile(outputPath, finalHtml, () => {
 			console.log(`✅ Converted ${file} → ${outputPath}`);
