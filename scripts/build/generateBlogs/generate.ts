@@ -13,8 +13,8 @@ export const generate = async () => {
 	const files = readdirSync(inputDir).filter((file) => extname(file) === '.md');
 
 	if (files.length === 0) {
-		console.log('No Markdown files found in', inputDir);
-		process.exit(0);
+		console.log('No Markdown files found in', inputDir, '— skipping blog generation');
+		return;
 	}
 
 	files.forEach(async (file) => {

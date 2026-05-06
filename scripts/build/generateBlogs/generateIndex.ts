@@ -17,13 +17,9 @@ const templatePath = join(process.cwd(), 'src', 'html', 'template.html');
 
 export async function generateBlogsIndex() {
 	try {
-		if (!existsSync(blogsJsonPath)) {
-			console.error(`❌ blogs.json not found at: ${blogsJsonPath}`);
-			process.exit(1);
-		}
-
-		const blogsData = readFileSync(blogsJsonPath, 'utf8');
-		const blogs: Blog[] = JSON.parse(blogsData);
+		const blogs: Blog[] = existsSync(blogsJsonPath)
+			? (JSON.parse(readFileSync(blogsJsonPath, 'utf8')) as Blog[])
+			: [];
 
 		console.log(`📊 Found ${blogs.length} blogs to process`);
 

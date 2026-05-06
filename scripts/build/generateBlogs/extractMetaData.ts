@@ -245,8 +245,11 @@ export const extractMetaData = async () => {
 		.filter((file): file is string => file.endsWith('.md'));
 
 	if (files.length === 0) {
-		console.log('No .md files found in', inputDir);
-		process.exit(0);
+		console.log('No .md files found in', inputDir, '— writing empty metadata');
+		fs.mkdirSync(path.dirname(writeupsOutputFile), { recursive: true });
+		fs.writeFileSync(writeupsOutputFile, '[]');
+		fs.writeFileSync(tagsOutputFile, '[]');
+		return;
 	}
 
 	console.log(`Found ${files.length} .md files to process...`);
