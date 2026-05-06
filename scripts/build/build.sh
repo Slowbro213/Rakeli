@@ -5,6 +5,7 @@ bun build src/ts/index.ts --outdir=public/assets/js --minify --target=browser
 bun build src/ts/menu.ts --outdir=public/assets/js --minify --target=browser
 bun build src/ts/writeups.ts --outdir=public/assets/js --minify --target=browser
 bun build src/ts/blogs.ts --outdir=public/assets/js --minify --target=browser
+bun build src/ts/fireBorder.ts --outdir=public/assets/js --minify --target=browser
 
 pids=()
 
