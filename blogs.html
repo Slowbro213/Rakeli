@@ -7,21 +7,17 @@
 			name="description"
 			content="HEXEN - Penetration Tester & Penetration Tester Portfolio"
 		/>
-		<title>HEXEN // CYBERPUNK PEN-TESTER PORTFOLIO</title>
-		<link rel="stylesheet" href="../assets/css/writeups.css" />
-	  <link rel="stylesheet" href="assets/css/writeupIndex.css" /></head>
+		<title>HEXEN // BLOGS</title>
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none';" />
+		<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=()" />
+		<meta name="referrer" content="strict-origin-when-cross-origin" />
+		<link rel="stylesheet" href="assets/css/writeups.css" />
+		<link rel="stylesheet" href="assets/css/writeupIndex.css" />
+	</head>
 
 	<body class="cyberpunk-body">
 		<!-- Matrix Rain Background -->
 		<div id="matrix-rain" class="matrix-rain"></div>
-
-		<!-- Grid Background -->
-		<div class="grid-bg fixed top-0 left-0 w-full h-full z-0"></div>
-
-		<!-- Scanlines -->
-		<div
-			class="scanlines fixed top-0 left-0 w-full h-full pointer-events-none z-0"
-		></div>
 
 		<!-- Navigation -->
 		<nav
@@ -42,7 +38,7 @@
 
 					<!-- Desktop Menu -->
 					<div class="hidden md:flex space-x-6">
-						<a href="../" class="nav-link">HOME</a>
+						<a href="index.html" class="nav-link">HOME</a>
 						<a href="about.html" class="nav-link">ABOUT</a>
 						<a href="writeups.html" class="nav-link">WRITEUPS</a>
 						<a href="blogs.html" class="nav-link">BLOGS</a>
@@ -104,54 +100,33 @@
 
 		<main class="relative z-10 pt-20">
 			<section id="writeup-controls" class="px-6 pt-6 pb-2 text-center">
-  <div class="filter-container mb-6 w-full" >
-    <input
-      type="text"
-      id="search-input"
-      placeholder="Search writeups..."
-      class="bg-black border border-neongreen text-neongreen rounded-md px-4 py-2 max-w-1/2 focus:outline-none focus:ring-2 focus:ring-neonpink"
-    />
-  </div>
+				<div class="filter-container mb-6 w-full">
+					<input
+						type="text"
+						id="search-input"
+						placeholder="Search blogs..."
+						class="bg-black border border-neongreen text-neongreen rounded-md px-4 py-2 max-w-1/2 focus:outline-none focus:ring-2 focus:ring-neonpink"
+					/>
+				</div>
+				<div id="tags-container"></div>
+			</section>
 
-  <div id='tags-container'>
-    <button type="button"
-        class="tag small"
-        data-tag="web">
-        web
-      </button>
-  </div>
-</section>
+			<!-- Blog content -->
+			<article class="markdown-body">
+				<div class="writeups-container">
+					<h1 class="cyber-text glitch-effect text-center" data-text="BLOG_POSTS">
+						BLOG_POSTS
+					</h1>
 
-${series_nav}
-<!-- Writeup content -->
-<article class="markdown-body">
-      <div class="writeups-container">
-        <h1 class="cyber-text glitch-effect text-center" data-text="BLOG_POSTS">
-          BLOG_POSTS
-        </h1>
+					<div class="text-center mt-4">
+						<a href="writeups.html" class="writeup-link cyber-link">VIEW_WRITEUPS</a>
+					</div>
 
-        <div class="text-center mt-4">
-          <a href="writeups.html" class="writeup-link cyber-link">VIEW_WRITEUPS</a>
-        </div>
+					<div id="writeupsList" class="writeups-grid"></div>
 
-        <div id="writeupsList" class="writeups-grid">
-          
-  <div class="writeup-card" data-id="first_blog">
-    <h2 class="writeup-title cyber-text">Building This Portfolio Site</h2>
-    <p class="writeup-description">This blog post explains how the build pipeline turns markdown into static HTML pages. It mirrors the writeup system and is used as a sample blog entry.</p>
-    <div>
-            <button type="button">web</button>
-          </div>
-    <a href="blogs/first_blog.html" class="writeup-link cyber-link">
-      READ_BLOG
-    </a>
-  </div>
-        </div>
-
-        <div class="pagination mt-8"></div>
-      </div>
-    </article>
-${series_nav}
+					<div class="pagination mt-8"></div>
+				</div>
+			</article>
 
 			<!-- Footer -->
 			<footer
@@ -160,26 +135,23 @@ ${series_nav}
 				<div class="container mx-auto px-4">
 					<div class="flex flex-col md:flex-row justify-between items-center">
 						<div class="mb-6 md:mb-0">
-							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN_SEC</h3>
+							<h3 class="text-2xl font-bold mb-2 text-neongreen">HEXEN</h3>
 							<p class="text-sm text-gray-400 cyber-text">
-								Penetration Testing & Security Consulting
+								Penetration Testing
 							</p>
 						</div>
 						<div class="flex space-x-6">
 							<a
-								href="#"
-								class="hover:text-neongreen transition-colors cyber-link"
-								>Imprint</a
+								href="https://www.linkedin.com/in/rakelspahi/"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="hover:text-neonblue transition-colors cyber-link"
+								>LinkedIn</a
 							>
 							<a
 								href="#"
 								class="hover:text-neonpink transition-colors cyber-link"
-								>Privacy</a
-							>
-							<a
-								href="#"
-								class="hover:text-neonblue transition-colors cyber-link"
-								>Legal</a
+								>GitHub</a
 							>
 						</div>
 					</div>
@@ -187,7 +159,7 @@ ${series_nav}
 						class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400"
 					>
 						<p class="cyber-text">
-							© 2025 HEXEN. All systems operational.
+							© 2026 HEXEN. All systems operational.
 							<span class="text-neongreen">//</span> Secure by design.
 						</p>
 					</div>
@@ -195,5 +167,6 @@ ${series_nav}
 			</footer>
 		</main>
 		<script type="module" src="assets/js/menu.js" defer></script>
-	  <script type="module" src="assets/js/blogs.js" defer></script></body>
+		<script type="module" src="assets/js/blogs.js" defer></script>
+	</body>
 </html>
